@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PRIME Training Dashboard — Mamba-130m</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0a0b0f;
+    --panel: #111318;
+    --border: #1e2130;
+    --accent: #7c6af7;
+    --accent2: #3de0a0;
+    --accent3: #f7a94a;
+    --danger: #f7524a;
+    --text: #e2e6f0;
+    --muted: #5a6080;
+    --glow: rgba(124,106,247,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700; color: #fff;
+    box-shadow: 0 0 20px var(--glow);
+  }
+
+  header h1 { font-size: 18px; font-weight: 700; }
+  header span { font-size: 12px; color: var(--muted); margin-left: 4px; }
+
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 8px var(--accent2);
+    animation: pulse 2s infinite;
+    margin-left: auto;
+  }
+  .status-dot.idle { background: var(--muted); box-shadow: none; animation: none; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  #status-label { font-size: 12px; color: var(--muted); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0.6;
+  }
+
+  .card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+  .card-value { font-size: 28px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+  .card-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  .card-value.green { color: var(--accent2); }
+  .card-value.purple { color: var(--accent); }
+  .card-value.orange { color: var(--accent3); }
+  .card-value.red { color: var(--danger); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .three-col { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 16px; }
+
+  .chart-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .chart-card h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 14px; }
+
+  canvas { width: 100% !important; }
+
+  .salad-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .salad-card h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .salad-badge { background: var(--accent); color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 600; }
+
+  #salad-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--accent2);
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    min-height: 100px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  #salad-meta { font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+  .layer-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .layer-card h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 14px; }
+
+  .layer-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+  .layer-cell {
+    aspect-ratio: 1;
+    border-radius: 5px;
+    background: #1a1d2e;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    transition: all 0.4s ease;
+  }
+  .layer-cell.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 0 10px var(--glow);
+  }
+  .layer-cell.recent {
+    background: var(--accent);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 0 14px var(--glow);
+    animation: flicker 1s ease infinite;
+  }
+  @keyframes flicker { 0%,100%{opacity:1} 50%{opacity:0.7} }
+
+  .log-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    margin-top: 16px;
+  }
+  .log-card h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+  #log-box {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #5a9060;
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    height: 160px;
+    overflow-y: auto;
+    line-height: 1.6;
+  }
+  #log-box .warn { color: var(--accent3); }
+  #log-box .err { color: var(--danger); }
+  #log-box .info { color: var(--accent); }
+
+  footer { text-align: center; color: var(--muted); font-size: 11px; margin-top: 20px; }
+  .refresh-badge { font-size: 10px; color: var(--muted); background: #1a1d2e; padding: 2px 8px; border-radius: 20px; margin-left: 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">P</div>
+  <div>
+    <h1>PRIME Dashboard <span>Mamba-130m → Prime Harmonic</span></h1>
+    <div style="font-size:11px;color:var(--muted);margin-top:2px">RTX 3060 12GB · Trinity Prime Harmonic · 130M params</div>
+  </div>
+  <span id="status-label">Connecting…</span>
+  <div class="status-dot idle" id="dot"></div>
+</header>
+
+<!-- Top metric cards -->
+<div class="grid" style="grid-template-columns: repeat(5, 1fr)">
+  <div class="card">
+    <div class="card-label">Training Step</div>
+    <div class="card-value purple" id="m-step">—</div>
+    <div class="card-sub" id="m-phase">Waiting for data…</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Loss</div>
+    <div class="card-value" id="m-loss">—</div>
+    <div class="card-sub" id="m-ppl">Perplexity: —</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Manifold Flips</div>
+    <div class="card-value orange" id="m-flips">—</div>
+    <div class="card-sub">× 10⁶ discrete weight updates</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Throughput</div>
+    <div class="card-value green" id="m-tps">—</div>
+    <div class="card-sub">tokens / sec</div>
+  </div>
+  <div class="card" id="live-batch-card">
+    <div class="card-label">Live Batch Progress</div>
+    <div class="card-value purple">—</div>
+    <div class="card-sub">Waiting for first batch…</div>
+  </div>
+</div>
+
+<!-- Loss chart + Layer peel -->
+<div class="three-col">
+  <div class="chart-card">
+    <h2>Loss Curve <span class="refresh-badge">live</span></h2>
+    <canvas id="lossChart" height="160"></canvas>
+  </div>
+  <div class="layer-card">
+    <h2>Layer Peel Status (28 layers)</h2>
+    <div class="layer-grid" id="layer-grid"></div>
+    <div style="margin-top:10px;font-size:11px;color:var(--muted)" id="layer-status">Waiting…</div>
+  </div>
+</div>
+
+<!-- Word Salad + Flips chart -->
+<div class="two-col">
+  <div class="salad-card">
+    <h2><span>Word Salad</span> <span class="salad-badge" id="salad-step">Step —</span></h2>
+    <div id="salad-text">Waiting for first generation…</div>
+    <div id="salad-meta"></div>
+  </div>
+  <div class="chart-card">
+    <h2>Flips Over Time (M)</h2>
+    <canvas id="flipsChart" height="180"></canvas>
+  </div>
+</div>
+
+<!-- Health Metrics Row -->
+<div class="grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom:16px">
+  <div class="card">
+    <div class="card-label">Weight Migration Rate</div>
+    <div class="card-value orange" id="m-migration">—</div>
+    <div class="card-sub">moved / total weights · per step</div>
+    <div class="card-sub" id="m-migration-warn" style="color:var(--danger);margin-top:4px"></div>
+  </div>
+  <div class="card">
+    <div class="card-label">Manifold Occupancy</div>
+    <div class="card-value purple" id="m-occupancy">—</div>
+    <div class="card-sub">unique LUT entries / 65,536</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Vote Entropy</div>
+    <div style="margin-top:8px">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+        <div style="font-size:10px;color:var(--accent2);width:40px">POS</div>
+        <div style="flex:1;background:#1a1d2e;border-radius:4px;height:8px;overflow:hidden">
+          <div id="vote-pos-bar" style="background:var(--accent2);height:100%;width:0%;transition:width 0.5s"></div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);width:36px;text-align:right" id="vote-pos-pct">—</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+        <div style="font-size:10px;color:var(--danger);width:40px">NEG</div>
+        <div style="flex:1;background:#1a1d2e;border-radius:4px;height:8px;overflow:hidden">
+          <div id="vote-neg-bar" style="background:var(--danger);height:100%;width:0%;transition:width 0.5s"></div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);width:36px;text-align:right" id="vote-neg-pct">—</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div style="font-size:10px;color:var(--muted);width:40px">NEUT</div>
+        <div style="flex:1;background:#1a1d2e;border-radius:4px;height:8px;overflow:hidden">
+          <div id="vote-neut-bar" style="background:var(--muted);height:100%;width:0%;transition:width 0.5s"></div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);width:36px;text-align:right" id="vote-neut-pct">—</div>
+      </div>
+    </div>
+    <div class="card-sub" style="margin-top:6px">Healthy: ~45%/45%/10%</div>
+  </div>
+  <div class="chart-card" style="border-radius:14px">
+    <h2>Migration Rate Over Time</h2>
+    <canvas id="migChart" height="120"></canvas>
+  </div>
+</div>
+
+<!-- Trajectory Metrics Row -->
+<div class="grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:16px">
+  <div class="card">
+    <div class="card-label">95th Pct Displacement</div>
+    <div class="card-value green" id="m-disp95">—</div>
+    <div class="card-sub">max distance from init (95%)</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Occupancy Entropy</div>
+    <div class="card-value purple" id="m-entropy">—</div>
+    <div class="card-sub">LUT usage uniformness (bits)</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Avg Transition Momentum</div>
+    <div class="card-value orange" id="m-momentum">—</div>
+    <div class="card-sub">direction persistence per block</div>
+  </div>
+</div>
+
+<!-- Raw log -->
+<div class="log-card">
+  <h2>Training Log <span class="refresh-badge" id="last-update">—</span></h2>
+  <div id="log-box"></div>
+</div>
+
+<footer>PRIME · Project Trinity Research · batteryphil · Auto-refresh every 3s</footer>
+
+<script>
+// ── Mini chart engine (no dependencies) ──────────────────────────────────────
+function Sparkline(canvasId, color, color2) {
+  this.canvas = document.getElementById(canvasId);
+  this.ctx = this.canvas.getContext('2d');
+  this.color = color;
+  this.color2 = color2 || color;
+  this.data = [];
+  this.labels = [];
+}
+Sparkline.prototype.draw = function() {
+  const c = this.canvas, ctx = this.ctx;
+  const dpr = window.devicePixelRatio || 1;
+  const rect = c.getBoundingClientRect();
+  c.width = rect.width * dpr;
+  c.height = c.height || 160 * dpr;
+  ctx.scale(dpr, dpr);
+  const W = rect.width, H = (c.height / dpr);
+
+  ctx.clearRect(0, 0, W, H);
+
+  if (this.data.length < 2) {
+    ctx.fillStyle = '#5a6080';
+    ctx.font = '12px Inter';
+    ctx.textAlign = 'center';
+    ctx.fillText('Waiting for data…', W/2, H/2);
+    return;
+  }
+
+  const pad = { top: 10, right: 10, bottom: 28, left: 42 };
+  const iW = W - pad.left - pad.right;
+  const iH = H - pad.top - pad.bottom;
+
+  const min = Math.min(...this.data) * 0.95;
+  const max = Math.max(...this.data) * 1.05;
+  const range = max - min || 1;
+
+  const xScale = i => pad.left + (i / (this.data.length - 1)) * iW;
+  const yScale = v => pad.top + iH - ((v - min) / range) * iH;
+
+  // Grid lines
+  ctx.strokeStyle = '#1e2130';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + (iH / 4) * i;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + iW, y); ctx.stroke();
+    const val = max - (range / 4) * i;
+    ctx.fillStyle = '#5a6080'; ctx.font = '9px JetBrains Mono'; ctx.textAlign = 'right';
+    ctx.fillText(val.toFixed(2), pad.left - 4, y + 3);
+  }
+
+  // Gradient fill
+  const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + iH);
+  grad.addColorStop(0, this.color + '55');
+  grad.addColorStop(1, this.color + '00');
+  ctx.beginPath();
+  ctx.moveTo(xScale(0), yScale(this.data[0]));
+  for (let i = 1; i < this.data.length; i++) ctx.lineTo(xScale(i), yScale(this.data[i]));
+  ctx.lineTo(xScale(this.data.length - 1), pad.top + iH);
+  ctx.lineTo(xScale(0), pad.top + iH);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  ctx.moveTo(xScale(0), yScale(this.data[0]));
+  for (let i = 1; i < this.data.length; i++) ctx.lineTo(xScale(i), yScale(this.data[i]));
+  ctx.strokeStyle = this.color;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Last point dot
+  const lx = xScale(this.data.length - 1), ly = yScale(this.data[this.data.length - 1]);
+  ctx.beginPath(); ctx.arc(lx, ly, 4, 0, Math.PI * 2);
+  ctx.fillStyle = this.color; ctx.fill();
+
+  // X labels (every ~5 steps)
+  ctx.fillStyle = '#5a6080'; ctx.font = '9px JetBrains Mono'; ctx.textAlign = 'center';
+  const step = Math.max(1, Math.floor(this.labels.length / 6));
+  for (let i = 0; i < this.labels.length; i += step) {
+    ctx.fillText('S' + this.labels[i], xScale(i), H - 6);
+  }
+};
+
+const lossChart  = new Sparkline('lossChart',  '#7c6af7', '#3de0a0');
+const flipsChart = new Sparkline('flipsChart', '#f7a94a');
+const migChart   = new Sparkline('migChart',   '#3de0a0');
+
+// ── Layer peel viz ────────────────────────────────────────────────────────────
+function buildLayerGrid() {
+  const grid = document.getElementById('layer-grid');
+  grid.innerHTML = '';
+  for (let i = 27; i >= 0; i--) {
+    const el = document.createElement('div');
+    el.className = 'layer-cell';
+    el.id = 'layer-' + i;
+    el.textContent = i;
+    grid.appendChild(el);
+  }
+}
+buildLayerGrid();
+
+function updateLayerPeel(step) {
+  // Protocol v7.00: peel starts at step 200, one layer per 50 steps top-down
+  for (let i = 0; i <= 27; i++) {
+    const cell = document.getElementById('layer-' + i);
+    if (!cell) continue;
+    const unlockStep = 200 + ((27 - i) * 50);
+    cell.className = 'layer-cell';
+    if (step >= unlockStep) {
+      const isRecent = step >= unlockStep && step < unlockStep + 50;
+      cell.className = isRecent ? 'layer-cell recent' : 'layer-cell active';
+    }
+  }
+  const unlocked = step < 200 ? 0 : Math.min(28, Math.floor((step - 200) / 50) + 1);
+  document.getElementById('layer-status').textContent =
+    step < 200
+      ? `Phase 1: Head-only stabilization (${200 - step} steps until peel)`
+      : `Layer Peel active — ${unlocked}/28 layers unlocked`;
+}
+
+// ── Log helper ────────────────────────────────────────────────────────────────
+function addLog(msg, cls) {
+  const box = document.getElementById('log-box');
+  const line = document.createElement('div');
+  if (cls) line.className = cls;
+  line.textContent = new Date().toLocaleTimeString() + ' › ' + msg;
+  box.appendChild(line);
+  box.scrollTop = box.scrollHeight;
+  // Keep last 100 lines
+  while (box.children.length > 100) box.removeChild(box.firstChild);
+}
+
+// ── Loss color helper ─────────────────────────────────────────────────────────
+function lossColor(v) {
+  if (v > 10) return 'red';
+  if (v > 6)  return 'orange';
+  if (v > 3)  return '';
+  return 'green';
+}
+
+// ── Parse live log for batch-level data ──────────────────────────────────────
+let lastLogSize = 0;
+
+async function fetchLiveLog() {
+  try {
+    const resp = await fetch('../training_mamba.log?' + Date.now());
+    if (!resp.ok) return;
+    const text = await resp.text();
+
+    // Only process new content
+    if (text.length === lastLogSize) return;
+    lastLogSize = text.length;
+
+    // Extract last batch line: "[30/64] L:15.6250 TPS:110.9"
+    const batchMatches = [...text.matchAll(/\[(\d+)\/(\d+)\] L:([\d.]+) TPS:([\d.]+)/g)];
+    if (batchMatches.length === 0) return;
+
+    // Deduplicate (log has double lines from two process runs)
+    const last = batchMatches[batchMatches.length - 1];
+    const batchNum = parseInt(last[1]);
+    const batchTotal = parseInt(last[2]);
+    const batchLoss = parseFloat(last[3]);
+    const batchTps = parseFloat(last[4]);
+
+    // Update live batch card
+    document.getElementById('m-tps').textContent = batchTps.toFixed(1);
+    document.getElementById('m-tps').className = 'card-value green';
+
+    const liveCard = document.getElementById('live-batch-card');
+    if (liveCard) {
+      liveCard.innerHTML = `
+        <div class="card-label">Live Batch Progress</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--accent)">
+          ${batchNum} <span style="color:var(--muted);font-size:14px">/ ${batchTotal}</span>
+        </div>
+        <div style="margin:8px 0;background:#1a1d2e;border-radius:6px;height:6px;overflow:hidden">
+          <div style="background:linear-gradient(90deg,var(--accent),var(--accent2));height:100%;width:${Math.round(batchNum/batchTotal*100)}%;transition:width 0.5s"></div>
+        </div>
+        <div class="card-sub">Loss: ${batchLoss.toFixed(4)} · TPS: ${batchTps.toFixed(1)}</div>
+      `;
+    }
+
+    // Update dot to show active
+    document.getElementById('dot').className = 'status-dot';
+    document.getElementById('status-label').textContent = 'Training Active';
+    document.getElementById('last-update').textContent = 'Updated ' + new Date().toLocaleTimeString();
+
+  } catch(e) {}
+}
+
+// ── Main data fetch ───────────────────────────────────────────────────────────
+let prevStep = -1;
+let firstLoad = true;
+// Track session start to filter old stats
+const SESSION_START = Date.now() / 1000 - 300; // allow 5min before page load
+
+async function fetchData() {
+  const dot = document.getElementById('dot');
+  const statusLabel = document.getElementById('status-label');
+
+  // Always fetch live log first for batch-level data
+  await fetchLiveLog();
+
+  try {
+    const statsResp = await fetch('../stats_mamba.json?' + Date.now());
+    if (!statsResp.ok) throw new Error('no stats');
+    const allStats = await statsResp.json();
+    if (!allStats || allStats.length === 0) return;
+
+    // Filter to only THIS session's steps (timestamp > session start)
+    const stats = allStats.filter(s => !s.timestamp || s.timestamp > SESSION_START);
+
+    if (stats.length === 0) {
+      // Old data exists but no new steps yet
+      statusLabel.textContent = 'Step 1 in progress…';
+      document.getElementById('m-phase').textContent = 'Phase 1 – Head Stabilization';
+      if (firstLoad) { addLog('Old stats found. Waiting for new step to complete…', 'warn'); firstLoad = false; }
+      return;
+    }
+
+    const latest = stats[stats.length - 1];
+    const step = latest.step || 0;
+    const loss = latest.loss || 0;
+    const flips = latest.flips || 0;
+    const tps = latest.tps || 0;
+    const ppl = Math.exp(loss).toFixed(2);
+
+    dot.className = 'status-dot';
+
+    document.getElementById('m-step').textContent = step;
+    document.getElementById('m-loss').textContent = loss.toFixed(4);
+    document.getElementById('m-loss').className = 'card-value ' + lossColor(loss);
+    document.getElementById('m-phase').textContent =
+      step < 200 ? 'Phase 1 – Head Stabilization'
+      : step < 1500 ? 'Phase 2 – Layer Peel Cascade'
+      : 'Phase 3 – Deep Crystallization';
+    document.getElementById('m-ppl').textContent = 'Perplexity: ' + ppl;
+    document.getElementById('m-flips').textContent = flips.toFixed(4) + 'M';
+    if (tps > 0) document.getElementById('m-tps').textContent = tps.toFixed(1);
+
+    lossChart.data = stats.map(s => s.loss);
+    lossChart.labels = stats.map(s => s.step);
+    lossChart.draw();
+
+    flipsChart.data = stats.map(s => s.flips || 0);
+    flipsChart.labels = stats.map(s => s.step);
+    flipsChart.draw();
+
+    updateLayerPeel(step);
+
+    // Health metrics
+    const migRate  = latest.migration_rate || 0;
+    const occupancy = latest.occupancy || 0;
+    const votePos  = latest.vote_pos || 0;
+    const voteNeg  = latest.vote_neg || 0;
+    const voteNeut = latest.vote_neut || 0;
+
+    document.getElementById('m-migration').textContent = (migRate * 100).toFixed(4) + '%';
+    document.getElementById('m-migration').className = migRate < 0.0001 ? 'card-value red' : migRate < 0.001 ? 'card-value orange' : 'card-value green';
+    const warnEl = document.getElementById('m-migration-warn');
+    warnEl.textContent = migRate < 0.00005 ? '⚠ Vote stagnation risk' : '';
+
+    document.getElementById('m-occupancy').textContent = (occupancy * 100).toFixed(1) + '%';
+    document.getElementById('m-occupancy').className = occupancy < 0.02 ? 'card-value red' : occupancy < 0.1 ? 'card-value orange' : 'card-value purple';
+
+    document.getElementById('vote-pos-bar').style.width  = (votePos * 100).toFixed(1) + '%';
+    document.getElementById('vote-neg-bar').style.width  = (voteNeg * 100).toFixed(1) + '%';
+    document.getElementById('vote-neut-bar').style.width = (voteNeut * 100).toFixed(1) + '%';
+    document.getElementById('vote-pos-pct').textContent  = (votePos * 100).toFixed(1) + '%';
+    document.getElementById('vote-neg-pct').textContent  = (voteNeg * 100).toFixed(1) + '%';
+    document.getElementById('vote-neut-pct').textContent = (voteNeut * 100).toFixed(1) + '%';
+
+    // Trajectory metrics
+    document.getElementById('m-disp95').textContent = (latest.disp_95 || 0).toFixed(1);
+    document.getElementById('m-entropy').textContent = (latest.entropy || 0).toFixed(2);
+    document.getElementById('m-momentum').textContent = (latest.momentum_mean || 0).toFixed(2);
+
+    migChart.data   = stats.map(s => s.migration_rate || 0);
+    migChart.labels = stats.map(s => s.step);
+    migChart.draw();
+
+    if (step !== prevStep) {
+      if (!firstLoad) addLog(`Step ${step} | Loss: ${loss.toFixed(4)} | PPL: ${ppl} | Mig: ${(migRate*100).toFixed(4)}% | Occ: ${(occupancy*100).toFixed(1)}% | TPS: ${tps.toFixed(1)}`, 'info');
+      prevStep = step;
+      firstLoad = false;
+    }
+
+    document.getElementById('last-update').textContent = 'Updated ' + new Date().toLocaleTimeString();
+
+    try {
+      const saladResp = await fetch('../samples_mamba.json?' + Date.now());
+      if (saladResp.ok) {
+        const salads = await saladResp.json();
+        if (salads && salads.length > 0) {
+          const ls = salads[salads.length - 1];
+          document.getElementById('salad-text').textContent = ls.text || '(empty)';
+          document.getElementById('salad-step').textContent = 'Step ' + ls.step;
+          document.getElementById('salad-meta').textContent = `Generated at step ${ls.step} · ${salads.length} samples recorded`;
+        }
+      }
+    } catch(e) {}
+
+  } catch (err) {
+    if (firstLoad) { addLog('Waiting for stats_mamba.json…', 'warn'); firstLoad = false; }
+  }
+}
+
+// Draw empty charts immediately
+lossChart.draw();
+flipsChart.draw();
+migChart.draw();
+
+// Initial fetch + polling
+fetchData();
+setInterval(fetchData, 3000);
+window.addEventListener('resize', () => { lossChart.draw(); flipsChart.draw(); migChart.draw(); });
+</script>
+</body>
+</html>

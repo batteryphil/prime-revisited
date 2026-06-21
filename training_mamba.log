@@ -1,0 +1,3734 @@
+
+============================================================
+[PRIME] Mamba-130m PRIME Training — PID 2142897
+[PRIME] Device: cuda
+============================================================
+[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
+[PRIME] Loading state-spaces/mamba-130m-hf...
+Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4656.64it/s]
+/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+
+============================================================
+============================================================
+
+[PRIME] Mamba-130m PRIME Training — PID 2143448[PRIME] Mamba-130m PRIME Training — PID 2143448
+
+[PRIME] Device: cuda[PRIME] Device: cuda
+
+========================================================================================================================
+
+[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000][PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
+
+[PRIME] Loading state-spaces/mamba-130m-hf...[PRIME] Loading state-spaces/mamba-130m-hf...
+
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 2849.88it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 2849.88it/s]
+
+[PRIME] Wrapped 97 linear layers with PrimeLinear.[PRIME] Wrapped 97 linear layers with PrimeLinear.
+
+[PRIME] VRAM used after load: 0.42 GB[PRIME] VRAM used after load: 0.42 GB
+
+
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 429, in <module>
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 429, in <module>
+        train()train()
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 328, in train
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 328, in train
+        out = model(input_ids=input_ids, labels=labels)out = model(input_ids=input_ids, labels=labels)
+
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+        return self._call_impl(*args, **kwargs)return self._call_impl(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+        return forward_call(*args, **kwargs)return forward_call(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 682, in forward
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 682, in forward
+        mamba_outputs = self.backbone(mamba_outputs = self.backbone(
+
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+        return self._call_impl(*args, **kwargs)return self._call_impl(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+        return forward_call(*args, **kwargs)return forward_call(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 584, in forward
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 584, in forward
+        hidden_states = mixer_block(hidden_states = mixer_block(
+
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/modeling_layers.py", line 93, in __call__
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/modeling_layers.py", line 93, in __call__
+        return super().__call__(*args, **kwargs)return super().__call__(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+        return self._call_impl(*args, **kwargs)return self._call_impl(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+        return forward_call(*args, **kwargs)return forward_call(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 422, in forward
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 422, in forward
+        hidden_states = self.mixer(hidden_states, cache_params=cache_params, attention_mask=attention_mask)hidden_states = self.mixer(hidden_states, cache_params=cache_params, attention_mask=attention_mask)
+
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+        return self._call_impl(*args, **kwargs)return self._call_impl(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+        return forward_call(*args, **kwargs)return forward_call(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 376, in forward
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 376, in forward
+        if is_fast_path_available and "cuda" in self.x_proj.weight.device.type and not is_tracing(hidden_states):if is_fast_path_available and "cuda" in self.x_proj.weight.device.type and not is_tracing(hidden_states):
+
+                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1931, in __getattr__
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1931, in __getattr__
+        raise AttributeError(raise AttributeError(
+
+AttributeErrorAttributeError: : 'PrimeLinear' object has no attribute 'weight''PrimeLinear' object has no attribute 'weight'
+
+/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+
+============================================================
+============================================================
+
+[PRIME] Mamba-130m PRIME Training — PID 2143683[PRIME] Mamba-130m PRIME Training — PID 2143683
+
+[PRIME] Device: cuda[PRIME] Device: cuda
+
+========================================================================================================================
+
+[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000][PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
+
+[PRIME] Loading state-spaces/mamba-130m-hf...[PRIME] Loading state-spaces/mamba-130m-hf...
+
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4604.53it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4604.53it/s]
+
+[PRIME] Wrapped 97 linear layers with PrimeLinear.[PRIME] Wrapped 97 linear layers with PrimeLinear.
+
+[PRIME] VRAM used after load: 0.42 GB[PRIME] VRAM used after load: 0.42 GB
+
+
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+
+....................[10/32] L:40.0732 TPS:783.1[10/32] L:40.0732 TPS:783.1  ....................[20/32] L:43.9079 TPS:875.6[20/32] L:43.9079 TPS:875.6  ....................[30/32] L:33.8153 TPS:914.3[30/32] L:33.8153 TPS:914.3  ....
+[SYNC] Step 1 finalizing...
+[SYNC] Step 1 finalizing...
+
+[PRIME] Step 1 | Loss: 1190.3115 | Flips: 0.12M | TPS: 865.4[PRIME] Step 1 | Loss: 1190.3115 | Flips: 0.12M | TPS: 865.4
+
+....................[10/32] L:32.9535 TPS:963.6[10/32] L:32.9535 TPS:963.6  ....................[20/32] L:33.5233 TPS:996.7[20/32] L:33.5233 TPS:996.7  ....................[30/32] L:35.8241 TPS:1003.6[30/32] L:35.8241 TPS:1003.6  ....
+[SYNC] Step 2 finalizing...
+[SYNC] Step 2 finalizing...
+
+[PRIME] Step 2 | Loss: 1169.7355 | Flips: 0.20M | TPS: 1908.0[PRIME] Step 2 | Loss: 1169.7355 | Flips: 0.20M | TPS: 1908.0
+
+....................[10/32] L:35.1962 TPS:999.6[10/32] L:35.1962 TPS:999.6  ....................[20/32] L:36.7257 TPS:1013.7[20/32] L:36.7257 TPS:1013.7  ....................[30/32] L:40.3050 TPS:1004.2[30/32] L:40.3050 TPS:1004.2  ....
+[SYNC] Step 3 finalizing...
+[SYNC] Step 3 finalizing...
+
+[PRIME] Step 3 | Loss: 1180.5654 | Flips: 0.19M | TPS: 2837.0[PRIME] Step 3 | Loss: 1180.5654 | Flips: 0.19M | TPS: 2837.0
+
+....................[10/32] L:43.7557 TPS:1014.9[10/32] L:43.7557 TPS:1014.9  ....................[20/32] L:35.2927 TPS:1027.9[20/32] L:35.2927 TPS:1027.9  ....................[30/32] L:38.8516 TPS:1017.8[30/32] L:38.8516 TPS:1017.8  ....
+[SYNC] Step 4 finalizing...
+[SYNC] Step 4 finalizing...
+
+[PRIME] Step 4 | Loss: 1181.1359 | Flips: 0.25M | TPS: 3848.2[PRIME] Step 4 | Loss: 1181.1359 | Flips: 0.25M | TPS: 3848.2
+
+....................[10/32] L:34.9717 TPS:1001.2[10/32] L:34.9717 TPS:1001.2  ....................[20/32] L:36.8696 TPS:1001.4[20/32] L:36.8696 TPS:1001.4  ....................[30/32] L:41.2009 TPS:1004.6[30/32] L:41.2009 TPS:1004.6  ....
+[SYNC] Step 5 finalizing...
+[SYNC] Step 5 finalizing...
+
+[PRIME] Step 5 | Loss: 1187.6145 | Flips: 0.19M | TPS: 4740.8[PRIME] Step 5 | Loss: 1187.6145 | Flips: 0.19M | TPS: 4740.8
+
+[transformers] The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer GPTNeoXTokenizer. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:39.9993 TPS:1032.7[10/32] L:39.9993 TPS:1032.7  ....................[20/32] L:38.7971 TPS:1053.5[20/32] L:38.7971 TPS:1053.5  ....................[30/32] L:42.2298 TPS:1041.4[30/32] L:42.2298 TPS:1041.4  ....
+[SYNC] Step 6 finalizing...
+[SYNC] Step 6 finalizing...
+
+[PRIME] Step 6 | Loss: 1193.3786 | Flips: 0.26M | TPS: 5881.5[PRIME] Step 6 | Loss: 1193.3786 | Flips: 0.26M | TPS: 5881.5
+
+....................[10/32] L:39.3611 TPS:995.8[10/32] L:39.3611 TPS:995.8  ........../home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+
+============================================================
+============================================================
+
+[PRIME] Mamba-130m PRIME Training — PID 2143939[PRIME] Mamba-130m PRIME Training — PID 2143939
+
+[PRIME] Device: cuda[PRIME] Device: cuda
+
+========================================================================================================================
+
+[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000][PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
+
+[PRIME] Loading state-spaces/mamba-130m-hf...[PRIME] Loading state-spaces/mamba-130m-hf...
+
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 5038.60it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 5038.60it/s]
+
+[PRIME] Wrapped 97 linear layers with PrimeLinear.[PRIME] Wrapped 97 linear layers with PrimeLinear.
+
+[PRIME] VRAM used after load: 0.42 GB[PRIME] VRAM used after load: 0.42 GB
+
+
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+
+....................[10/32] L:40.0732 TPS:820.2[10/32] L:40.0732 TPS:820.2  ....................[20/32] L:43.9079 TPS:899.7[20/32] L:43.9079 TPS:899.7  ....................[30/32] L:33.8153 TPS:927.1[30/32] L:33.8153 TPS:927.1  ....
+[SYNC] Step 1 finalizing...
+[SYNC] Step 1 finalizing...
+
+[PRIME] Step 1 | Loss: 1190.3115 | Flips: 0.12M | Mig: 0.0501% | Occ: 1.23% | TPS: 878.5[PRIME] Step 1 | Loss: 1190.3115 | Flips: 0.12M | Mig: 0.0501% | Occ: 1.23% | TPS: 878.5
+
+....................[10/32] L:32.9537 TPS:987.2[10/32] L:32.9537 TPS:987.2  ....................[20/32] L:33.5231 TPS:1002.7[20/32] L:33.5231 TPS:1002.7  ....................[30/32] L:35.8219 TPS:1005.0[30/32] L:35.8219 TPS:1005.0  ....
+[SYNC] Step 2 finalizing...
+[SYNC] Step 2 finalizing...
+
+[PRIME] Step 2 | Loss: 1169.7358 | Flips: 0.20M | Mig: 0.0857% | Occ: 1.23% | TPS: 1898.0[PRIME] Step 2 | Loss: 1169.7358 | Flips: 0.20M | Mig: 0.0857% | Occ: 1.23% | TPS: 1898.0
+
+....................[10/32] L:35.2001 TPS:995.4[10/32] L:35.2001 TPS:995.4  ....................[20/32] L:36.7233 TPS:1003.1[20/32] L:36.7233 TPS:1003.1  ....................[30/32] L:40.3049 TPS:1004.7[30/32] L:40.3049 TPS:1004.7  ....
+[SYNC] Step 3 finalizing...
+[SYNC] Step 3 finalizing...
+
+[PRIME] Step 3 | Loss: 1180.5719 | Flips: 0.19M | Mig: 0.0790% | Occ: 1.23% | TPS: 2819.9[PRIME] Step 3 | Loss: 1180.5719 | Flips: 0.19M | Mig: 0.0790% | Occ: 1.23% | TPS: 2819.9
+
+....................[10/32] L:43.7543 TPS:957.1[10/32] L:43.7543 TPS:957.1  ....................[20/32] L:35.2885 TPS:995.3[20/32] L:35.2885 TPS:995.3  ....................[30/32] L:38.8473 TPS:999.5[30/32] L:38.8473 TPS:999.5  ....
+[SYNC] Step 4 finalizing...
+[SYNC] Step 4 finalizing...
+
+[PRIME] Step 4 | Loss: 1181.1363 | Flips: 0.25M | Mig: 0.1069% | Occ: 1.23% | TPS: 3784.5[PRIME] Step 4 | Loss: 1181.1363 | Flips: 0.25M | Mig: 0.1069% | Occ: 1.23% | TPS: 3784.5
+
+....................[10/32] L:34.9720 TPS:1021.2[10/32] L:34.9720 TPS:1021.2  ....................[20/32] L:36.8673 TPS:1022.4[20/32] L:36.8673 TPS:1022.4  ....................[30/32] L:41.2023 TPS:1023.6[30/32] L:41.2023 TPS:1023.6  ....
+[SYNC] Step 5 finalizing...
+[SYNC] Step 5 finalizing...
+
+[PRIME] Step 5 | Loss: 1187.6155 | Flips: 0.19M | Mig: 0.0812% | Occ: 1.23% | TPS: 4829.2[PRIME] Step 5 | Loss: 1187.6155 | Flips: 0.19M | Mig: 0.0812% | Occ: 1.23% | TPS: 4829.2
+
+[transformers] The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer GPTNeoXTokenizer. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:39.9991 TPS:1036.2[10/32] L:39.9991 TPS:1036.2  ....................[20/32] L:38.7991 TPS:1022.6[20/32] L:38.7991 TPS:1022.6  ....................[30/32] L:42.2263 TPS:1000.3[30/32] L:42.2263 TPS:1000.3  ....
+[SYNC] Step 6 finalizing...
+[SYNC] Step 6 finalizing...
+
+[PRIME] Step 6 | Loss: 1193.3782 | Flips: 0.26M | Mig: 0.1090% | Occ: 1.23% | TPS: 5637.8[PRIME] Step 6 | Loss: 1193.3782 | Flips: 0.26M | Mig: 0.1090% | Occ: 1.23% | TPS: 5637.8
+
+....................[10/32] L:39.3566 TPS:995.6[10/32] L:39.3566 TPS:995.6  ....................[20/32] L:37.5294 TPS:1015.4[20/32] L:37.5294 TPS:1015.4  ....................[30/32] L:45.6176 TPS:1010.8[30/32] L:45.6176 TPS:1010.8  ....
+[SYNC] Step 7 finalizing...
+[SYNC] Step 7 finalizing...
+
+[PRIME] Step 7 | Loss: 1198.8204 | Flips: 0.18M | Mig: 0.0758% | Occ: 1.23% | TPS: 6668.9[PRIME] Step 7 | Loss: 1198.8204 | Flips: 0.18M | Mig: 0.0758% | Occ: 1.23% | TPS: 6668.9
+
+....................[10/32] L:38.7100 TPS:983.7[10/32] L:38.7100 TPS:983.7  ....................[20/32] L:37.0595 TPS:991.0[20/32] L:37.0595 TPS:991.0  ....................[30/32] L:31.3730 TPS:991.0[30/32] L:31.3730 TPS:991.0  ....
+[SYNC] Step 8 finalizing...
+[SYNC] Step 8 finalizing...
+
+[PRIME] Step 8 | Loss: 1192.5410 | Flips: 0.28M | Mig: 0.1170% | Occ: 1.23% | TPS: 7436.7[PRIME] Step 8 | Loss: 1192.5410 | Flips: 0.28M | Mig: 0.1170% | Occ: 1.23% | TPS: 7436.7
+
+....................[10/32] L:38.6551 TPS:990.7[10/32] L:38.6551 TPS:990.7  ....................[20/32] L:40.1943 TPS:995.8[20/32] L:40.1943 TPS:995.8  ....................[30/32] L:35.2909 TPS:997.9[30/32] L:35.2909 TPS:997.9  ....
+[SYNC] Step 9 finalizing...
+[SYNC] Step 9 finalizing...
+
+[PRIME] Step 9 | Loss: 1189.5556 | Flips: 0.24M | Mig: 0.1031% | Occ: 1.23% | TPS: 8519.0[PRIME] Step 9 | Loss: 1189.5556 | Flips: 0.24M | Mig: 0.1031% | Occ: 1.23% | TPS: 8519.0
+
+....................[10/32] L:41.6193 TPS:1032.0[10/32] L:41.6193 TPS:1032.0  ....................[20/32] L:33.6362 TPS:1013.7[20/32] L:33.6362 TPS:1013.7  ....................[30/32] L:36.9836 TPS:1011.6[30/32] L:36.9836 TPS:1011.6  ....
+[SYNC] Step 10 finalizing...
+[SYNC] Step 10 finalizing...
+
+[PRIME] Step 10 | Loss: 1184.9203 | Flips: 0.28M | Mig: 0.1149% | Occ: 1.23% | TPS: 9529.9[PRIME] Step 10 | Loss: 1184.9203 | Flips: 0.28M | Mig: 0.1149% | Occ: 1.23% | TPS: 9529.9
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:32.3969 TPS:1014.0[10/32] L:32.3969 TPS:1014.0  ....................[20/32] L:38.5185 TPS:1010.5[20/32] L:38.5185 TPS:1010.5  ....................[30/32] L:39.7282 TPS:1014.0[30/32] L:39.7282 TPS:1014.0  ....
+[SYNC] Step 11 finalizing...
+[SYNC] Step 11 finalizing...
+
+[PRIME] Step 11 | Loss: 1184.9167 | Flips: 0.23M | Mig: 0.0964% | Occ: 1.24% | TPS: 10524.1[PRIME] Step 11 | Loss: 1184.9167 | Flips: 0.23M | Mig: 0.0964% | Occ: 1.24% | TPS: 10524.1
+
+....................[10/32] L:38.3484 TPS:1008.2[10/32] L:38.3484 TPS:1008.2  ....................[20/32] L:40.5671 TPS:990.0[20/32] L:40.5671 TPS:990.0  ....................[30/32] L:41.5070 TPS:992.3[30/32] L:41.5070 TPS:992.3  ....
+[SYNC] Step 12 finalizing...
+[SYNC] Step 12 finalizing...
+
+[PRIME] Step 12 | Loss: 1181.4562 | Flips: 0.29M | Mig: 0.1218% | Occ: 1.23% | TPS: 11136.3[PRIME] Step 12 | Loss: 1181.4562 | Flips: 0.29M | Mig: 0.1218% | Occ: 1.23% | TPS: 11136.3
+
+....................[10/32] L:36.0299 TPS:962.3[10/32] L:36.0299 TPS:962.3  ....................[20/32] L:37.5862 TPS:992.8[20/32] L:37.5862 TPS:992.8  ....................[30/32] L:38.5451 TPS:1000.1[30/32] L:38.5451 TPS:1000.1  ....
+[SYNC] Step 13 finalizing...
+[SYNC] Step 13 finalizing...
+
+[PRIME] Step 13 | Loss: 1181.2713 | Flips: 0.23M | Mig: 0.0955% | Occ: 1.23% | TPS: 12291.9[PRIME] Step 13 | Loss: 1181.2713 | Flips: 0.23M | Mig: 0.0955% | Occ: 1.23% | TPS: 12291.9
+
+....................[10/32] L:44.9215 TPS:1021.1[10/32] L:44.9215 TPS:1021.1  ....................[20/32] L:32.3489 TPS:1015.4[20/32] L:32.3489 TPS:1015.4  ....................[30/32] L:38.2523 TPS:1007.9[30/32] L:38.2523 TPS:1007.9  ....
+[SYNC] Step 14 finalizing...
+[SYNC] Step 14 finalizing...
+
+[PRIME] Step 14 | Loss: 1178.4288 | Flips: 0.28M | Mig: 0.1194% | Occ: 1.23% | TPS: 13314.6[PRIME] Step 14 | Loss: 1178.4288 | Flips: 0.28M | Mig: 0.1194% | Occ: 1.23% | TPS: 13314.6
+
+....................[10/32] L:37.9330 TPS:1007.7[10/32] L:37.9330 TPS:1007.7  ....................[20/32] L:39.1490 TPS:1010.6[20/32] L:39.1490 TPS:1010.6  ....................[30/32] L:38.2040 TPS:1011.9[30/32] L:38.2040 TPS:1011.9  ....
+[SYNC] Step 15 finalizing...
+[SYNC] Step 15 finalizing...
+
+[PRIME] Step 15 | Loss: 1174.1466 | Flips: 0.26M | Mig: 0.1084% | Occ: 1.23% | TPS: 14307.4[PRIME] Step 15 | Loss: 1174.1466 | Flips: 0.26M | Mig: 0.1084% | Occ: 1.23% | TPS: 14307.4
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:36.4443 TPS:1037.5[10/32] L:36.4443 TPS:1037.5  ....................[20/32] L:33.2355 TPS:1013.9[20/32] L:33.2355 TPS:1013.9  ....................[30/32] L:32.6168 TPS:1010.1[30/32] L:32.6168 TPS:1010.1  ....
+[SYNC] Step 16 finalizing...
+[SYNC] Step 16 finalizing...
+
+[PRIME] Step 16 | Loss: 1171.9680 | Flips: 0.28M | Mig: 0.1161% | Occ: 1.23% | TPS: 15117.9[PRIME] Step 16 | Loss: 1171.9680 | Flips: 0.28M | Mig: 0.1161% | Occ: 1.23% | TPS: 15117.9
+
+....................[10/32] L:34.3310 TPS:985.0[10/32] L:34.3310 TPS:985.0  ....................[20/32] L:38.2154 TPS:989.8[20/32] L:38.2154 TPS:989.8  ....................[30/32] L:35.3359 TPS:999.6[30/32] L:35.3359 TPS:999.6  ....
+[SYNC] Step 17 finalizing...
+[SYNC] Step 17 finalizing...
+
+[PRIME] Step 17 | Loss: 1168.4221 | Flips: 0.26M | Mig: 0.1101% | Occ: 1.23% | TPS: 16111.5[PRIME] Step 17 | Loss: 1168.4221 | Flips: 0.26M | Mig: 0.1101% | Occ: 1.23% | TPS: 16111.5
+
+....................[10/32] L:39.0354 TPS:1022.9[10/32] L:39.0354 TPS:1022.9  ....................[20/32] L:34.2007 TPS:1018.4[20/32] L:34.2007 TPS:1018.4  ....................[30/32] L:30.5923 TPS:1016.0[30/32] L:30.5923 TPS:1016.0  ....
+[SYNC] Step 18 finalizing...
+[SYNC] Step 18 finalizing...
+
+[PRIME] Step 18 | Loss: 1164.8258 | Flips: 0.29M | Mig: 0.1221% | Occ: 1.23% | TPS: 17221.6[PRIME] Step 18 | Loss: 1164.8258 | Flips: 0.29M | Mig: 0.1221% | Occ: 1.23% | TPS: 17221.6
+
+....................[10/32] L:25.7894 TPS:997.5[10/32] L:25.7894 TPS:997.5  ....................[20/32] L:34.7503 TPS:1002.4[20/32] L:34.7503 TPS:1002.4  ....................[30/32] L:41.4934 TPS:997.2[30/32] L:41.4934 TPS:997.2  ....
+[SYNC] Step 19 finalizing...
+[SYNC] Step 19 finalizing...
+
+[PRIME] Step 19 | Loss: 1161.9680 | Flips: 0.22M | Mig: 0.0947% | Occ: 1.23% | TPS: 17742.4[PRIME] Step 19 | Loss: 1161.9680 | Flips: 0.22M | Mig: 0.0947% | Occ: 1.23% | TPS: 17742.4
+
+....................[10/32] L:39.3254 TPS:966.6[10/32] L:39.3254 TPS:966.6  ....................[20/32] L:39.2744 TPS:977.8[20/32] L:39.2744 TPS:977.8  ....................[30/32] L:39.6575 TPS:976.5[30/32] L:39.6575 TPS:976.5  ....
+[SYNC] Step 20 finalizing...
+[SYNC] Step 20 finalizing...
+
+[PRIME] Step 20 | Loss: 1159.2493 | Flips: 0.29M | Mig: 0.1201% | Occ: 1.23% | TPS: 18370.2[PRIME] Step 20 | Loss: 1159.2493 | Flips: 0.29M | Mig: 0.1201% | Occ: 1.23% | TPS: 18370.2
+
+/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+
+============================================================
+============================================================
+
+[PRIME] Mamba-130m PRIME Training — PID 2144558[PRIME] Mamba-130m PRIME Training — PID 2144558
+
+[PRIME] Device: cuda[PRIME] Device: cuda
+
+========================================================================================================================
+
+[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000][PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
+
+[PRIME] Loading state-spaces/mamba-130m-hf...[PRIME] Loading state-spaces/mamba-130m-hf...
+
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4056.63it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4056.63it/s]
+
+[PRIME] Wrapped 97 linear layers with PrimeLinear.[PRIME] Wrapped 97 linear layers with PrimeLinear.
+
+[PRIME] VRAM used after load: 0.42 GB[PRIME] VRAM used after load: 0.42 GB
+
+
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+
+....................[10/32] L:40.0732 TPS:766.8[10/32] L:40.0732 TPS:766.8  ....................[20/32] L:43.9079 TPS:860.1[20/32] L:43.9079 TPS:860.1  ....................[30/32] L:33.8153 TPS:890.3[30/32] L:33.8153 TPS:890.3  ....
+[SYNC] Step 1 finalizing...
+[SYNC] Step 1 finalizing...
+
+[PRIME] Step 1 | Loss: 1190.3115 | Flips: 3.01M | Mig: 1.2491% | Occ: 1.23% | TPS: 843.8[PRIME] Step 1 | Loss: 1190.3115 | Flips: 3.01M | Mig: 1.2491% | Occ: 1.23% | TPS: 843.8
+
+....................[10/32] L:32.7791 TPS:963.5[10/32] L:32.7791 TPS:963.5  ....................[20/32] L:33.3998 TPS:984.3[20/32] L:33.3998 TPS:984.3  ....................[30/32] L:35.7164 TPS:995.9[30/32] L:35.7164 TPS:995.9  ....
+[SYNC] Step 2 finalizing...
+[SYNC] Step 2 finalizing...
+
+[PRIME] Step 2 | Loss: 1167.7407 | Flips: 3.93M | Mig: 1.6323% | Occ: 1.23% | TPS: 1886.4[PRIME] Step 2 | Loss: 1167.7407 | Flips: 3.93M | Mig: 1.6323% | Occ: 1.23% | TPS: 1886.4
+
+....................[10/32] L:34.9861 TPS:981.7[10/32] L:34.9861 TPS:981.7  ....................[20/32] L:36.5138 TPS:986.9[20/32] L:36.5138 TPS:986.9  ....................[30/32] L:40.1429 TPS:989.3[30/32] L:40.1429 TPS:989.3  ....
+[SYNC] Step 3 finalizing...
+[SYNC] Step 3 finalizing...
+
+[PRIME] Step 3 | Loss: 1176.9892 | Flips: 3.45M | Mig: 1.4069% | Occ: 1.23% | TPS: 2805.8[PRIME] Step 3 | Loss: 1176.9892 | Flips: 3.45M | Mig: 1.4069% | Occ: 1.23% | TPS: 2805.8
+
+....................[10/32] L:43.4338 TPS:983.1[10/32] L:43.4338 TPS:983.1  ....................[20/32] L:34.9658 TPS:993.5[20/32] L:34.9658 TPS:993.5  ....................[30/32] L:38.4777 TPS:999.4[30/32] L:38.4777 TPS:999.4  ....
+[SYNC] Step 4 finalizing...
+[SYNC] Step 4 finalizing...
+
+[PRIME] Step 4 | Loss: 1175.5347 | Flips: 4.07M | Mig: 1.6915% | Occ: 1.24% | TPS: 3760.5[PRIME] Step 4 | Loss: 1175.5347 | Flips: 4.07M | Mig: 1.6915% | Occ: 1.24% | TPS: 3760.5
+
+....................[10/32] L:34.5872 TPS:990.6[10/32] L:34.5872 TPS:990.6  ....................[20/32] L:36.4672 TPS:989.2[20/32] L:36.4672 TPS:989.2  ....................[30/32] L:40.7826 TPS:977.3[30/32] L:40.7826 TPS:977.3  ....
+[SYNC] Step 5 finalizing...
+[SYNC] Step 5 finalizing...
+
+[PRIME] Step 5 | Loss: 1180.1816 | Flips: 3.64M | Mig: 1.4957% | Occ: 1.23% | TPS: 4616.1[PRIME] Step 5 | Loss: 1180.1816 | Flips: 3.64M | Mig: 1.4957% | Occ: 1.23% | TPS: 4616.1
+
+[transformers] The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer GPTNeoXTokenizer. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:39.3275 TPS:1015.9[10/32] L:39.3275 TPS:1015.9  ....................[20/32] L:38.2914 TPS:1020.7[20/32] L:38.2914 TPS:1020.7  ....................[30/32] L:41.6142 TPS:1013.9[30/32] L:41.6142 TPS:1013.9  ....
+[SYNC] Step 6 finalizing...
+[SYNC] Step 6 finalizing...
+
+[PRIME] Step 6 | Loss: 1184.2448 | Flips: 3.78M | Mig: 1.5536% | Occ: 1.23% | TPS: 5717.2[PRIME] Step 6 | Loss: 1184.2448 | Flips: 3.78M | Mig: 1.5536% | Occ: 1.23% | TPS: 5717.2
+
+....................[10/32] L:38.7174 TPS:972.6[10/32] L:38.7174 TPS:972.6  ....................[20/32] L:36.8644 TPS:972.6[20/32] L:36.8644 TPS:972.6  ....................[30/32] L:44.8806 TPS:973.2[30/32] L:44.8806 TPS:973.2  ....
+[SYNC] Step 7 finalizing...
+[SYNC] Step 7 finalizing...
+
+[PRIME] Step 7 | Loss: 1188.0382 | Flips: 3.34M | Mig: 1.3646% | Occ: 1.23% | TPS: 6388.0[PRIME] Step 7 | Loss: 1188.0382 | Flips: 3.34M | Mig: 1.3646% | Occ: 1.23% | TPS: 6388.0
+
+....................[10/32] L:37.9751 TPS:968.0[10/32] L:37.9751 TPS:968.0  /home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+
+============================================================
+============================================================
+
+[PRIME] Mamba-130m PRIME Training — PID 2144776[PRIME] Mamba-130m PRIME Training — PID 2144776
+
+[PRIME] Device: cuda[PRIME] Device: cuda
+
+========================================================================================================================
+
+[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000][PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
+
+[PRIME] Loading state-spaces/mamba-130m-hf...[PRIME] Loading state-spaces/mamba-130m-hf...
+
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4176.37it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4176.37it/s]
+
+[PRIME] Wrapped 97 linear layers with PrimeLinear.[PRIME] Wrapped 97 linear layers with PrimeLinear.
+
+[PRIME] VRAM used after load: 0.42 GB[PRIME] VRAM used after load: 0.42 GB
+
+
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+
+....................[10/32] L:40.0732 TPS:767.2[10/32] L:40.0732 TPS:767.2  ....................[20/32] L:43.9079 TPS:863.2[20/32] L:43.9079 TPS:863.2  ....................[30/32] L:33.8153 TPS:911.9[30/32] L:33.8153 TPS:911.9  ....
+[SYNC] Step 1 finalizing...
+[SYNC] Step 1 finalizing...
+
+[PRIME] Step 1 | Loss: 1190.3115 | Flips: 3.01M | Mig: 1.2491% | Occ: 1.23% | TPS: 864.4[PRIME] Step 1 | Loss: 1190.3115 | Flips: 3.01M | Mig: 1.2491% | Occ: 1.23% | TPS: 864.4
+
+....................[10/32] L:32.7782 TPS:994.2[10/32] L:32.7782 TPS:994.2  ....................[20/32] L:33.3988 TPS:1009.2[20/32] L:33.3988 TPS:1009.2  ....................[30/32] L:35.7155 TPS:1019.5[30/32] L:35.7155 TPS:1019.5  ....
+[SYNC] Step 2 finalizing...
+[SYNC] Step 2 finalizing...
+
+[PRIME] Step 2 | Loss: 1167.7325 | Flips: 3.93M | Mig: 1.6324% | Occ: 1.23% | TPS: 961.5[PRIME] Step 2 | Loss: 1167.7325 | Flips: 3.93M | Mig: 1.6324% | Occ: 1.23% | TPS: 961.5
+
+....................[10/32] L:34.9815 TPS:990.1[10/32] L:34.9815 TPS:990.1  ....................[20/32] L:36.5131 TPS:995.6[20/32] L:36.5131 TPS:995.6  ....................[30/32] L:40.1418 TPS:996.6[30/32] L:40.1418 TPS:996.6  ....
+[SYNC] Step 3 finalizing...
+[SYNC] Step 3 finalizing...
+
+[PRIME] Step 3 | Loss: 1176.9848 | Flips: 3.45M | Mig: 1.4067% | Occ: 1.23% | TPS: 941.3[PRIME] Step 3 | Loss: 1176.9848 | Flips: 3.45M | Mig: 1.4067% | Occ: 1.23% | TPS: 941.3
+
+....................[10/32] L:43.4331 TPS:1007.4[10/32] L:43.4331 TPS:1007.4  ....................[20/32] L:34.9680 TPS:1013.6[20/32] L:34.9680 TPS:1013.6  ....................[30/32] L:38.4744 TPS:1003.1[30/32] L:38.4744 TPS:1003.1  ....
+[SYNC] Step 4 finalizing...
+[SYNC] Step 4 finalizing...
+
+[PRIME] Step 4 | Loss: 1175.5241 | Flips: 4.07M | Mig: 1.6918% | Occ: 1.24% | TPS: 941.6[PRIME] Step 4 | Loss: 1175.5241 | Flips: 4.07M | Mig: 1.6918% | Occ: 1.24% | TPS: 941.6
+
+....................[10/32] L:34.5890 TPS:979.3[10/32] L:34.5890 TPS:979.3  ....................[20/32] L:36.4648 TPS:980.5[20/32] L:36.4648 TPS:980.5  ....................[30/32] L:40.7808 TPS:989.5[30/32] L:40.7808 TPS:989.5  ....
+[SYNC] Step 5 finalizing...
+[SYNC] Step 5 finalizing...
+
+[PRIME] Step 5 | Loss: 1180.1740 | Flips: 3.64M | Mig: 1.4955% | Occ: 1.23% | TPS: 926.6[PRIME] Step 5 | Loss: 1180.1740 | Flips: 3.64M | Mig: 1.4955% | Occ: 1.23% | TPS: 926.6
+
+[transformers] The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer GPTNeoXTokenizer. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:39.3258 TPS:982.3[10/32] L:39.3258 TPS:982.3  ....................[20/32] L:38.2945 TPS:983.1[20/32] L:38.2945 TPS:983.1  ....................[30/32] L:41.6145 TPS:977.9[30/32] L:41.6145 TPS:977.9  ....
+[SYNC] Step 6 finalizing...
+[SYNC] Step 6 finalizing...
+
+[PRIME] Step 6 | Loss: 1184.2422 | Flips: 3.78M | Mig: 1.5531% | Occ: 1.23% | TPS: 927.6[PRIME] Step 6 | Loss: 1184.2422 | Flips: 3.78M | Mig: 1.5531% | Occ: 1.23% | TPS: 927.6
+
+....................[10/32] L:38.7099 TPS:1007.6[10/32] L:38.7099 TPS:1007.6  ....................[20/32] L:36.8693 TPS:1022.1[20/32] L:36.8693 TPS:1022.1  ....................[30/32] L:44.8853 TPS:1026.5[30/32] L:44.8853 TPS:1026.5  ....
+[SYNC] Step 7 finalizing...
+[SYNC] Step 7 finalizing...
+
+[PRIME] Step 7 | Loss: 1188.0356 | Flips: 3.34M | Mig: 1.3652% | Occ: 1.23% | TPS: 970.3[PRIME] Step 7 | Loss: 1188.0356 | Flips: 3.34M | Mig: 1.3652% | Occ: 1.23% | TPS: 970.3
+
+....................[10/32] L:37.9752 TPS:1018.3[10/32] L:37.9752 TPS:1018.3  ....................[20/32] L:36.1979 TPS:1004.0[20/32] L:36.1979 TPS:1004.0  ....................[30/32] L:30.7542 TPS:1017.9[30/32] L:30.7542 TPS:1017.9  ....
+[SYNC] Step 8 finalizing...
+[SYNC] Step 8 finalizing...
+
+[PRIME] Step 8 | Loss: 1180.1684 | Flips: 4.27M | Mig: 1.7842% | Occ: 1.23% | TPS: 960.7[PRIME] Step 8 | Loss: 1180.1684 | Flips: 4.27M | Mig: 1.7842% | Occ: 1.23% | TPS: 960.7
+
+....................[10/32] L:37.8800 TPS:1055.0[10/32] L:37.8800 TPS:1055.0  ....................[20/32] L:39.3399 TPS:1057.1[20/32] L:39.3399 TPS:1057.1  ....................[30/32] L:34.3684 TPS:1040.3[30/32] L:34.3684 TPS:1040.3  ../home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+
+============================================================
+============================================================
+
+[PRIME] Mamba-130m PRIME Training — PID 2145078[PRIME] Mamba-130m PRIME Training — PID 2145078
+
+[PRIME] Device: cuda[PRIME] Device: cuda
+
+========================================================================================================================
+
+[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000][PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
+
+[PRIME] Loading state-spaces/mamba-130m-hf...[PRIME] Loading state-spaces/mamba-130m-hf...
+
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4529.10it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4529.10it/s]
+
+[PRIME] Wrapped 97 linear layers with PrimeLinear.[PRIME] Wrapped 97 linear layers with PrimeLinear.
+
+[PRIME] VRAM used after load: 0.42 GB[PRIME] VRAM used after load: 0.42 GB
+
+[DIAGNOSTIC] Scale frozen for first 20 steps. Watching vote activity...[DIAGNOSTIC] Scale frozen for first 20 steps. Watching vote activity...
+
+
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 511, in <module>
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 511, in <module>
+        train()train()
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 376, in train
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 376, in train
+        out = model(input_ids=input_ids, labels=labels)out = model(input_ids=input_ids, labels=labels)
+
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+        return self._call_impl(*args, **kwargs)return self._call_impl(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+        return forward_call(*args, **kwargs)return forward_call(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 682, in forward
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 682, in forward
+        mamba_outputs = self.backbone(mamba_outputs = self.backbone(
+
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+        return self._call_impl(*args, **kwargs)return self._call_impl(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+        return forward_call(*args, **kwargs)return forward_call(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 584, in forward
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 584, in forward
+        hidden_states = mixer_block(hidden_states = mixer_block(
+
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/modeling_layers.py", line 93, in __call__
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/modeling_layers.py", line 93, in __call__
+        return super().__call__(*args, **kwargs)return super().__call__(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+        return self._call_impl(*args, **kwargs)return self._call_impl(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+        return forward_call(*args, **kwargs)return forward_call(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 422, in forward
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 422, in forward
+        hidden_states = self.mixer(hidden_states, cache_params=cache_params, attention_mask=attention_mask)hidden_states = self.mixer(hidden_states, cache_params=cache_params, attention_mask=attention_mask)
+
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+        return self._call_impl(*args, **kwargs)return self._call_impl(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+        return forward_call(*args, **kwargs)return forward_call(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 377, in forward
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 377, in forward
+        return self.cuda_kernels_forward(hidden_states, cache_params, attention_mask)return self.cuda_kernels_forward(hidden_states, cache_params, attention_mask)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 174, in cuda_kernels_forward
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/transformers/models/mamba/modeling_mamba.py", line 174, in cuda_kernels_forward
+        projected_states = self.in_proj(hidden_states).transpose(1, 2)projected_states = self.in_proj(hidden_states).transpose(1, 2)
+
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+        return self._call_impl(*args, **kwargs)return self._call_impl(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+        return forward_call(*args, **kwargs)return forward_call(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 153, in forward
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 153, in forward
+        w.register_hook(self._vote_hook)w.register_hook(self._vote_hook)
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/_tensor.py", line 621, in register_hook
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/_tensor.py", line 621, in register_hook
+        raise RuntimeError(raise RuntimeError(
+
+RuntimeErrorRuntimeError: : cannot register a hook on a tensor that doesn't require gradientcannot register a hook on a tensor that doesn't require gradient
+
+/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+
+============================================================
+============================================================
+
+[PRIME] Mamba-130m PRIME Training — PID 2145383[PRIME] Mamba-130m PRIME Training — PID 2145383
+
+[PRIME] Device: cuda[PRIME] Device: cuda
+
+========================================================================================================================
+
+[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000][PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
+
+[PRIME] Loading state-spaces/mamba-130m-hf...[PRIME] Loading state-spaces/mamba-130m-hf...
+
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4342.58it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4342.58it/s]
+
+[PRIME] Wrapped 97 linear layers with PrimeLinear.[PRIME] Wrapped 97 linear layers with PrimeLinear.
+
+[PRIME] VRAM used after load: 0.42 GB[PRIME] VRAM used after load: 0.42 GB
+
+[DIAGNOSTIC] Scale frozen for first 20 steps. Watching vote activity...[DIAGNOSTIC] Scale frozen for first 20 steps. Watching vote activity...
+
+
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+
+....................[10/32] L:40.0732 TPS:812.6[10/32] L:40.0732 TPS:812.6  ....................[20/32] L:43.9079 TPS:918.5[20/32] L:43.9079 TPS:918.5  ....................[30/32] L:33.8153 TPS:953.7[30/32] L:33.8153 TPS:953.7  ....
+[SYNC] Step 1 finalizing...
+[SYNC] Step 1 finalizing...
+
+[PRIME] Step 1 [SCALE FROZEN] | Loss: 1190.3115 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 31.64 | TPS: 898.4[PRIME] Step 1 [SCALE FROZEN] | Loss: 1190.3115 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 31.64 | TPS: 898.4
+
+....................[10/32] L:32.6323 TPS:1029.1[10/32] L:32.6323 TPS:1029.1  ....................[20/32] L:33.2296 TPS:1038.2[20/32] L:33.2296 TPS:1038.2  ....................[30/32] L:35.5745 TPS:1051.9[30/32] L:35.5745 TPS:1051.9  ....
+[SYNC] Step 2 finalizing...
+[SYNC] Step 2 finalizing...
+
+[PRIME] Step 2 [SCALE FROZEN] | Loss: 1165.4796 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.98 | TPS: 988.5[PRIME] Step 2 [SCALE FROZEN] | Loss: 1165.4796 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.98 | TPS: 988.5
+
+....................[10/32] L:34.7456 TPS:1021.4[10/32] L:34.7456 TPS:1021.4  ....................[20/32] L:36.2599 TPS:1029.6[20/32] L:36.2599 TPS:1029.6  ....................[30/32] L:39.9258 TPS:1043.0[30/32] L:39.9258 TPS:1043.0  ....
+[SYNC] Step 3 finalizing...
+[SYNC] Step 3 finalizing...
+
+[PRIME] Step 3 [SCALE FROZEN] | Loss: 1172.8988 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 31.88 | TPS: 978.9[PRIME] Step 3 [SCALE FROZEN] | Loss: 1172.8988 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 31.88 | TPS: 978.9
+
+....................[10/32] L:43.0238 TPS:1036.9[10/32] L:43.0238 TPS:1036.9  ....................[20/32] L:34.5587 TPS:1044.3[20/32] L:34.5587 TPS:1044.3  ....................[30/32] L:38.0863 TPS:1038.0[30/32] L:38.0863 TPS:1038.0  ....
+[SYNC] Step 4 finalizing...
+[SYNC] Step 4 finalizing...
+
+[PRIME] Step 4 [SCALE FROZEN] | Loss: 1169.1117 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.59 | TPS: 971.6[PRIME] Step 4 [SCALE FROZEN] | Loss: 1169.1117 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.59 | TPS: 971.6
+
+....................[10/32] L:34.1096 TPS:1011.6[10/32] L:34.1096 TPS:1011.6  ....................[20/32] L:36.0137 TPS:1028.2[20/32] L:36.0137 TPS:1028.2  ....................[30/32] L:40.3495 TPS:1036.5[30/32] L:40.3495 TPS:1036.5  ....
+[SYNC] Step 5 finalizing...
+[SYNC] Step 5 finalizing...
+
+[PRIME] Step 5 [SCALE FROZEN] | Loss: 1171.4685 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 31.66 | TPS: 976.2[PRIME] Step 5 [SCALE FROZEN] | Loss: 1171.4685 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 31.66 | TPS: 976.2
+
+[transformers] The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer GPTNeoXTokenizer. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:38.5305 TPS:1005.0[10/32] L:38.5305 TPS:1005.0  ....................[20/32] L:37.6547 TPS:1004.3[20/32] L:37.6547 TPS:1004.3  ....................[30/32] L:40.8853 TPS:1020.9[30/32] L:40.8853 TPS:1020.9  ....
+[SYNC] Step 6 finalizing...
+[SYNC] Step 6 finalizing...
+
+[PRIME] Step 6 [SCALE FROZEN] | Loss: 1173.4027 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 31.23 | TPS: 962.0[PRIME] Step 6 [SCALE FROZEN] | Loss: 1173.4027 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 31.23 | TPS: 962.0
+
+....................[10/32] L:38.0402 TPS:1016.3[10/32] L:38.0402 TPS:1016.3  ....................[20/32] L:36.1123 TPS:1022.3[20/32] L:36.1123 TPS:1022.3  ....................[30/32] L:44.0976 TPS:1033.2[30/32] L:44.0976 TPS:1033.2  ....
+[SYNC] Step 7 finalizing...
+[SYNC] Step 7 finalizing...
+
+[PRIME] Step 7 [SCALE FROZEN] | Loss: 1175.3121 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.24% | VoteMag: 33.03 | TPS: 960.0[PRIME] Step 7 [SCALE FROZEN] | Loss: 1175.3121 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.24% | VoteMag: 33.03 | TPS: 960.0
+
+....................[10/32] L:37.1363 TPS:1010.0[10/32] L:37.1363 TPS:1010.0  ....................[20/32] L:35.0426 TPS:1013.0[20/32] L:35.0426 TPS:1013.0  ....................[30/32] L:29.8347 TPS:1032.5[30/32] L:29.8347 TPS:1032.5  ....
+[SYNC] Step 8 finalizing...
+[SYNC] Step 8 finalizing...
+
+[PRIME] Step 8 [SCALE FROZEN] | Loss: 1165.3613 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.32 | TPS: 968.2[PRIME] Step 8 [SCALE FROZEN] | Loss: 1165.3613 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.32 | TPS: 968.2
+
+....................[10/32] L:36.9205 TPS:1040.3[10/32] L:36.9205 TPS:1040.3  ....................[20/32] L:38.2946 TPS:1031.9[20/32] L:38.2946 TPS:1031.9  ....................[30/32] L:33.2240 TPS:1042.5[30/32] L:33.2240 TPS:1042.5  ....
+[SYNC] Step 9 finalizing...
+[SYNC] Step 9 finalizing...
+
+[PRIME] Step 9 [SCALE FROZEN] | Loss: 1158.5072 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.24% | VoteMag: 32.30 | TPS: 981.5[PRIME] Step 9 [SCALE FROZEN] | Loss: 1158.5072 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.24% | VoteMag: 32.30 | TPS: 981.5
+
+....................[10/32] L:39.5597 TPS:1044.4[10/32] L:39.5597 TPS:1044.4  ....................[20/32] L:31.1441 TPS:1050.2[20/32] L:31.1441 TPS:1050.2  ....................[30/32] L:34.9682 TPS:1054.1[30/32] L:34.9682 TPS:1054.1  ....
+[SYNC] Step 10 finalizing...
+[SYNC] Step 10 finalizing...
+
+[PRIME] Step 10 [SCALE FROZEN] | Loss: 1150.0505 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.55 | TPS: 989.3[PRIME] Step 10 [SCALE FROZEN] | Loss: 1150.0505 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.55 | TPS: 989.3
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:29.6141 TPS:1079.3[10/32] L:29.6141 TPS:1079.3  ....................[20/32] L:36.2273 TPS:1077.0[20/32] L:36.2273 TPS:1077.0  ....................[30/32] L:37.5122 TPS:1072.1[30/32] L:37.5122 TPS:1072.1  ....
+[SYNC] Step 11 finalizing...
+[SYNC] Step 11 finalizing...
+
+[PRIME] Step 11 [SCALE FROZEN] | Loss: 1146.2932 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.24% | VoteMag: 32.32 | TPS: 1004.7[PRIME] Step 11 [SCALE FROZEN] | Loss: 1146.2932 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.24% | VoteMag: 32.32 | TPS: 1004.7
+
+....................[10/32] L:35.3098 TPS:1044.4[10/32] L:35.3098 TPS:1044.4  ....................[20/32] L:37.8484 TPS:1039.3[20/32] L:37.8484 TPS:1039.3  ....................[30/32] L:38.8124 TPS:1041.4[30/32] L:38.8124 TPS:1041.4  ....
+[SYNC] Step 12 finalizing...
+[SYNC] Step 12 finalizing...
+
+[PRIME] Step 12 [SCALE FROZEN] | Loss: 1139.0621 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.89 | TPS: 975.7[PRIME] Step 12 [SCALE FROZEN] | Loss: 1139.0621 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.89 | TPS: 975.7
+
+....................[10/32] L:33.6346 TPS:1036.2[10/32] L:33.6346 TPS:1036.2  ....................[20/32] L:34.4191 TPS:1013.6[20/32] L:34.4191 TPS:1013.6  ....................[30/32] L:35.4793 TPS:1022.3[30/32] L:35.4793 TPS:1022.3  ....
+[SYNC] Step 13 finalizing...
+[SYNC] Step 13 finalizing...
+
+[PRIME] Step 13 [SCALE FROZEN] | Loss: 1135.0532 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.83 | TPS: 962.8[PRIME] Step 13 [SCALE FROZEN] | Loss: 1135.0532 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.83 | TPS: 962.8
+
+....................[10/32] L:41.9008 TPS:1039.4[10/32] L:41.9008 TPS:1039.4  ....................[20/32] L:29.3604 TPS:1054.8[20/32] L:29.3604 TPS:1054.8  ....................[30/32] L:35.3772 TPS:1051.3[30/32] L:35.3772 TPS:1051.3  ....
+[SYNC] Step 14 finalizing...
+[SYNC] Step 14 finalizing...
+
+[PRIME] Step 14 [SCALE FROZEN] | Loss: 1128.6301 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.20 | TPS: 988.4[PRIME] Step 14 [SCALE FROZEN] | Loss: 1128.6301 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.20 | TPS: 988.4
+
+....................[10/32] L:34.4720 TPS:1054.1[10/32] L:34.4720 TPS:1054.1  ....................[20/32] L:35.8101 TPS:1058.8[20/32] L:35.8101 TPS:1058.8  ....................[30/32] L:34.8385 TPS:1045.5[30/32] L:34.8385 TPS:1045.5  ....
+[SYNC] Step 15 finalizing...
+[SYNC] Step 15 finalizing...
+
+[PRIME] Step 15 [SCALE FROZEN] | Loss: 1120.5775 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.78 | TPS: 982.3[PRIME] Step 15 [SCALE FROZEN] | Loss: 1120.5775 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.78 | TPS: 982.3
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:33.0503 TPS:1020.8[10/32] L:33.0503 TPS:1020.8  ....................[20/32] L:29.2668 TPS:1026.6[20/32] L:29.2668 TPS:1026.6  ....................[30/32] L:29.5314 TPS:1033.4[30/32] L:29.5314 TPS:1033.4  ....
+[SYNC] Step 16 finalizing...
+[SYNC] Step 16 finalizing...
+
+[PRIME] Step 16 [SCALE FROZEN] | Loss: 1114.5296 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.46 | TPS: 970.9[PRIME] Step 16 [SCALE FROZEN] | Loss: 1114.5296 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.46 | TPS: 970.9
+
+....................[10/32] L:30.3049 TPS:1069.4[10/32] L:30.3049 TPS:1069.4  ....................[20/32] L:33.9885 TPS:1066.5[20/32] L:33.9885 TPS:1066.5  ....................[30/32] L:32.3874 TPS:1069.8[30/32] L:32.3874 TPS:1069.8  ....
+[SYNC] Step 17 finalizing...
+[SYNC] Step 17 finalizing...
+
+[PRIME] Step 17 [SCALE FROZEN] | Loss: 1107.1522 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.35 | TPS: 998.0[PRIME] Step 17 [SCALE FROZEN] | Loss: 1107.1522 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.35 | TPS: 998.0
+
+....................[10/32] L:35.2134 TPS:1020.7[10/32] L:35.2134 TPS:1020.7  ....................[20/32] L:30.2315 TPS:1024.2[20/32] L:30.2315 TPS:1024.2  ....................[30/32] L:25.7202 TPS:1041.3[30/32] L:25.7202 TPS:1041.3  ....
+[SYNC] Step 18 finalizing...
+[SYNC] Step 18 finalizing...
+
+[PRIME] Step 18 [SCALE FROZEN] | Loss: 1099.7770 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.89 | TPS: 977.1[PRIME] Step 18 [SCALE FROZEN] | Loss: 1099.7770 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.89 | TPS: 977.1
+
+....................[10/32] L:21.8385 TPS:1072.1[10/32] L:21.8385 TPS:1072.1  ....................[20/32] L:30.7198 TPS:1057.2[20/32] L:30.7198 TPS:1057.2  ....................[30/32] L:37.9508 TPS:1067.0[30/32] L:37.9508 TPS:1067.0  ....
+[SYNC] Step 19 finalizing...
+[SYNC] Step 19 finalizing...
+
+[PRIME] Step 19 [SCALE FROZEN] | Loss: 1093.2954 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.17 | TPS: 999.9[PRIME] Step 19 [SCALE FROZEN] | Loss: 1093.2954 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.17 | TPS: 999.9
+
+....................[10/32] L:34.9806 TPS:1056.4[10/32] L:34.9806 TPS:1056.4  ....................[20/32] L:34.2503 TPS:1029.1[20/32] L:34.2503 TPS:1029.1  ....................[30/32] L:35.9316 TPS:1038.8[30/32] L:35.9316 TPS:1038.8  ....
+[SYNC] Step 20 finalizing...
+[SYNC] Step 20 finalizing...
+
+[DIAGNOSTIC] Scale UN-frozen at step 20. Comparing vote activity...[DIAGNOSTIC] Scale UN-frozen at step 20. Comparing vote activity...
+
+[PRIME] Step 20 [SCALE FROZEN] | Loss: 1086.7096 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.60 | TPS: 974.2[PRIME] Step 20 [SCALE FROZEN] | Loss: 1086.7096 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.60 | TPS: 974.2
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:26.1363 TPS:1035.5[10/32] L:26.1363 TPS:1035.5  ....................[20/32] L:28.0118 TPS:1047.0[20/32] L:28.0118 TPS:1047.0  ....................[30/32] L:29.0814 TPS:1043.2[30/32] L:29.0814 TPS:1043.2  ....
+[SYNC] Step 21 finalizing...
+[SYNC] Step 21 finalizing...
+
+[PRIME] Step 21  | Loss: 1080.8897 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.56 | TPS: 978.8[PRIME] Step 21  | Loss: 1080.8897 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.56 | TPS: 978.8
+
+....................[10/32] L:27.5152 TPS:1058.9[10/32] L:27.5152 TPS:1058.9  ....................[20/32] L:27.5279 TPS:1056.5[20/32] L:27.5279 TPS:1056.5  ....................[30/32] L:29.9727 TPS:1045.1[30/32] L:29.9727 TPS:1045.1  ....
+[SYNC] Step 22 finalizing...
+[SYNC] Step 22 finalizing...
+
+[PRIME] Step 22  | Loss: 1075.0222 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.95 | TPS: 965.8[PRIME] Step 22  | Loss: 1075.0222 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.95 | TPS: 965.8
+
+....................[10/32] L:26.3587 TPS:1033.7[10/32] L:26.3587 TPS:1033.7  ....................[20/32] L:31.0199 TPS:1039.2[20/32] L:31.0199 TPS:1039.2  ....................[30/32] L:25.9826 TPS:1038.1[30/32] L:25.9826 TPS:1038.1  ....
+[SYNC] Step 23 finalizing...
+[SYNC] Step 23 finalizing...
+
+[PRIME] Step 23  | Loss: 1069.9787 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.24% | VoteMag: 32.72 | TPS: 964.9[PRIME] Step 23  | Loss: 1069.9787 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.24% | VoteMag: 32.72 | TPS: 964.9
+
+....................[10/32] L:33.5225 TPS:1005.3[10/32] L:33.5225 TPS:1005.3  ....................[20/32] L:34.3080 TPS:1034.1[20/32] L:34.3080 TPS:1034.1  ....................[30/32] L:26.8418 TPS:1041.5[30/32] L:26.8418 TPS:1041.5  ....
+[SYNC] Step 24 finalizing...
+[SYNC] Step 24 finalizing...
+
+[PRIME] Step 24  | Loss: 1065.5970 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.90 | TPS: 977.7[PRIME] Step 24  | Loss: 1065.5970 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.90 | TPS: 977.7
+
+....................[10/32] L:31.6999 TPS:1038.5[10/32] L:31.6999 TPS:1038.5  ....................[20/32] L:29.8138 TPS:1050.6[20/32] L:29.8138 TPS:1050.6  ....................[30/32] L:31.5249 TPS:1058.8[30/32] L:31.5249 TPS:1058.8  ....
+[SYNC] Step 25 finalizing...
+[SYNC] Step 25 finalizing...
+
+[PRIME] Step 25  | Loss: 1060.6151 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.82 | TPS: 988.8[PRIME] Step 25  | Loss: 1060.6151 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.82 | TPS: 988.8
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:32.3357 TPS:1053.8[10/32] L:32.3357 TPS:1053.8  ....................[20/32] L:29.5905 TPS:1045.9[20/32] L:29.5905 TPS:1045.9  ....................[30/32] L:24.7267 TPS:1054.9[30/32] L:24.7267 TPS:1054.9  ....
+[SYNC] Step 26 finalizing...
+[SYNC] Step 26 finalizing...
+
+[PRIME] Step 26  | Loss: 1054.1087 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.61 | TPS: 984.1[PRIME] Step 26  | Loss: 1054.1087 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.61 | TPS: 984.1
+
+....................[10/32] L:29.9346 TPS:1016.3[10/32] L:29.9346 TPS:1016.3  ....................[20/32] L:27.1529 TPS:1012.4[20/32] L:27.1529 TPS:1012.4  ....................[30/32] L:32.9616 TPS:1020.5[30/32] L:32.9616 TPS:1020.5  ....
+[SYNC] Step 27 finalizing...
+[SYNC] Step 27 finalizing...
+
+[PRIME] Step 27  | Loss: 1049.8013 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.57 | TPS: 954.0[PRIME] Step 27  | Loss: 1049.8013 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.57 | TPS: 954.0
+
+....................[10/32] L:28.1473 TPS:1006.1[10/32] L:28.1473 TPS:1006.1  ....................[20/32] L:28.7024 TPS:998.3[20/32] L:28.7024 TPS:998.3  ....................[30/32] L:27.8007 TPS:1003.7[30/32] L:27.8007 TPS:1003.7  ....
+[SYNC] Step 28 finalizing...
+[SYNC] Step 28 finalizing...
+
+[PRIME] Step 28  | Loss: 1042.5669 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.27 | TPS: 935.2[PRIME] Step 28  | Loss: 1042.5669 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 34.27 | TPS: 935.2
+
+....................[10/32] L:25.0117 TPS:1005.0[10/32] L:25.0117 TPS:1005.0  ....................[20/32] L:31.1389 TPS:1006.5[20/32] L:31.1389 TPS:1006.5  ....................[30/32] L:30.3294 TPS:1020.4[30/32] L:30.3294 TPS:1020.4  ....
+[SYNC] Step 29 finalizing...
+[SYNC] Step 29 finalizing...
+
+[PRIME] Step 29  | Loss: 1038.2742 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 35.05 | TPS: 953.6[PRIME] Step 29  | Loss: 1038.2742 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 35.05 | TPS: 953.6
+
+....................[10/32] L:29.2487 TPS:1073.1[10/32] L:29.2487 TPS:1073.1  ....................[20/32] L:27.7525 TPS:1054.9[20/32] L:27.7525 TPS:1054.9  ....................[30/32] L:27.9465 TPS:1061.4[30/32] L:27.9465 TPS:1061.4  ....
+[SYNC] Step 30 finalizing...
+[SYNC] Step 30 finalizing...
+
+[PRIME] Step 30  | Loss: 1032.4294 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.95 | TPS: 981.4[PRIME] Step 30  | Loss: 1032.4294 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.95 | TPS: 981.4
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:25.9219 TPS:1001.9[10/32] L:25.9219 TPS:1001.9  ....................[20/32] L:25.2669 TPS:1004.4[20/32] L:25.2669 TPS:1004.4  ....................[30/32] L:29.4106 TPS:1007.2[30/32] L:29.4106 TPS:1007.2  ....
+[SYNC] Step 31 finalizing...
+[SYNC] Step 31 finalizing...
+
+[PRIME] Step 31  | Loss: 1027.3922 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 35.92 | TPS: 938.7[PRIME] Step 31  | Loss: 1027.3922 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 35.92 | TPS: 938.7
+
+....................[10/32] L:30.9580 TPS:1019.3[10/32] L:30.9580 TPS:1019.3  ....................[20/32] L:26.0995 TPS:1030.4[20/32] L:26.0995 TPS:1030.4  ....................[30/32] L:30.8258 TPS:1033.9[30/32] L:30.8258 TPS:1033.9  ....
+[SYNC] Step 32 finalizing...
+[SYNC] Step 32 finalizing...
+
+[PRIME] Step 32  | Loss: 1021.1593 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.24% | VoteMag: 35.28 | TPS: 973.1[PRIME] Step 32  | Loss: 1021.1593 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.24% | VoteMag: 35.28 | TPS: 973.1
+
+....................[10/32] L:29.2528 TPS:1073.4[10/32] L:29.2528 TPS:1073.4  ....................[20/32] L:24.4897 TPS:1072.4[20/32] L:24.4897 TPS:1072.4  ....................[30/32] L:29.5419 TPS:1059.3[30/32] L:29.5419 TPS:1059.3  ....
+[SYNC] Step 33 finalizing...
+[SYNC] Step 33 finalizing...
+
+[PRIME] Step 33  | Loss: 1014.2778 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.93 | TPS: 991.9[PRIME] Step 33  | Loss: 1014.2778 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.93 | TPS: 991.9
+
+....................[10/32] L:28.9752 TPS:1066.6[10/32] L:28.9752 TPS:1066.6  ....................[20/32] L:28.7449 TPS:1075.0[20/32] L:28.7449 TPS:1075.0  ....................[30/32] L:42.5706 TPS:1066.0[30/32] L:42.5706 TPS:1066.0  ....
+[SYNC] Step 34 finalizing...
+[SYNC] Step 34 finalizing...
+
+[PRIME] Step 34  | Loss: 1009.2610 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.37 | TPS: 997.1[PRIME] Step 34  | Loss: 1009.2610 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 33.37 | TPS: 997.1
+
+....................[10/32] L:30.5403 TPS:1042.0[10/32] L:30.5403 TPS:1042.0  ....................[20/32] L:20.3411 TPS:1048.9[20/32] L:20.3411 TPS:1048.9  ....................[30/32] L:23.0999 TPS:1051.6[30/32] L:23.0999 TPS:1051.6  ....
+[SYNC] Step 35 finalizing...
+[SYNC] Step 35 finalizing...
+
+[PRIME] Step 35  | Loss: 1003.0938 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.24% | VoteMag: 34.40 | TPS: 985.7[PRIME] Step 35  | Loss: 1003.0938 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.24% | VoteMag: 34.40 | TPS: 985.7
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:25.3838 TPS:1005.3[10/32] L:25.3838 TPS:1005.3  ....................[20/32] L:19.2609 TPS:1017.0[20/32] L:19.2609 TPS:1017.0  ....................[30/32] L:30.8988 TPS:1029.7[30/32] L:30.8988 TPS:1029.7  ....
+[SYNC] Step 36 finalizing...
+[SYNC] Step 36 finalizing...
+
+[PRIME] Step 36  | Loss: 998.6080 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.98 | TPS: 970.3[PRIME] Step 36  | Loss: 998.6080 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.98 | TPS: 970.3
+
+....................[10/32] L:32.4338 TPS:1011.0[10/32] L:32.4338 TPS:1011.0  ....................[20/32] L:28.0584 TPS:1014.6[20/32] L:28.0584 TPS:1014.6  ....................[30/32] L:24.5901 TPS:1031.0[30/32] L:24.5901 TPS:1031.0  ....
+[SYNC] Step 37 finalizing...
+[SYNC] Step 37 finalizing...
+
+[PRIME] Step 37  | Loss: 993.9543 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.84 | TPS: 971.9[PRIME] Step 37  | Loss: 993.9543 | Flips: 95.24M | Mig: 25.7732% | Occ: 1.23% | VoteMag: 32.84 | TPS: 971.9
+
+....................[10/32] L:23.6048 TPS:1069.6[10/32] L:23.6048 TPS:1069.6  ....................[20/32] L:29.2527 TPS:1049.8[20/32] L:29.2527 TPS:1049.8  ....................[30/32] L:22.5665 TPS:1051.5[30/32] L:22.5665 TPS:1051.5  /home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+
+============================================================
+============================================================
+
+[PRIME] Mamba-130m PRIME Training — PID 2147112[PRIME] Mamba-130m PRIME Training — PID 2147112
+
+[PRIME] Device: cuda[PRIME] Device: cuda
+
+========================================================================================================================
+
+[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000][PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
+
+[PRIME] Loading state-spaces/mamba-130m-hf...[PRIME] Loading state-spaces/mamba-130m-hf...
+
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4928.44it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4928.44it/s]
+
+[PRIME] Wrapped 97 linear layers with PrimeLinear.[PRIME] Wrapped 97 linear layers with PrimeLinear.
+
+[PRIME] VRAM used after load: 0.93 GB[PRIME] VRAM used after load: 0.93 GB
+
+[DIAGNOSTIC] Scale frozen for first 20 steps. Watching vote activity...[DIAGNOSTIC] Scale frozen for first 20 steps. Watching vote activity...
+
+
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+
+....................[10/32] L:40.0732 TPS:828.5[10/32] L:40.0732 TPS:828.5  ....................[20/32] L:43.9079 TPS:918.9[20/32] L:43.9079 TPS:918.9  ....................[30/32] L:33.8153 TPS:951.1[30/32] L:33.8153 TPS:951.1  ....
+[SYNC] Step 1 finalizing...
+[SYNC] Step 1 finalizing...
+
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 564, in <module>
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 564, in <module>
+        train()train()
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 453, in train
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 453, in train
+        r = module.apply_votes(lr=CONFIG['lr'])r = module.apply_votes(lr=CONFIG['lr'])
+
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+        return func(*args, **kwargs)return func(*args, **kwargs)
+
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 271, in apply_votes
+  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py", line 271, in apply_votes
+        net_disp    = (new_combined - init_flat).float().abs().mean().item()net_disp    = (new_combined - init_flat).float().abs().mean().item()
+
+                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~^^~~~~~~~~~~~~~~~~~~~~
+
+RuntimeErrorRuntimeError: : Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+
+/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+
+============================================================
+============================================================
+
+[PRIME] Mamba-130m PRIME Training — PID 2147461[PRIME] Mamba-130m PRIME Training — PID 2147461
+
+[PRIME] Device: cuda[PRIME] Device: cuda
+
+========================================================================================================================
+
+[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000][PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
+
+[PRIME] Loading state-spaces/mamba-130m-hf...[PRIME] Loading state-spaces/mamba-130m-hf...
+
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4942.28it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4942.28it/s]
+
+[PRIME] Wrapped 97 linear layers with PrimeLinear.[PRIME] Wrapped 97 linear layers with PrimeLinear.
+
+[PRIME] VRAM used after load: 0.93 GB[PRIME] VRAM used after load: 0.93 GB
+
+[DIAGNOSTIC] Scale frozen for first 20 steps. Watching vote activity...[DIAGNOSTIC] Scale frozen for first 20 steps. Watching vote activity...
+
+
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+
+....................[10/32] L:40.0732 TPS:840.9[10/32] L:40.0732 TPS:840.9  ....................[20/32] L:43.9079 TPS:916.0[20/32] L:43.9079 TPS:916.0  ....................[30/32] L:33.8153 TPS:958.0[30/32] L:33.8153 TPS:958.0  ....
+[SYNC] Step 1 finalizing...
+[SYNC] Step 1 finalizing...
+
+[PRIME] Step 1 [SCALE FROZEN] | Loss: 1190.3115 | Mig: 25.77% | Rev: 0.00% | NetDisp: 1.7 | Occ: 1.23% | TPS: 885.4[PRIME] Step 1 [SCALE FROZEN] | Loss: 1190.3115 | Mig: 25.77% | Rev: 0.00% | NetDisp: 1.7 | Occ: 1.23% | TPS: 885.4
+
+....................[10/32] L:32.6304 TPS:1078.2[10/32] L:32.6304 TPS:1078.2  ....................[20/32] L:33.2291 TPS:1073.4[20/32] L:33.2291 TPS:1073.4  ....................[30/32] L:35.5740 TPS:1077.8[30/32] L:35.5740 TPS:1077.8  ....
+[SYNC] Step 2 finalizing...
+[SYNC] Step 2 finalizing...
+
+[PRIME] Step 2 [SCALE FROZEN] | Loss: 1165.4778 | Mig: 19.81% | Rev: 5.96% | NetDisp: 2.7 | Occ: 1.23% | TPS: 989.6[PRIME] Step 2 [SCALE FROZEN] | Loss: 1165.4778 | Mig: 19.81% | Rev: 5.96% | NetDisp: 2.7 | Occ: 1.23% | TPS: 989.6
+
+....................[10/32] L:34.8069 TPS:1065.1[10/32] L:34.8069 TPS:1065.1  ....................[20/32] L:36.3191 TPS:1071.1[20/32] L:36.3191 TPS:1071.1  ....................[30/32] L:39.9704 TPS:1071.2[30/32] L:39.9704 TPS:1071.2  ....
+[SYNC] Step 3 finalizing...
+[SYNC] Step 3 finalizing...
+
+[PRIME] Step 3 [SCALE FROZEN] | Loss: 1173.5288 | Mig: 19.94% | Rev: 5.83% | NetDisp: 4.8 | Occ: 1.23% | TPS: 987.3[PRIME] Step 3 [SCALE FROZEN] | Loss: 1173.5288 | Mig: 19.94% | Rev: 5.83% | NetDisp: 4.8 | Occ: 1.23% | TPS: 987.3
+
+....................[10/32] L:42.9271 TPS:1091.4[10/32] L:42.9271 TPS:1091.4  ....................[20/32] L:34.4437 TPS:1105.0[20/32] L:34.4437 TPS:1105.0  ....................[30/32] L:37.9782 TPS:1106.8[30/32] L:37.9782 TPS:1106.8  ....
+[SYNC] Step 4 finalizing...
+[SYNC] Step 4 finalizing...
+
+[PRIME] Step 4 [SCALE FROZEN] | Loss: 1168.6027 | Mig: 20.05% | Rev: 5.73% | NetDisp: 6.7 | Occ: 1.23% | TPS: 1012.8[PRIME] Step 4 [SCALE FROZEN] | Loss: 1168.6027 | Mig: 20.05% | Rev: 5.73% | NetDisp: 6.7 | Occ: 1.23% | TPS: 1012.8
+
+....................[10/32] L:33.8794 TPS:1054.2[10/32] L:33.8794 TPS:1054.2  ....................[20/32] L:35.7489 TPS:1070.1[20/32] L:35.7489 TPS:1070.1  ....................[30/32] L:40.0727 TPS:1070.0[30/32] L:40.0727 TPS:1070.0  ....
+[SYNC] Step 5 finalizing...
+[SYNC] Step 5 finalizing...
+
+[PRIME] Step 5 [SCALE FROZEN] | Loss: 1169.1160 | Mig: 19.91% | Rev: 5.87% | NetDisp: 9.3 | Occ: 1.24% | TPS: 990.7[PRIME] Step 5 [SCALE FROZEN] | Loss: 1169.1160 | Mig: 19.91% | Rev: 5.87% | NetDisp: 9.3 | Occ: 1.24% | TPS: 990.7
+
+[transformers] The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer GPTNeoXTokenizer. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:37.5777 TPS:1078.8[10/32] L:37.5777 TPS:1078.8  ....................[20/32] L:36.9408 TPS:1069.3[20/32] L:36.9408 TPS:1069.3  ....................[30/32] L:39.9917 TPS:1068.6[30/32] L:39.9917 TPS:1068.6  ....
+[SYNC] Step 6 finalizing...
+[SYNC] Step 6 finalizing...
+
+[PRIME] Step 6 [SCALE FROZEN] | Loss: 1167.2778 | Mig: 19.82% | Rev: 5.95% | NetDisp: 11.8 | Occ: 1.23% | TPS: 976.9[PRIME] Step 6 [SCALE FROZEN] | Loss: 1167.2778 | Mig: 19.82% | Rev: 5.95% | NetDisp: 11.8 | Occ: 1.23% | TPS: 976.9
+
+....................[10/32] L:36.9182 TPS:1037.6[10/32] L:36.9182 TPS:1037.6  ....................[20/32] L:35.0260 TPS:1054.8[20/32] L:35.0260 TPS:1054.8  ....................[30/32] L:42.5723 TPS:1051.1[30/32] L:42.5723 TPS:1051.1  ....
+[SYNC] Step 7 finalizing...
+[SYNC] Step 7 finalizing...
+
+[PRIME] Step 7 [SCALE FROZEN] | Loss: 1164.6928 | Mig: 19.87% | Rev: 5.90% | NetDisp: 14.8 | Occ: 1.24% | TPS: 963.1[PRIME] Step 7 [SCALE FROZEN] | Loss: 1164.6928 | Mig: 19.87% | Rev: 5.90% | NetDisp: 14.8 | Occ: 1.24% | TPS: 963.1
+
+....................[10/32] L:35.4315 TPS:1040.3[10/32] L:35.4315 TPS:1040.3  ....................[20/32] L:32.9718 TPS:1033.6[20/32] L:32.9718 TPS:1033.6  ....................[30/32] L:28.5010 TPS:1048.3[30/32] L:28.5010 TPS:1048.3  ....
+[SYNC] Step 8 finalizing...
+[SYNC] Step 8 finalizing...
+
+[PRIME] Step 8 [SCALE FROZEN] | Loss: 1149.3962 | Mig: 19.75% | Rev: 6.02% | NetDisp: 17.8 | Occ: 1.23% | TPS: 972.5[PRIME] Step 8 [SCALE FROZEN] | Loss: 1149.3962 | Mig: 19.75% | Rev: 6.02% | NetDisp: 17.8 | Occ: 1.23% | TPS: 972.5
+
+....................[10/32] L:34.9647 TPS:1099.6[10/32] L:34.9647 TPS:1099.6  ....................[20/32] L:36.0552 TPS:1107.4[20/32] L:36.0552 TPS:1107.4  ....................[30/32] L:30.8166 TPS:1114.0[30/32] L:30.8166 TPS:1114.0  ....
+[SYNC] Step 9 finalizing...
+[SYNC] Step 9 finalizing...
+
+[PRIME] Step 9 [SCALE FROZEN] | Loss: 1136.3376 | Mig: 19.92% | Rev: 5.85% | NetDisp: 21.3 | Occ: 1.23% | TPS: 1025.1[PRIME] Step 9 [SCALE FROZEN] | Loss: 1136.3376 | Mig: 19.92% | Rev: 5.85% | NetDisp: 21.3 | Occ: 1.23% | TPS: 1025.1
+
+....................[10/32] L:36.7350 TPS:1121.4[10/32] L:36.7350 TPS:1121.4  ....................[20/32] L:27.9133 TPS:1113.2[20/32] L:27.9133 TPS:1113.2  ....................[30/32] L:32.4410 TPS:1115.0[30/32] L:32.4410 TPS:1115.0  ....
+[SYNC] Step 10 finalizing...
+[SYNC] Step 10 finalizing...
+
+[PRIME] Step 10 [SCALE FROZEN] | Loss: 1121.0433 | Mig: 19.92% | Rev: 5.86% | NetDisp: 24.6 | Occ: 1.23% | TPS: 1025.6[PRIME] Step 10 [SCALE FROZEN] | Loss: 1121.0433 | Mig: 19.92% | Rev: 5.86% | NetDisp: 24.6 | Occ: 1.23% | TPS: 1025.6
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:25.4389 TPS:1104.5[10/32] L:25.4389 TPS:1104.5  ....................[20/32] L:32.7100 TPS:1109.7[20/32] L:32.7100 TPS:1109.7  ....................[30/32] L:34.4659 TPS:1106.4[30/32] L:34.4659 TPS:1106.4  ....
+[SYNC] Step 11 finalizing...
+[SYNC] Step 11 finalizing...
+
+[PRIME] Step 11 [SCALE FROZEN] | Loss: 1109.4762 | Mig: 19.82% | Rev: 5.95% | NetDisp: 28.0 | Occ: 1.24% | TPS: 1016.6[PRIME] Step 11 [SCALE FROZEN] | Loss: 1109.4762 | Mig: 19.82% | Rev: 5.95% | NetDisp: 28.0 | Occ: 1.24% | TPS: 1016.6
+
+....................[10/32] L:30.3225 TPS:1122.1[10/32] L:30.3225 TPS:1122.1  ....................[20/32] L:33.5754 TPS:1120.6[20/32] L:33.5754 TPS:1120.6  ....................[30/32] L:34.2863 TPS:1119.1[30/32] L:34.2863 TPS:1119.1  ....
+[SYNC] Step 12 finalizing...
+[SYNC] Step 12 finalizing...
+
+[PRIME] Step 12 [SCALE FROZEN] | Loss: 1094.2288 | Mig: 19.87% | Rev: 5.90% | NetDisp: 31.3 | Occ: 1.23% | TPS: 1031.5[PRIME] Step 12 [SCALE FROZEN] | Loss: 1094.2288 | Mig: 19.87% | Rev: 5.90% | NetDisp: 31.3 | Occ: 1.23% | TPS: 1031.5
+
+....................[10/32] L:29.9888 TPS:1108.2[10/32] L:29.9888 TPS:1108.2  ....................[20/32] L:29.6278 TPS:1100.7[20/32] L:29.6278 TPS:1100.7  ....................[30/32] L:30.5795 TPS:1102.9[30/32] L:30.5795 TPS:1102.9  ....
+[SYNC] Step 13 finalizing...
+[SYNC] Step 13 finalizing...
+
+[PRIME] Step 13 [SCALE FROZEN] | Loss: 1082.2552 | Mig: 19.80% | Rev: 5.97% | NetDisp: 34.5 | Occ: 1.23% | TPS: 1015.6[PRIME] Step 13 [SCALE FROZEN] | Loss: 1082.2552 | Mig: 19.80% | Rev: 5.97% | NetDisp: 34.5 | Occ: 1.23% | TPS: 1015.6
+
+....................[10/32] L:36.0050 TPS:1097.1[10/32] L:36.0050 TPS:1097.1  ....................[20/32] L:24.4707 TPS:1087.1[20/32] L:24.4707 TPS:1087.1  ....................[30/32] L:30.4651 TPS:1078.6[30/32] L:30.4651 TPS:1078.6  ....
+[SYNC] Step 14 finalizing...
+[SYNC] Step 14 finalizing...
+
+[PRIME] Step 14 [SCALE FROZEN] | Loss: 1067.6969 | Mig: 20.07% | Rev: 5.70% | NetDisp: 37.8 | Occ: 1.24% | TPS: 978.0[PRIME] Step 14 [SCALE FROZEN] | Loss: 1067.6969 | Mig: 20.07% | Rev: 5.70% | NetDisp: 37.8 | Occ: 1.24% | TPS: 978.0
+
+....................[10/32] L:28.7044 TPS:1091.1[10/32] L:28.7044 TPS:1091.1  ....................[20/32] L:29.9380 TPS:1074.4[20/32] L:29.9380 TPS:1074.4  ....................[30/32] L:29.4564 TPS:1067.3[30/32] L:29.4564 TPS:1067.3  ....
+[SYNC] Step 15 finalizing...
+[SYNC] Step 15 finalizing...
+
+[PRIME] Step 15 [SCALE FROZEN] | Loss: 1051.4665 | Mig: 20.16% | Rev: 5.61% | NetDisp: 41.1 | Occ: 1.24% | TPS: 970.7[PRIME] Step 15 [SCALE FROZEN] | Loss: 1051.4665 | Mig: 20.16% | Rev: 5.61% | NetDisp: 41.1 | Occ: 1.24% | TPS: 970.7
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:26.4133 TPS:1075.3[10/32] L:26.4133 TPS:1075.3  ....................[20/32] L:23.1341 TPS:1052.3[20/32] L:23.1341 TPS:1052.3  ....................[30/32] L:24.3969 TPS:1066.1[30/32] L:24.3969 TPS:1066.1  ....
+[SYNC] Step 16 finalizing...
+[SYNC] Step 16 finalizing...
+
+[PRIME] Step 16 [SCALE FROZEN] | Loss: 1037.3946 | Mig: 20.05% | Rev: 5.73% | NetDisp: 44.3 | Occ: 1.24% | TPS: 981.9[PRIME] Step 16 [SCALE FROZEN] | Loss: 1037.3946 | Mig: 20.05% | Rev: 5.73% | NetDisp: 44.3 | Occ: 1.24% | TPS: 981.9
+
+....................[10/32] L:23.4803 TPS:1080.4[10/32] L:23.4803 TPS:1080.4  ....................[20/32] L:26.4838 TPS:1095.2[20/32] L:26.4838 TPS:1095.2  ....................[30/32] L:27.2633 TPS:1090.0[30/32] L:27.2633 TPS:1090.0  ....
+[SYNC] Step 17 finalizing...
+[SYNC] Step 17 finalizing...
+
+[PRIME] Step 17 [SCALE FROZEN] | Loss: 1022.0484 | Mig: 19.69% | Rev: 6.09% | NetDisp: 47.4 | Occ: 1.24% | TPS: 1002.3[PRIME] Step 17 [SCALE FROZEN] | Loss: 1022.0484 | Mig: 19.69% | Rev: 6.09% | NetDisp: 47.4 | Occ: 1.24% | TPS: 1002.3
+
+....................[10/32] L:28.8810 TPS:1097.2[10/32] L:28.8810 TPS:1097.2  ....................[20/32] L:22.4093 TPS:1071.8[20/32] L:22.4093 TPS:1071.8  ....................[30/32] L:18.1172 TPS:1067.3[30/32] L:18.1172 TPS:1067.3  ....
+[SYNC] Step 18 finalizing...
+[SYNC] Step 18 finalizing...
+
+[PRIME] Step 18 [SCALE FROZEN] | Loss: 1007.4911 | Mig: 19.54% | Rev: 6.23% | NetDisp: 50.2 | Occ: 1.23% | TPS: 985.7[PRIME] Step 18 [SCALE FROZEN] | Loss: 1007.4911 | Mig: 19.54% | Rev: 6.23% | NetDisp: 50.2 | Occ: 1.23% | TPS: 985.7
+
+....................[10/32] L:15.5012 TPS:1105.1[10/32] L:15.5012 TPS:1105.1  ................../home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+
+============================================================
+============================================================
+
+[PRIME] Mamba-130m PRIME Training — PID 2147877[PRIME] Mamba-130m PRIME Training — PID 2147877
+
+[PRIME] Device: cuda[PRIME] Device: cuda
+
+========================================================================================================================
+
+[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000][PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
+
+[PRIME] Loading state-spaces/mamba-130m-hf...[PRIME] Loading state-spaces/mamba-130m-hf...
+
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 3919.80it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 3919.80it/s]
+
+[PRIME] Wrapped 97 linear layers with PrimeLinear.[PRIME] Wrapped 97 linear layers with PrimeLinear.
+
+[PRIME] VRAM used after load: 0.93 GB[PRIME] VRAM used after load: 0.93 GB
+
+[DIAGNOSTIC] Scale frozen for first 20 steps. Watching vote activity...[DIAGNOSTIC] Scale frozen for first 20 steps. Watching vote activity...
+
+
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+
+....................[10/32] L:40.0732 TPS:850.2[10/32] L:40.0732 TPS:850.2  ....................[20/32] L:43.9079 TPS:929.8[20/32] L:43.9079 TPS:929.8  ....................[30/32] L:33.8153 TPS:963.5[30/32] L:33.8153 TPS:963.5  ....
+[SYNC] Step 1 finalizing...
+[SYNC] Step 1 finalizing...
+
+[PRIME] Step 1 [SCALE FROZEN] | Loss: 1190.3115 | Mig: 25.77% | NetDisp: 1.7 | Occ: 4.62% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 1 [SCALE FROZEN] | Loss: 1190.3115 | Mig: 25.77% | NetDisp: 1.7 | Occ: 4.62% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:32.6316 TPS:1065.6[10/32] L:32.6316 TPS:1065.6  ....................[20/32] L:33.2295 TPS:1063.6[20/32] L:33.2295 TPS:1063.6  ....................[30/32] L:35.5725 TPS:1056.7[30/32] L:35.5725 TPS:1056.7  ....
+[SYNC] Step 2 finalizing...
+[SYNC] Step 2 finalizing...
+
+[PRIME] Step 2 [SCALE FROZEN] | Loss: 1165.4788 | Mig: 19.81% | NetDisp: 2.7 | Occ: 4.62% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 2 [SCALE FROZEN] | Loss: 1165.4788 | Mig: 19.81% | NetDisp: 2.7 | Occ: 4.62% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:34.8062 TPS:1038.8[10/32] L:34.8062 TPS:1038.8  ....................[20/32] L:36.3205 TPS:1056.7[20/32] L:36.3205 TPS:1056.7  ....................[30/32] L:39.9728 TPS:1048.3[30/32] L:39.9728 TPS:1048.3  ....
+[SYNC] Step 3 finalizing...
+[SYNC] Step 3 finalizing...
+
+[PRIME] Step 3 [SCALE FROZEN] | Loss: 1173.5363 | Mig: 19.94% | NetDisp: 4.8 | Occ: 4.62% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 3 [SCALE FROZEN] | Loss: 1173.5363 | Mig: 19.94% | NetDisp: 4.8 | Occ: 4.62% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:42.9273 TPS:1051.7[10/32] L:42.9273 TPS:1051.7  ....................[20/32] L:34.4515 TPS:1064.3[20/32] L:34.4515 TPS:1064.3  ....................[30/32] L:37.9726 TPS:1062.6[30/32] L:37.9726 TPS:1062.6  ....
+[SYNC] Step 4 finalizing...
+[SYNC] Step 4 finalizing...
+
+[PRIME] Step 4 [SCALE FROZEN] | Loss: 1168.6145 | Mig: 20.05% | NetDisp: 6.7 | Occ: 4.62% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 4 [SCALE FROZEN] | Loss: 1168.6145 | Mig: 20.05% | NetDisp: 6.7 | Occ: 4.62% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:33.8805 TPS:1033.0[10/32] L:33.8805 TPS:1033.0  ....................[20/32] L:35.7480 TPS:1048.3[20/32] L:35.7480 TPS:1048.3  ....................[30/32] L:40.0738 TPS:1047.8[30/32] L:40.0738 TPS:1047.8  ....
+[SYNC] Step 5 finalizing...
+[SYNC] Step 5 finalizing...
+
+[PRIME] Step 5 [SCALE FROZEN] | Loss: 1169.1247 | Mig: 19.90% | NetDisp: 9.3 | Occ: 4.62% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 5 [SCALE FROZEN] | Loss: 1169.1247 | Mig: 19.90% | NetDisp: 9.3 | Occ: 4.62% | Zero%: 4.7% | W_std: 0.0165
+
+[transformers] The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer GPTNeoXTokenizer. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:37.5782 TPS:1029.0[10/32] L:37.5782 TPS:1029.0  ....................[20/32] L:36.9392 TPS:1035.2[20/32] L:36.9392 TPS:1035.2  ....................[30/32] L:39.9858 TPS:1034.5[30/32] L:39.9858 TPS:1034.5  ....
+[SYNC] Step 6 finalizing...
+[SYNC] Step 6 finalizing...
+
+[PRIME] Step 6 [SCALE FROZEN] | Loss: 1167.2720 | Mig: 19.82% | NetDisp: 11.8 | Occ: 4.62% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 6 [SCALE FROZEN] | Loss: 1167.2720 | Mig: 19.82% | NetDisp: 11.8 | Occ: 4.62% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:36.9091 TPS:1044.5[10/32] L:36.9091 TPS:1044.5  ....................[20/32] L:35.0158 TPS:1035.1[20/32] L:35.0158 TPS:1035.1  ......../home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+
+============================================================
+============================================================
+
+[PRIME] Mamba-130m PRIME Training — PID 2148089[PRIME] Mamba-130m PRIME Training — PID 2148089
+
+[PRIME] Device: cuda[PRIME] Device: cuda
+
+========================================================================================================================
+
+[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000][PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
+
+[PRIME] Loading state-spaces/mamba-130m-hf...[PRIME] Loading state-spaces/mamba-130m-hf...
+
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4589.76it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4589.76it/s]
+
+[PRIME] Wrapped 97 linear layers with PrimeLinear.[PRIME] Wrapped 97 linear layers with PrimeLinear.
+
+[PRIME] VRAM used after load: 0.93 GB[PRIME] VRAM used after load: 0.93 GB
+
+[DIAGNOSTIC] Scale frozen for first 20 steps. Watching vote activity...[DIAGNOSTIC] Scale frozen for first 20 steps. Watching vote activity...
+
+
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+[PRIME] Starting training — 500 steps, grad_accum=32, seq=512
+
+....................[10/32] L:40.0732 TPS:863.4[10/32] L:40.0732 TPS:863.4  ....................[20/32] L:43.9079 TPS:956.2[20/32] L:43.9079 TPS:956.2  ....................[30/32] L:33.8153 TPS:988.9[30/32] L:33.8153 TPS:988.9  ....
+[SYNC] Step 1 finalizing...
+[SYNC] Step 1 finalizing...
+
+[PRIME] Step 1 [SCALE FROZEN] | Loss: 1190.3115 | Mig: 25.77% | NetDisp: 1.7 | Occ: 96.63% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 1 [SCALE FROZEN] | Loss: 1190.3115 | Mig: 25.77% | NetDisp: 1.7 | Occ: 96.63% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:32.6314 TPS:1073.1[10/32] L:32.6314 TPS:1073.1  ....................[20/32] L:33.2293 TPS:1068.7[20/32] L:33.2293 TPS:1068.7  ....................[30/32] L:35.5754 TPS:1066.0[30/32] L:35.5754 TPS:1066.0  ....
+[SYNC] Step 2 finalizing...
+[SYNC] Step 2 finalizing...
+
+[PRIME] Step 2 [SCALE FROZEN] | Loss: 1165.4918 | Mig: 19.81% | NetDisp: 2.7 | Occ: 96.64% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 2 [SCALE FROZEN] | Loss: 1165.4918 | Mig: 19.81% | NetDisp: 2.7 | Occ: 96.64% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:34.8082 TPS:1086.8[10/32] L:34.8082 TPS:1086.8  ....................[20/32] L:36.3216 TPS:1082.4[20/32] L:36.3216 TPS:1082.4  ....................[30/32] L:39.9669 TPS:1081.1[30/32] L:39.9669 TPS:1081.1  ....
+[SYNC] Step 3 finalizing...
+[SYNC] Step 3 finalizing...
+
+[PRIME] Step 3 [SCALE FROZEN] | Loss: 1173.5398 | Mig: 19.94% | NetDisp: 4.8 | Occ: 96.58% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 3 [SCALE FROZEN] | Loss: 1173.5398 | Mig: 19.94% | NetDisp: 4.8 | Occ: 96.58% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:42.9251 TPS:1069.1[10/32] L:42.9251 TPS:1069.1  ....................[20/32] L:34.4477 TPS:1068.5[20/32] L:34.4477 TPS:1068.5  ....................[30/32] L:37.9771 TPS:1068.7[30/32] L:37.9771 TPS:1068.7  ....
+[SYNC] Step 4 finalizing...
+[SYNC] Step 4 finalizing...
+
+[PRIME] Step 4 [SCALE FROZEN] | Loss: 1168.6160 | Mig: 20.05% | NetDisp: 6.7 | Occ: 96.69% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 4 [SCALE FROZEN] | Loss: 1168.6160 | Mig: 20.05% | NetDisp: 6.7 | Occ: 96.69% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:33.8830 TPS:1065.9[10/32] L:33.8830 TPS:1065.9  ....................[20/32] L:35.7480 TPS:1065.3[20/32] L:35.7480 TPS:1065.3  ....................[30/32] L:40.0778 TPS:1069.0[30/32] L:40.0778 TPS:1069.0  ....
+[SYNC] Step 5 finalizing...
+[SYNC] Step 5 finalizing...
+
+[PRIME] Step 5 [SCALE FROZEN] | Loss: 1169.1324 | Mig: 19.90% | NetDisp: 9.3 | Occ: 96.82% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 5 [SCALE FROZEN] | Loss: 1169.1324 | Mig: 19.90% | NetDisp: 9.3 | Occ: 96.82% | Zero%: 4.7% | W_std: 0.0165
+
+[transformers] The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer GPTNeoXTokenizer. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:37.5789 TPS:1087.9[10/32] L:37.5789 TPS:1087.9  ....................[20/32] L:36.9388 TPS:1094.4[20/32] L:36.9388 TPS:1094.4  ....................[30/32] L:40.0001 TPS:1097.5[30/32] L:40.0001 TPS:1097.5  ....
+[SYNC] Step 6 finalizing...
+[SYNC] Step 6 finalizing...
+
+[PRIME] Step 6 [SCALE FROZEN] | Loss: 1167.2799 | Mig: 19.83% | NetDisp: 11.8 | Occ: 96.82% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 6 [SCALE FROZEN] | Loss: 1167.2799 | Mig: 19.83% | NetDisp: 11.8 | Occ: 96.82% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:36.9135 TPS:1075.4[10/32] L:36.9135 TPS:1075.4  ....................[20/32] L:35.0162 TPS:1076.2[20/32] L:35.0162 TPS:1076.2  ....................[30/32] L:42.5699 TPS:1071.1[30/32] L:42.5699 TPS:1071.1  ....
+[SYNC] Step 7 finalizing...
+[SYNC] Step 7 finalizing...
+
+[PRIME] Step 7 [SCALE FROZEN] | Loss: 1164.6833 | Mig: 19.88% | NetDisp: 14.8 | Occ: 96.79% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 7 [SCALE FROZEN] | Loss: 1164.6833 | Mig: 19.88% | NetDisp: 14.8 | Occ: 96.79% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:35.4211 TPS:1088.9[10/32] L:35.4211 TPS:1088.9  ....................[20/32] L:32.9894 TPS:1092.3[20/32] L:32.9894 TPS:1092.3  ....................[30/32] L:28.4938 TPS:1085.9[30/32] L:28.4938 TPS:1085.9  ....
+[SYNC] Step 8 finalizing...
+[SYNC] Step 8 finalizing...
+
+[PRIME] Step 8 [SCALE FROZEN] | Loss: 1149.3675 | Mig: 19.75% | NetDisp: 17.8 | Occ: 96.91% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 8 [SCALE FROZEN] | Loss: 1149.3675 | Mig: 19.75% | NetDisp: 17.8 | Occ: 96.91% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:34.9662 TPS:1054.7[10/32] L:34.9662 TPS:1054.7  ....................[20/32] L:36.0532 TPS:1077.2[20/32] L:36.0532 TPS:1077.2  ....................[30/32] L:30.8237 TPS:1067.8[30/32] L:30.8237 TPS:1067.8  ....
+[SYNC] Step 9 finalizing...
+[SYNC] Step 9 finalizing...
+
+[PRIME] Step 9 [SCALE FROZEN] | Loss: 1136.3056 | Mig: 19.92% | NetDisp: 21.3 | Occ: 96.85% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 9 [SCALE FROZEN] | Loss: 1136.3056 | Mig: 19.92% | NetDisp: 21.3 | Occ: 96.85% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:36.7221 TPS:1084.4[10/32] L:36.7221 TPS:1084.4  ....................[20/32] L:27.9101 TPS:1088.6[20/32] L:27.9101 TPS:1088.6  ....................[30/32] L:32.4348 TPS:1095.7[30/32] L:32.4348 TPS:1095.7  ....
+[SYNC] Step 10 finalizing...
+[SYNC] Step 10 finalizing...
+
+[PRIME] Step 10 [SCALE FROZEN] | Loss: 1120.9988 | Mig: 19.92% | NetDisp: 24.6 | Occ: 96.78% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 10 [SCALE FROZEN] | Loss: 1120.9988 | Mig: 19.92% | NetDisp: 24.6 | Occ: 96.78% | Zero%: 4.7% | W_std: 0.0165
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:25.4322 TPS:1094.3[10/32] L:25.4322 TPS:1094.3  ....................[20/32] L:32.6954 TPS:1086.7[20/32] L:32.6954 TPS:1086.7  ....................[30/32] L:34.4607 TPS:1071.1[30/32] L:34.4607 TPS:1071.1  ....
+[SYNC] Step 11 finalizing...
+[SYNC] Step 11 finalizing...
+
+[PRIME] Step 11 [SCALE FROZEN] | Loss: 1109.4129 | Mig: 19.82% | NetDisp: 28.0 | Occ: 96.86% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 11 [SCALE FROZEN] | Loss: 1109.4129 | Mig: 19.82% | NetDisp: 28.0 | Occ: 96.86% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:30.3195 TPS:1082.6[10/32] L:30.3195 TPS:1082.6  ....................[20/32] L:33.5666 TPS:1087.6[20/32] L:33.5666 TPS:1087.6  ....................[30/32] L:34.2773 TPS:1079.4[30/32] L:34.2773 TPS:1079.4  ....
+[SYNC] Step 12 finalizing...
+[SYNC] Step 12 finalizing...
+
+[PRIME] Step 12 [SCALE FROZEN] | Loss: 1094.1522 | Mig: 19.87% | NetDisp: 31.3 | Occ: 96.78% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 12 [SCALE FROZEN] | Loss: 1094.1522 | Mig: 19.87% | NetDisp: 31.3 | Occ: 96.78% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:29.9907 TPS:1090.2[10/32] L:29.9907 TPS:1090.2  ....................[20/32] L:29.6235 TPS:1079.7[20/32] L:29.6235 TPS:1079.7  ....................[30/32] L:30.5796 TPS:1079.8[30/32] L:30.5796 TPS:1079.8  ....
+[SYNC] Step 13 finalizing...
+[SYNC] Step 13 finalizing...
+
+[PRIME] Step 13 [SCALE FROZEN] | Loss: 1082.1716 | Mig: 19.80% | NetDisp: 34.5 | Occ: 96.84% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 13 [SCALE FROZEN] | Loss: 1082.1716 | Mig: 19.80% | NetDisp: 34.5 | Occ: 96.84% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:36.0070 TPS:1087.0[10/32] L:36.0070 TPS:1087.0  ....................[20/32] L:24.4655 TPS:1046.4[20/32] L:24.4655 TPS:1046.4  ....................[30/32] L:30.4565 TPS:1027.6[30/32] L:30.4565 TPS:1027.6  ....
+[SYNC] Step 14 finalizing...
+[SYNC] Step 14 finalizing...
+
+[PRIME] Step 14 [SCALE FROZEN] | Loss: 1067.6093 | Mig: 20.07% | NetDisp: 37.8 | Occ: 96.93% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 14 [SCALE FROZEN] | Loss: 1067.6093 | Mig: 20.07% | NetDisp: 37.8 | Occ: 96.93% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:28.6887 TPS:1100.5[10/32] L:28.6887 TPS:1100.5  ....................[20/32] L:29.9376 TPS:1096.7[20/32] L:29.9376 TPS:1096.7  ....................[30/32] L:29.4399 TPS:1103.0[30/32] L:29.4399 TPS:1103.0  ....
+[SYNC] Step 15 finalizing...
+[SYNC] Step 15 finalizing...
+
+[PRIME] Step 15 [SCALE FROZEN] | Loss: 1051.3727 | Mig: 20.15% | NetDisp: 41.1 | Occ: 96.90% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 15 [SCALE FROZEN] | Loss: 1051.3727 | Mig: 20.15% | NetDisp: 41.1 | Occ: 96.90% | Zero%: 4.7% | W_std: 0.0165
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[SALAD] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................[10/32] L:26.4156 TPS:1078.6[10/32] L:26.4156 TPS:1078.6  ....................[20/32] L:23.1295 TPS:1076.0[20/32] L:23.1295 TPS:1076.0  ....................[30/32] L:24.4013 TPS:1078.0[30/32] L:24.4013 TPS:1078.0  ....
+[SYNC] Step 16 finalizing...
+[SYNC] Step 16 finalizing...
+
+[PRIME] Step 16 [SCALE FROZEN] | Loss: 1037.2973 | Mig: 20.04% | NetDisp: 44.3 | Occ: 96.80% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 16 [SCALE FROZEN] | Loss: 1037.2973 | Mig: 20.04% | NetDisp: 44.3 | Occ: 96.80% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:23.4810 TPS:1034.3[10/32] L:23.4810 TPS:1034.3  ....................[20/32] L:26.4890 TPS:1059.0[20/32] L:26.4890 TPS:1059.0  ....................[30/32] L:27.2643 TPS:1064.8[30/32] L:27.2643 TPS:1064.8  ....
+[SYNC] Step 17 finalizing...
+[SYNC] Step 17 finalizing...
+
+[PRIME] Step 17 [SCALE FROZEN] | Loss: 1021.9565 | Mig: 19.67% | NetDisp: 47.4 | Occ: 96.90% | Zero%: 4.7% | W_std: 0.0165[PRIME] Step 17 [SCALE FROZEN] | Loss: 1021.9565 | Mig: 19.67% | NetDisp: 47.4 | Occ: 96.90% | Zero%: 4.7% | W_std: 0.0165
+
+....................[10/32] L:28.8845 TPS:1045.0[10/32] L:28.8845 TPS:1045.0  

@@ -1,0 +1,94 @@
+/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+
+============================================================
+[PRIME] Mamba-130m PRIME Training — PID 2149618
+[PRIME] Device: cuda
+============================================================
+[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
+[PRIME] Loading state-spaces/mamba-130m-hf...
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4655.87it/s]
+[PRIME] Wrapped 97 linear layers with PrimeLinear.
+[PRIME] VRAM used after load: 0.93 GB
+
+[PRIME] Starting training — 30 steps, grad_accum=32, seq=512
+..........[10/32] L:40.0732 TPS:825.1 ..........[20/32] L:43.9079 TPS:901.6 ..........[30/32] L:33.8153 TPS:935.2 ..
+[SYNC] Step 1 finalizing...
+[PRIME] Step 1  | Loss: 1190.3115 | Mig: 25.77% | Disp95: 1.8 | Ent: 12.84 | Mom: 0.02
+..........[10/32] L:32.6301 TPS:1104.0 ..........[20/32] L:33.2250 TPS:1080.2 ..........[30/32] L:35.5741 TPS:1073.9 ..
+[SYNC] Step 2 finalizing...
+[PRIME] Step 2  | Loss: 1165.4688 | Mig: 19.81% | Disp95: 3.6 | Ent: 12.84 | Mom: 0.18
+..........[10/32] L:34.7755 TPS:1079.6 ..........[20/32] L:36.2825 TPS:1085.4 ..........[30/32] L:39.9598 TPS:1086.9 ..
+[SYNC] Step 3 finalizing...
+[PRIME] Step 3  | Loss: 1173.1349 | Mig: 19.94% | Disp95: 7.2 | Ent: 12.84 | Mom: 0.34
+..........[10/32] L:42.9147 TPS:1095.3 ..........[20/32] L:34.4490 TPS:1097.6 ..........[30/32] L:37.9701 TPS:1082.4 ..
+[SYNC] Step 4 finalizing...
+[PRIME] Step 4  | Loss: 1168.2725 | Mig: 20.05% | Disp95: 10.8 | Ent: 12.84 | Mom: 0.47
+..........[10/32] L:33.8371 TPS:1067.9 ..........[20/32] L:35.7071 TPS:1064.4 ..........[30/32] L:40.0307 TPS:1069.8 ..
+[SYNC] Step 5 finalizing...
+[PRIME] Step 5  | Loss: 1168.5658 | Mig: 19.90% | Disp95: 16.2 | Ent: 12.84 | Mom: 0.59
+..........[10/32] L:37.5688 TPS:1066.1 ..........[20/32] L:36.9301 TPS:1059.3 ..........[30/32] L:39.9914 TPS:1063.0 ..
+[SYNC] Step 6 finalizing...
+[PRIME] Step 6  | Loss: 1166.7597 | Mig: 19.82% | Disp95: 21.6 | Ent: 12.84 | Mom: 0.69
+..........[10/32] L:36.9159 TPS:1083.5 ..........[20/32] L:34.9992 TPS:1082.5 ..........[30/32] L:42.5541 TPS:1079.7 ..
+[SYNC] Step 7 finalizing...
+[PRIME] Step 7  | Loss: 1164.1656 | Mig: 19.88% | Disp95: 28.9 | Ent: 12.84 | Mom: 0.79
+..........[10/32] L:35.3656 TPS:1046.1 ..........[20/32] L:32.9104 TPS:1068.2 ..........[30/32] L:28.4473 TPS:1070.6 ..
+[SYNC] Step 8 finalizing...
+[PRIME] Step 8  | Loss: 1148.7125 | Mig: 19.75% | Disp95: 36.1 | Ent: 12.84 | Mom: 0.88
+..........[10/32] L:34.9496 TPS:1088.8 ..........[20/32] L:36.0301 TPS:1082.5 ..........[30/32] L:30.8052 TPS:1080.0 ..
+[SYNC] Step 9 finalizing...
+[PRIME] Step 9  | Loss: 1135.6560 | Mig: 19.92% | Disp95: 45.1 | Ent: 12.84 | Mom: 0.96
+..........[10/32] L:36.6786 TPS:1091.5 ..........[20/32] L:27.8419 TPS:1068.0 ..........[30/32] L:32.3632 TPS:1064.2 ..
+[SYNC] Step 10 finalizing...
+[PRIME] Step 10  | Loss: 1120.2484 | Mig: 19.92% | Disp95: 54.1 | Ent: 12.84 | Mom: 0.96
+..........[10/32] L:25.3732 TPS:1077.3 ..........[20/32] L:32.6358 TPS:1067.8 ..........[30/32] L:34.3702 TPS:1071.6 ..
+[SYNC] Step 11 finalizing...
+[PRIME] Step 11  | Loss: 1108.5334 | Mig: 19.82% | Disp95: 63.1 | Ent: 12.84 | Mom: 0.96
+..........[10/32] L:30.2436 TPS:1065.4 ..........[20/32] L:33.5304 TPS:1063.9 ..........[30/32] L:34.1944 TPS:1068.0 ..
+[SYNC] Step 12 finalizing...
+[PRIME] Step 12  | Loss: 1093.2106 | Mig: 19.87% | Disp95: 72.2 | Ent: 12.84 | Mom: 0.96
+..........[10/32] L:29.9504 TPS:1067.8 ..........[20/32] L:29.5799 TPS:1051.5 ..........[30/32] L:30.5197 TPS:1054.9 ..
+[SYNC] Step 13 finalizing...
+[PRIME] Step 13  | Loss: 1081.1742 | Mig: 19.81% | Disp95: 81.2 | Ent: 12.84 | Mom: 0.96
+..........[10/32] L:35.9342 TPS:1068.0 ..........[20/32] L:24.4271 TPS:1080.6 ..........[30/32] L:30.4062 TPS:1075.8 ..
+[SYNC] Step 14 finalizing...
+[PRIME] Step 14  | Loss: 1066.5581 | Mig: 20.07% | Disp95: 90.2 | Ent: 12.84 | Mom: 0.97
+..........[10/32] L:28.6543 TPS:1093.9 ..........[20/32] L:29.8736 TPS:1086.6 ..........[30/32] L:29.4245 TPS:1082.3 ..
+[SYNC] Step 15 finalizing...
+[PRIME] Step 15  | Loss: 1050.3014 | Mig: 20.16% | Disp95: 99.2 | Ent: 12.84 | Mom: 0.98
+..........[10/32] L:26.3714 TPS:1069.3 ..........[20/32] L:23.1002 TPS:1076.8 ..........[30/32] L:24.3858 TPS:1078.6 ..
+[SYNC] Step 16 finalizing...
+[PRIME] Step 16  | Loss: 1036.2230 | Mig: 20.03% | Disp95: 108.2 | Ent: 12.84 | Mom: 0.98
+..........[10/32] L:23.4407 TPS:1058.9 ..........[20/32] L:26.4252 TPS:1051.6 ..........[30/32] L:27.2382 TPS:1043.3 ..
+[SYNC] Step 17 finalizing...
+[PRIME] Step 17  | Loss: 1020.8666 | Mig: 19.66% | Disp95: 117.3 | Ent: 12.84 | Mom: 0.97
+..........[10/32] L:28.8306 TPS:1021.9 ..........[20/32] L:22.3704 TPS:1050.5 ..........[30/32] L:18.0988 TPS:1055.8 ..
+[SYNC] Step 18 finalizing...
+[PRIME] Step 18  | Loss: 1006.3101 | Mig: 19.54% | Disp95: 126.3 | Ent: 12.84 | Mom: 0.94
+..........[10/32] L:15.4833 TPS:1028.9 ..........[20/32] L:24.4814 TPS:1027.4 ..........[30/32] L:31.0907 TPS:1035.7 ..
+[SYNC] Step 19 finalizing...
+[PRIME] Step 19  | Loss: 993.0471 | Mig: 19.46% | Disp95: 135.3 | Ent: 12.84 | Mom: 0.92
+..........[10/32] L:27.9017 TPS:1100.3 ..........[20/32] L:26.7489 TPS:1087.9 ..........[30/32] L:29.3091 TPS:1092.8 ..
+[SYNC] Step 20 finalizing...
+[PRIME] Step 20  | Loss: 980.1660 | Mig: 19.26% | Disp95: 143.8 | Ent: 12.84 | Mom: 0.90
+..........[10/32] L:19.2900 TPS:1069.9 ..........[20/32] L:19.2941 TPS:1067.7 ..........[30/32] L:21.2636 TPS:1061.3 ..
+[SYNC] Step 21 finalizing...
+[PRIME] Step 21  | Loss: 968.4251 | Mig: 19.31% | Disp95: 151.8 | Ent: 12.84 | Mom: 0.90
+..........[10/32] L:20.4432 TPS:1063.7 ..........[20/32] L:20.1346 TPS:1060.3 ..........[30/32] L:23.0316 TPS:1059.8 ..
+[SYNC] Step 22 finalizing...
+[PRIME] Step 22  | Loss: 957.0916 | Mig: 19.51% | Disp95: 159.3 | Ent: 12.84 | Mom: 0.91
+..........[10/32] L:19.2999 TPS:1064.3 ..........[20/32] L:22.3696 TPS:1059.8 ..........[30/32] L:17.8916 TPS:1048.9 ..
+[SYNC] Step 23 finalizing...
+[PRIME] Step 23  | Loss: 946.9667 | Mig: 19.67% | Disp95: 166.1 | Ent: 12.84 | Mom: 0.91
+..........[10/32] L:26.5323 TPS:1046.4 ..........[20/32] L:27.0437 TPS:1062.7 ..........[30/32] L:19.0177 TPS:1054.4 ..
+[SYNC] Step 24 finalizing...
+[PRIME] Step 24  | Loss: 937.5921 | Mig: 19.37% | Disp95: 172.9 | Ent: 12.84 | Mom: 0.91
+..........[10/32] L:25.0245 TPS:1050.7 ..........[20/32] L:23.2212 TPS:1065.2 ..........[30/32] L:23.4653 TPS:1060.1 ..
+[SYNC] Step 25 finalizing...
+[PRIME] Step 25  | Loss: 927.7799 | Mig: 19.47% | Disp95: 179.3 | Ent: 12.84 | Mom: 0.91
+..........[10/32] L:24.4510 TPS:1009.1 ..........[20/32] L:21.8216 TPS:1005.7 ..........[30/32] L:13.7120 TPS:1019.0 ..
+[SYNC] Step 26 finalizing...
+1.8216 TPS:1005.7 ..........[30/32] L:13.7120 TPS:1019.0 ..
+[SYNC] Step 26 finalizing...

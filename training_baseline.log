@@ -1,0 +1,104 @@
+/home/phil/.gemini/antigravity/scratch/analysis_project/titan_venv/lib/python3.12/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+
+============================================================
+[PRIME] Mamba-130m PRIME Training — PID 2148822
+[PRIME] Device: cuda
+============================================================
+[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
+[PRIME] Loading state-spaces/mamba-130m-hf...
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4420.31it/s]
+[PRIME] Wrapped 97 linear layers with PrimeLinear.
+[PRIME] VRAM used after load: 0.93 GB
+
+[PRIME] Starting training — 100 steps, grad_accum=32, seq=512
+..........[10/32] L:40.0732 TPS:821.2 ..........[20/32] L:43.9079 TPS:922.4 ..........[30/32] L:33.8153 TPS:961.3 ..
+[SYNC] Step 1 finalizing...
+[PRIME] Step 1  [BASELINE]| Loss: 1190.3115 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:33.0635 TPS:1041.5 ..........[20/32] L:33.5996 TPS:1034.5 ..........[30/32] L:35.8790 TPS:1032.3 ..
+[SYNC] Step 2 finalizing...
+[PRIME] Step 2  [BASELINE]| Loss: 1170.9649 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:35.4197 TPS:1069.4 ..........[20/32] L:36.9840 TPS:1060.7 ..........[30/32] L:40.4706 TPS:1058.2 ..
+[SYNC] Step 3 finalizing...
+[PRIME] Step 3  [BASELINE]| Loss: 1183.9291 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:44.0844 TPS:1043.9 ..........[20/32] L:35.5654 TPS:1049.1 ..........[30/32] L:39.2141 TPS:1048.6 ..
+[SYNC] Step 4 finalizing...
+[PRIME] Step 4  [BASELINE]| Loss: 1186.2308 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:35.3039 TPS:1053.9 ..........[20/32] L:37.2446 TPS:1073.5 ..........[30/32] L:41.6336 TPS:1076.9 ..
+[SYNC] Step 5 finalizing...
+[PRIME] Step 5  [BASELINE]| Loss: 1194.5725 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:40.6916 TPS:1078.4 ..........[20/32] L:39.3268 TPS:1072.0 ..........[30/32] L:42.9111 TPS:1069.8 ..
+[SYNC] Step 6 finalizing...
+[PRIME] Step 6  [BASELINE]| Loss: 1202.2454 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:39.9664 TPS:1060.6 ..........[20/32] L:38.2528 TPS:1062.5 ..........[30/32] L:46.6483 TPS:1063.9 ..
+[SYNC] Step 7 finalizing...
+[PRIME] Step 7  [BASELINE]| Loss: 1209.6824 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:39.5879 TPS:1070.4 ..........[20/32] L:38.0482 TPS:1074.2 ..........[30/32] L:31.8308 TPS:1076.6 ..
+[SYNC] Step 8 finalizing...
+[PRIME] Step 8  [BASELINE]| Loss: 1205.1703 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:39.2931 TPS:1066.4 ..........[20/32] L:41.1388 TPS:1067.7 ..........[30/32] L:36.3630 TPS:1070.4 ..
+[SYNC] Step 9 finalizing...
+[PRIME] Step 9  [BASELINE]| Loss: 1204.0776 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:42.7330 TPS:1089.8 ..........[20/32] L:34.8413 TPS:1087.6 ..........[30/32] L:37.8827 TPS:1087.5 ..
+[SYNC] Step 10 finalizing...
+[PRIME] Step 10  [BASELINE]| Loss: 1201.1673 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:33.6707 TPS:1066.1 ..........[20/32] L:39.8066 TPS:1066.5 ..........[30/32] L:40.6145 TPS:1066.9 ..
+[SYNC] Step 11 finalizing...
+[PRIME] Step 11  [BASELINE]| Loss: 1203.1370 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:39.9205 TPS:1067.1 ..........[20/32] L:42.1343 TPS:1070.6 ..........[30/32] L:42.9335 TPS:1076.6 ..
+[SYNC] Step 12 finalizing...
+[PRIME] Step 12  [BASELINE]| Loss: 1201.4131 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:37.0984 TPS:1066.2 ..........[20/32] L:39.1115 TPS:1062.5 ..........[30/32] L:39.9287 TPS:1055.2 ..
+[SYNC] Step 13 finalizing...
+[PRIME] Step 13  [BASELINE]| Loss: 1203.1193 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:46.7699 TPS:1049.4 ..........[20/32] L:33.9861 TPS:1049.0 ..........[30/32] L:39.6554 TPS:1047.1 ..
+[SYNC] Step 14 finalizing...
+[PRIME] Step 14  [BASELINE]| Loss: 1202.0764 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:39.8249 TPS:992.2 ..........[20/32] L:41.0069 TPS:1008.2 ..........[30/32] L:39.7955 TPS:1017.6 ..
+[SYNC] Step 15 finalizing...
+[PRIME] Step 15  [BASELINE]| Loss: 1199.6412 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:38.4399 TPS:1113.4 ..........[20/32] L:35.1201 TPS:1091.3 ..........[30/32] L:33.9547 TPS:1089.9 ..
+[SYNC] Step 16 finalizing...
+[PRIME] Step 16  [BASELINE]| Loss: 1199.4068 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:36.3127 TPS:1094.9 ..........[20/32] L:40.5271 TPS:1088.1 ..........[30/32] L:36.8179 TPS:1084.8 ..
+[SYNC] Step 17 finalizing...
+[PRIME] Step 17  [BASELINE]| Loss: 1197.6257 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:41.0832 TPS:1093.4 ..........[20/32] L:36.3104 TPS:1091.2 ..........[30/32] L:33.0281 TPS:1082.4 ..
+[SYNC] Step 18 finalizing...
+[PRIME] Step 18  [BASELINE]| Loss: 1195.8181 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:27.7829 TPS:1097.4 ..........[20/32] L:36.7871 TPS:1092.7 ..........[30/32] L:43.6004 TPS:1089.8 ..
+[SYNC] Step 19 finalizing...
+[PRIME] Step 19  [BASELINE]| Loss: 1194.9438 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:41.8653 TPS:1086.3 ..........[20/32] L:42.0896 TPS:1081.2 ..........[30/32] L:41.5418 TPS:1088.0 ..
+[SYNC] Step 20 finalizing...
+[PRIME] Step 20  [BASELINE]| Loss: 1194.3094 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:32.9878 TPS:1093.5 ..........[20/32] L:35.1968 TPS:1093.0 ..........[30/32] L:36.3616 TPS:1089.2 ..
+[SYNC] Step 21 finalizing...
+[PRIME] Step 21  [BASELINE]| Loss: 1194.2617 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:33.3707 TPS:1109.1 ..........[20/32] L:34.1574 TPS:1091.6 ..........[30/32] L:36.9071 TPS:1087.2 ..
+[SYNC] Step 22 finalizing...
+[PRIME] Step 22  [BASELINE]| Loss: 1193.2297 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:34.5549 TPS:1086.6 ..........[20/32] L:39.2236 TPS:1072.7 ..........[30/32] L:34.0590 TPS:1069.4 ..
+[SYNC] Step 23 finalizing...
+[PRIME] Step 23  [BASELINE]| Loss: 1193.0203 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:40.4990 TPS:1017.2 ..........[20/32] L:42.0464 TPS:1043.5 ..........[30/32] L:34.9955 TPS:1043.0 ..
+[SYNC] Step 24 finalizing...
+[PRIME] Step 24  [BASELINE]| Loss: 1193.6370 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:38.1790 TPS:1040.3 ..........[20/32] L:37.0794 TPS:1050.0 ..........[30/32] L:38.8751 TPS:1047.2 ..
+[SYNC] Step 25 finalizing...
+[PRIME] Step 25  [BASELINE]| Loss: 1193.9030 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:39.9023 TPS:1058.0 ..........[20/32] L:37.5100 TPS:1060.4 ..........[30/32] L:34.6712 TPS:1066.5 ..
+[SYNC] Step 26 finalizing...
+[PRIME] Step 26  [BASELINE]| Loss: 1192.4504 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:39.4661 TPS:1057.3 ..........[20/32] L:35.5408 TPS:1062.8 ..........[30/32] L:40.8493 TPS:1063.9 ..
+[SYNC] Step 27 finalizing...
+[PRIME] Step 27  [BASELINE]| Loss: 1193.0879 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:37.2592 TPS:1061.3 ..........[20/32] L:36.5808 TPS:1055.5 ..........[30/32] L:36.8438 TPS:1036.9 ..
+[SYNC] Step 28 finalizing...
+[PRIME] Step 28  [BASELINE]| Loss: 1190.6320 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+..........[10/32] L:35.5463 TPS:1023.7 ..........[20/32] L:40.4016 TPS:1043.2 ..........[30/32] L:38.0807 TPS:1044.8 ..
+[SYNC] Step 29 finalizing...
+[PRIME] Step 29  [BASELINE]| Loss: 1191.7523 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+.......Step 29  [BASELINE]| Loss: 1191.7523 | Mig: 0.00% | Disp95: 0.0 | Ent: 12.84 | Mom: 0.00
+.......
