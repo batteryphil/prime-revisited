@@ -2,224 +2,12 @@
   import pynvml  # type: ignore[import]
 
 ============================================================
-[PRIME] Mamba-130m PRIME Training — PID 2149618
-[PRIME] Device: cuda
-============================================================
-[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
-[PRIME] Loading state-spaces/mamba-130m-hf...
-[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4655.87it/s]
-[PRIME] Wrapped 97 linear layers with PrimeLinear.
-[PRIME] VRAM used after load: 0.93 GB
-
-[PRIME] Starting training — 30 steps, grad_accum=32, seq=512
-..........[10/32] L:40.0732 TPS:825.1 ..........[20/32] L:43.9079 TPS:901.6 ..........[30/32] L:33.8153 TPS:935.2 ..
-[SYNC] Step 1 finalizing...
-[PRIME] Step 1  | Loss: 1190.3115 | Mig: 25.77% | Disp95: 1.8 | Ent: 12.84 | Mom: 0.02
-..........[10/32] L:32.6301 TPS:1104.0 ..........[20/32] L:33.2250 TPS:1080.2 ..........[30/32] L:35.5741 TPS:1073.9 ..
-[SYNC] Step 2 finalizing...
-[PRIME] Step 2  | Loss: 1165.4688 | Mig: 19.81% | Disp95: 3.6 | Ent: 12.84 | Mom: 0.18
-..........[10/32] L:34.7755 TPS:1079.6 ..........[20/32] L:36.2825 TPS:1085.4 ..........[30/32] L:39.9598 TPS:1086.9 ..
-[SYNC] Step 3 finalizing...
-[PRIME] Step 3  | Loss: 1173.1349 | Mig: 19.94% | Disp95: 7.2 | Ent: 12.84 | Mom: 0.34
-..........[10/32] L:42.9147 TPS:1095.3 ..........[20/32] L:34.4490 TPS:1097.6 ..........[30/32] L:37.9701 TPS:1082.4 ..
-[SYNC] Step 4 finalizing...
-[PRIME] Step 4  | Loss: 1168.2725 | Mig: 20.05% | Disp95: 10.8 | Ent: 12.84 | Mom: 0.47
-..........[10/32] L:33.8371 TPS:1067.9 ..........[20/32] L:35.7071 TPS:1064.4 ..........[30/32] L:40.0307 TPS:1069.8 ..
-[SYNC] Step 5 finalizing...
-[PRIME] Step 5  | Loss: 1168.5658 | Mig: 19.90% | Disp95: 16.2 | Ent: 12.84 | Mom: 0.59
-..........[10/32] L:37.5688 TPS:1066.1 ..........[20/32] L:36.9301 TPS:1059.3 ..........[30/32] L:39.9914 TPS:1063.0 ..
-[SYNC] Step 6 finalizing...
-[PRIME] Step 6  | Loss: 1166.7597 | Mig: 19.82% | Disp95: 21.6 | Ent: 12.84 | Mom: 0.69
-..........[10/32] L:36.9159 TPS:1083.5 ..........[20/32] L:34.9992 TPS:1082.5 ..........[30/32] L:42.5541 TPS:1079.7 ..
-[SYNC] Step 7 finalizing...
-[PRIME] Step 7  | Loss: 1164.1656 | Mig: 19.88% | Disp95: 28.9 | Ent: 12.84 | Mom: 0.79
-..........[10/32] L:35.3656 TPS:1046.1 ..........[20/32] L:32.9104 TPS:1068.2 ..........[30/32] L:28.4473 TPS:1070.6 ..
-[SYNC] Step 8 finalizing...
-[PRIME] Step 8  | Loss: 1148.7125 | Mig: 19.75% | Disp95: 36.1 | Ent: 12.84 | Mom: 0.88
-..........[10/32] L:34.9496 TPS:1088.8 ..........[20/32] L:36.0301 TPS:1082.5 ..........[30/32] L:30.8052 TPS:1080.0 ..
-[SYNC] Step 9 finalizing...
-[PRIME] Step 9  | Loss: 1135.6560 | Mig: 19.92% | Disp95: 45.1 | Ent: 12.84 | Mom: 0.96
-..........[10/32] L:36.6786 TPS:1091.5 ..........[20/32] L:27.8419 TPS:1068.0 ..........[30/32] L:32.3632 TPS:1064.2 ..
-[SYNC] Step 10 finalizing...
-[PRIME] Step 10  | Loss: 1120.2484 | Mig: 19.92% | Disp95: 54.1 | Ent: 12.84 | Mom: 0.96
-..........[10/32] L:25.3732 TPS:1077.3 ..........[20/32] L:32.6358 TPS:1067.8 ..........[30/32] L:34.3702 TPS:1071.6 ..
-[SYNC] Step 11 finalizing...
-[PRIME] Step 11  | Loss: 1108.5334 | Mig: 19.82% | Disp95: 63.1 | Ent: 12.84 | Mom: 0.96
-..........[10/32] L:30.2436 TPS:1065.4 ..........[20/32] L:33.5304 TPS:1063.9 ..........[30/32] L:34.1944 TPS:1068.0 ..
-[SYNC] Step 12 finalizing...
-[PRIME] Step 12  | Loss: 1093.2106 | Mig: 19.87% | Disp95: 72.2 | Ent: 12.84 | Mom: 0.96
-..........[10/32] L:29.9504 TPS:1067.8 ..........[20/32] L:29.5799 TPS:1051.5 ..........[30/32] L:30.5197 TPS:1054.9 ..
-[SYNC] Step 13 finalizing...
-[PRIME] Step 13  | Loss: 1081.1742 | Mig: 19.81% | Disp95: 81.2 | Ent: 12.84 | Mom: 0.96
-..........[10/32] L:35.9342 TPS:1068.0 ..........[20/32] L:24.4271 TPS:1080.6 ..........[30/32] L:30.4062 TPS:1075.8 ..
-[SYNC] Step 14 finalizing...
-[PRIME] Step 14  | Loss: 1066.5581 | Mig: 20.07% | Disp95: 90.2 | Ent: 12.84 | Mom: 0.97
-..........[10/32] L:28.6543 TPS:1093.9 ..........[20/32] L:29.8736 TPS:1086.6 ..........[30/32] L:29.4245 TPS:1082.3 ..
-[SYNC] Step 15 finalizing...
-[PRIME] Step 15  | Loss: 1050.3014 | Mig: 20.16% | Disp95: 99.2 | Ent: 12.84 | Mom: 0.98
-..........[10/32] L:26.3714 TPS:1069.3 ..........[20/32] L:23.1002 TPS:1076.8 ..........[30/32] L:24.3858 TPS:1078.6 ..
-[SYNC] Step 16 finalizing...
-[PRIME] Step 16  | Loss: 1036.2230 | Mig: 20.03% | Disp95: 108.2 | Ent: 12.84 | Mom: 0.98
-..........[10/32] L:23.4407 TPS:1058.9 ..........[20/32] L:26.4252 TPS:1051.6 ..........[30/32] L:27.2382 TPS:1043.3 ..
-[SYNC] Step 17 finalizing...
-[PRIME] Step 17  | Loss: 1020.8666 | Mig: 19.66% | Disp95: 117.3 | Ent: 12.84 | Mom: 0.97
-..........[10/32] L:28.8306 TPS:1021.9 ..........[20/32] L:22.3704 TPS:1050.5 ..........[30/32] L:18.0988 TPS:1055.8 ..
-[SYNC] Step 18 finalizing...
-[PRIME] Step 18  | Loss: 1006.3101 | Mig: 19.54% | Disp95: 126.3 | Ent: 12.84 | Mom: 0.94
-..........[10/32] L:15.4833 TPS:1028.9 ..........[20/32] L:24.4814 TPS:1027.4 ..........[30/32] L:31.0907 TPS:1035.7 ..
-[SYNC] Step 19 finalizing...
-[PRIME] Step 19  | Loss: 993.0471 | Mig: 19.46% | Disp95: 135.3 | Ent: 12.84 | Mom: 0.92
-..........[10/32] L:27.9017 TPS:1100.3 ..........[20/32] L:26.7489 TPS:1087.9 ..........[30/32] L:29.3091 TPS:1092.8 ..
-[SYNC] Step 20 finalizing...
-[PRIME] Step 20  | Loss: 980.1660 | Mig: 19.26% | Disp95: 143.8 | Ent: 12.84 | Mom: 0.90
-..........[10/32] L:19.2900 TPS:1069.9 ..........[20/32] L:19.2941 TPS:1067.7 ..........[30/32] L:21.2636 TPS:1061.3 ..
-[SYNC] Step 21 finalizing...
-[PRIME] Step 21  | Loss: 968.4251 | Mig: 19.31% | Disp95: 151.8 | Ent: 12.84 | Mom: 0.90
-..........[10/32] L:20.4432 TPS:1063.7 ..........[20/32] L:20.1346 TPS:1060.3 ..........[30/32] L:23.0316 TPS:1059.8 ..
-[SYNC] Step 22 finalizing...
-[PRIME] Step 22  | Loss: 957.0916 | Mig: 19.51% | Disp95: 159.3 | Ent: 12.84 | Mom: 0.91
-..........[10/32] L:19.2999 TPS:1064.3 ..........[20/32] L:22.3696 TPS:1059.8 ..........[30/32] L:17.8916 TPS:1048.9 ..
-[SYNC] Step 23 finalizing...
-[PRIME] Step 23  | Loss: 946.9667 | Mig: 19.67% | Disp95: 166.1 | Ent: 12.84 | Mom: 0.91
-..........[10/32] L:26.5323 TPS:1046.4 ..........[20/32] L:27.0437 TPS:1062.7 ..........[30/32] L:19.0177 TPS:1054.4 ..
-[SYNC] Step 24 finalizing...
-[PRIME] Step 24  | Loss: 937.5921 | Mig: 19.37% | Disp95: 172.9 | Ent: 12.84 | Mom: 0.91
-..........[10/32] L:25.0245 TPS:1050.7 ..........[20/32] L:23.2212 TPS:1065.2 ..........[30/32] L:23.4653 TPS:1060.1 ..
-[SYNC] Step 25 finalizing...
-[PRIME] Step 25  | Loss: 927.7799 | Mig: 19.47% | Disp95: 179.3 | Ent: 12.84 | Mom: 0.91
-..........[10/32] L:24.4510 TPS:1009.1 ..........[20/32] L:21.8216 TPS:1005.7 ..........[30/32] L:13.7120 TPS:1019.0 ..
-[SYNC] Step 26 finalizing...
-[PRIME] Step 26  | Loss: 916.7355 | Mig: 19.45% | Disp95: 186.0 | Ent: 12.85 | Mom: 0.92
-..........[10/32] L:21.2641 TPS:1012.3 ..........[20/32] L:20.2631 TPS:1019.1 ..........[30/32] L:25.4263 TPS:1020.9 ..
-[SYNC] Step 27 finalizing...
-[PRIME] Step 27  | Loss: 908.2927 | Mig: 19.19% | Disp95: 193.4 | Ent: 12.85 | Mom: 0.91
-..........[10/32] L:19.6025 TPS:1016.7 ..........[20/32] L:20.3630 TPS:1024.5 ..........[30/32] L:19.7503 TPS:1049.2 ..
-[SYNC] Step 28 finalizing...
-[PRIME] Step 28  | Loss: 896.9375 | Mig: 18.92% | Disp95: 200.4 | Ent: 12.85 | Mom: 0.89
-..........[10/32] L:15.5447 TPS:1089.7 ..........[20/32] L:20.8338 TPS:1080.3 ..........[30/32] L:23.4654 TPS:1078.8 ..
-[SYNC] Step 29 finalizing...
-[PRIME] Step 29  | Loss: 888.0555 | Mig: 19.17% | Disp95: 206.7 | Ent: 12.85 | Mom: 0.90
-..........[10/32] L:21.8832 TPS:1082.6 ..........[20/32] L:18.5212 TPS:1079.8 ..........[30/32] L:17.4826 TPS:1074.1 ..
-[SYNC] Step 30 finalizing...
-[PRIME] Step 30  | Loss: 878.6084 | Mig: 19.33% | Disp95: 213.0 | Ent: 12.85 | Mom: 0.89
-
-[PRIME] Training complete!
-[PRIME] Final model saved: mamba_prime_final.pt
- | Mom: 0.89
-
-[PRIME] Training complete!
-[PRIME] Final model saved: mamba_prime_final.pt
-
-============================================================
-[PRIME] Mamba-130m PRIME Training — PID 2150878
-[PRIME] Device: cuda
-============================================================
-[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
-[PRIME] Loading state-spaces/mamba-130m-hf...
-Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4635.44it/s]
-[PRIME] Wrapped 97 linear layers with PrimeLinear.
-[PRIME] VRAM used after load: 0.93 GB
-
-[PRIME] Starting training — 1000 steps, grad_accum=32, seq=512
-..........[10/32] L:40.0732 TPS:838.6 ..........[20/32] L:43.9079 TPS:950.1 ..........[30/32] L:33.8153 TPS:1004.4 ..
-[SYNC] Step 1 finalizing...
-[PRIME] Step 1  | Loss: 1190.3115 | Mig: 25.77% | Disp95: 1.8 | Ent: 12.84 | Mom: 0.02
-..........[10/32] L:32.6291 TPS:1078.3 ..........[20/32] L:33.2272 TPS:1074.7 ..........[30/32] L:35.5743 TPS:1066.4 ..
-[SYNC] Step 2 finalizing...
-[PRIME] Step 2  | Loss: 1165.4647 | Mig: 19.81% | Disp95: 3.6 | Ent: 12.84 | Mom: 0.18
-..........[10/32] L:34.7746 TPS:1056.2 ..........[20/32] L:36.2841 TPS:1052.0 ..........[30/32] L:39.9564 TPS:1048.4 ..
-[SYNC] Step 3 finalizing...
-[PRIME] Step 3  | Loss: 1173.1286 | Mig: 19.94% | Disp95: 7.2 | Ent: 12.84 | Mom: 0.34
-..........[10/32] L:42.9166 TPS:1040.1 ..........[20/32] L:34.4444 TPS:1031.5 ..........[30/32] L:37.9782 TPS:1041.3 ..
-[SYNC] Step 4 finalizing...
-[PRIME] Step 4  | Loss: 1168.2563 | Mig: 20.05% | Disp95: 10.8 | Ent: 12.84 | Mom: 0.47
-..........[10/32] L:33.8381 TPS:1050.1 ..........[20/32] L:35.7050 TPS:1064.7 ..........[30/32] L:40.0262 TPS:1065.1 ..
-[SYNC] Step 5 finalizing...
-[PRIME] Step 5  | Loss: 1168.5423 | Mig: 19.90% | Disp95: 16.2 | Ent: 12.84 | Mom: 0.59
-..........[10/32] L:37.5639 TPS:1081.4 ..........[20/32] L:36.9312 TPS:1079.7 ..........[30/32] L:39.9787 TPS:1069.4 ..
-[SYNC] Step 6 finalizing...
-[PRIME] Step 6  | Loss: 1166.7296 | Mig: 19.82% | Disp95: 21.6 | Ent: 12.84 | Mom: 0.69
-..........[10/32] L:36.9086 TPS:1077.7 ..........[20/32] L:34.9912 TPS:1079.2 ..........[30/32] L:42.5610 TPS:1068.9 ..
-[SYNC] Step 7 finalizing...
-[PRIME] Step 7  | Loss: 1164.1413 | Mig: 19.88% | Disp95: 28.9 | Ent: 12.84 | Mom: 0.79
-..........[10/32] L:35.3644 TPS:1082.9 ..........[20/32] L:32.9178 TPS:1067.1 ..........[30/32] L:28.4527 TPS:1072.0 ..
-[SYNC] Step 8 finalizing...
-[PRIME] Step 8  | Loss: 1148.6833 | Mig: 19.76% | Disp95: 36.1 | Ent: 12.84 | Mom: 0.88
-..........[10/32] L:34.9567 TPS:1082.9 ..........[20/32] L:36.0291 TPS:1087.8 ..........[30/32] L:30.7904 TPS:1091.6 ..
-[SYNC] Step 9 finalizing...
-[PRIME] Step 9  | Loss: 1135.6302 | Mig: 19.92% | Disp95: 45.1 | Ent: 12.84 | Mom: 0.96
-..........[10/32] L:36.6753 TPS:1085.2 ..........[20/32] L:27.8469 TPS:1073.0 ..........[30/32] L:32.3749 TPS:1074.1 ..
-[SYNC] Step 10 finalizing...
-[PRIME] Step 10  | Loss: 1120.2282 | Mig: 19.91% | Disp95: 54.1 | Ent: 12.84 | Mom: 0.96
-[SALAD] 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-..........[10/32] L:25.3880 TPS:1071.9 ..........[20/32] L:32.6347 TPS:1071.2 ....
-============================================================
 [PRIME] Mamba-130m PRIME Training — PID 2151199
 [PRIME] Device: cuda
 ============================================================
 [PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
 [PRIME] Loading state-spaces/mamba-130m-hf...
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
 Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 4362.49it/s]
 [PRIME] Wrapped 97 linear layers with PrimeLinear.
 [PRIME] VRAM used after load: 0.93 GB
@@ -2031,39 +1819,14 @@
 [PRIME] Step 594  | Loss: 247.5608 | Mig: 20.96% | Disp95: 843.6 | Ent: 12.92 | Mom: 0.28
 ..........[10/32] L:4.9883 TPS:1088.6 ..........[20/32] L:7.9342 TPS:1078.5 ..........[30/32] L:5.5387 TPS:1055.7 ..
 [SYNC] Step 595 finalizing...
-
-============================================================
-[PRIME] Mamba-130m PRIME Training — PID 2160773
-[PRIME] Device: cuda
-============================================================
-Traceback (most recent call last):
-  File "/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/eval_checkpoint.py", line 3, in <module>
-    from mamba_prime_train import get_manifold_lut, replace_linear
-ImportError: cannot import name 'get_manifold_lut' from 'mamba_prime_train' (/home/phil/.gemini/antigravity/scratch/analysis_project/mamba-prime/mamba_prime_train.py)
 [PRIME] Step 595  | Loss: 247.4523 | Mig: 6.49% | Disp95: 844.1 | Ent: 12.92 | Mom: 0.14
 ..........[10/32] L:6.1547 TPS:1087.8 ..........[20/32] L:4.1278 TPS:1067.7 ..........[30/32] L:6.3027 TPS:1066.5 ..
 [SYNC] Step 596 finalizing...
 [PRIME] Step 596  | Loss: 247.3325 | Mig: 20.47% | Disp95: 844.5 | Ent: 12.92 | Mom: 0.28
-..........[10/32] L:4.6991 TPS:1067.1 ..........[20/32] L:4.0294 TPS:1050.5 ......
-============================================================
-[PRIME] Mamba-130m PRIME Training — PID 2160873
-[PRIME] Device: cuda
-============================================================
-[INIT] Loading tokenizer and base architecture...
-....[30/32] L:5.4642 TPS:1027.6 ..
+..........[10/32] L:4.6991 TPS:1067.1 ..........[20/32] L:4.0294 TPS:1050.5 ..........[30/32] L:5.4642 TPS:1027.6 ..
 [SYNC] Step 597 finalizing...
 [PRIME] Step 597  | Loss: 247.2164 | Mig: 6.97% | Disp95: 844.8 | Ent: 12.92 | Mom: 0.14
-Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 7445.55it/s]
-..[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
-.[INIT] Loading discrete weights from prime_step_550.pt...
-.[INIT] Moving model to CPU for generation (GPU is busy training)...
-
-==================================================
-      GENERATION TESTS (STEP 550 CHECKPOINT)
-==================================================
-
-[PROMPT] Explain gravity:
-......[10/32] L:5.0404 TPS:786.8 ..........[20/32] L:4.6772 TPS:815.2 ..........[30/32] L:4.9295 TPS:829.6 ..
+..........[10/32] L:5.0404 TPS:786.8 ..........[20/32] L:4.6772 TPS:815.2 ..........[30/32] L:4.9295 TPS:829.6 ..
 [SYNC] Step 598 finalizing...
 [PRIME] Step 598  | Loss: 247.0829 | Mig: 20.67% | Disp95: 845.4 | Ent: 12.92 | Mom: 0.29
 ..........[10/32] L:4.4461 TPS:857.1 ..........[20/32] L:4.8635 TPS:857.4 ..........[30/32] L:5.0189 TPS:853.4 ..
@@ -2077,24 +1840,7 @@ ImportError: cannot import name 'get_manifold_lut' from 'mamba_prime_train' (/ho
 ..........[10/32] L:6.4934 TPS:848.8 ..........[20/32] L:4.1636 TPS:859.3 ..........[30/32] L:6.2346 TPS:861.5 ..
 [SYNC] Step 601 finalizing...
 [PRIME] Step 601  | Loss: 246.7325 | Mig: 6.63% | Disp95: 846.7 | Ent: 12.92 | Mom: 0.14
-..........[10/32] L:6.6523 TPS:854.1 ...[OUTPUT]
-Explain gravity:
-defdefdefdef,_):
-    ###### indefdefdef in 'for i in in in in in = = +.():
-    return of 7
-    for a a the [ [ [_____defdef 1
-
-# for in 5, 5, [ [ [ [ 8,,,1, for indef.
-        return of to 4
-    #__ = 1
-
-    def, 5,
---------------------------------------------------
-
-[PROMPT] Write Python code for a fibonacci function:
-```python
-
-.......[20/32] L:4.9215 TPS:845.5 ..........[30/32] L:4.1664 TPS:818.4 ..
+..........[10/32] L:6.6523 TPS:854.1 ..........[20/32] L:4.9215 TPS:845.5 ..........[30/32] L:4.1664 TPS:818.4 ..
 [SYNC] Step 602 finalizing...
 [PRIME] Step 602  | Loss: 246.5969 | Mig: 20.82% | Disp95: 847.1 | Ent: 12.92 | Mom: 0.28
 ..........[10/32] L:5.0511 TPS:845.1 ..........[20/32] L:3.4818 TPS:856.9 ..........[30/32] L:6.1778 TPS:855.0 ..
@@ -2109,26 +1855,7 @@ defdefdefdef,_):
 ..........[10/32] L:5.1453 TPS:846.0 ..........[20/32] L:5.1247 TPS:854.5 ..........[30/32] L:6.2693 TPS:852.2 ..
 [SYNC] Step 606 finalizing...
 [PRIME] Step 606  | Loss: 246.1421 | Mig: 19.98% | Disp95: 849.1 | Ent: 12.92 | Mom: 0.27
-..........[10/32] L:4.6388 TPS:849.1 ...[OUTPUT]
-Write Python code for a fibonacci function:
-```python
-
-defif 0
-
-defdef_):
-    
-    for i in in in '_ = of [ = of [( = = in 3, to in '):
-    
-    
-    return in in in in_ = 10, 5, 5
-    return a, 6, 2, 3, 4, 6, 4, 6,(((( = a2:
-    return 0
-    return_## in 0
-    ifif__
---------------------------------------------------
-
-[PROMPT] The capital of France is
-.......[20/32] L:3.5195 TPS:834.8 ..........[30/32] L:6.2420 TPS:831.1 ..
+..........[10/32] L:4.6388 TPS:849.1 ..........[20/32] L:3.5195 TPS:834.8 ..........[30/32] L:6.2420 TPS:831.1 ..
 [SYNC] Step 607 finalizing...
 [PRIME] Step 607  | Loss: 246.0415 | Mig: 7.23% | Disp95: 849.4 | Ent: 12.92 | Mom: 0.14
 ..........[10/32] L:5.2477 TPS:782.2 ..........[20/32] L:6.2035 TPS:766.0 ..........[30/32] L:7.3786 TPS:758.2 ..
@@ -2143,26 +1870,7 @@ defdef_):
 ..........[10/32] L:4.9597 TPS:828.8 ..........[20/32] L:6.0890 TPS:852.6 ..........[30/32] L:5.2460 TPS:834.9 ..
 [SYNC] Step 611 finalizing...
 [PRIME] Step 611  | Loss: 245.6166 | Mig: 6.56% | Disp95: 851.1 | Ent: 12.92 | Mom: 0.14
-..........[10/32] L:5.9538 TPS:773.2 .......[OUTPUT]
-The capital of France is indefdefdef = = = = =, 6:
-    return in - = 0
-
-    for 
-
-def, 4, 7, 5
-
-print( = =, 1, 5
-    print((_##)
-
-     = 8, 4, 6, 3
-
-
-defdef the the #)
-
-def in 8, 2,,, 5
-    return the '# " 2, 3,,, 4, 12 in
---------------------------------------------------
-...[20/32] L:4.7994 TPS:840.2 ..........[30/32] L:5.6020 TPS:907.7 ..
+..........[10/32] L:5.9538 TPS:773.2 ..........[20/32] L:4.7994 TPS:840.2 ..........[30/32] L:5.6020 TPS:907.7 ..
 [SYNC] Step 612 finalizing...
 [PRIME] Step 612  | Loss: 245.5117 | Mig: 21.30% | Disp95: 851.2 | Ent: 12.92 | Mom: 0.29
 ..........[10/32] L:6.0633 TPS:1073.4 ..........[20/32] L:4.6726 TPS:1069.8 ..........[30/32] L:5.0438 TPS:1071.5 ..
@@ -2177,26 +1885,7 @@ def in 8, 2,,, 5
 ..........[10/32] L:3.9755 TPS:1027.3 ..........[20/32] L:7.1396 TPS:1028.9 ..........[30/32] L:5.6746 TPS:1033.4 ..
 [SYNC] Step 616 finalizing...
 [PRIME] Step 616  | Loss: 245.0931 | Mig: 20.62% | Disp95: 852.9 | Ent: 12.92 | Mom: 0.28
-
-============================================================
-[PRIME] Mamba-130m PRIME Training — PID 2162423
-[PRIME] Device: cuda
-============================================================
-[INIT] Loading tokenizer and base architecture...
-..........[10/32] L:5.0125 TPS:1034.7 .Loading weights:   0%|          | 0/242 [00:00<?, ?it/s]Loading weights: 100%|##########| 242/242 [00:00<00:00, 7061.90it/s]
-.[PRIME] LUT built: 65536 points, range [-2.0000, 2.0000]
-..[LOAD] checkpoint step: 550
-[LOAD] PRIME layers restored: 97
-[LOAD] LUT entries referenced: 65536
-.[LOAD] total parameters restored successfully (missing: 0, unexpected: 0)
-[INIT] Moving model to CPU for generation (GPU is busy training)...
-
-==================================================
-      GENERATION TESTS (STEP 550 CHECKPOINT)
-==================================================
-
-[PROMPT] Explain gravity:
-.....[20/32] L:4.9838 TPS:912.6 ..........[30/32] L:6.1861 TPS:895.9 ..
+..........[10/32] L:5.0125 TPS:1034.7 ..........[20/32] L:4.9838 TPS:912.6 ..........[30/32] L:6.1861 TPS:895.9 ..
 [SYNC] Step 617 finalizing...
 [PRIME] Step 617  | Loss: 244.9727 | Mig: 6.83% | Disp95: 853.3 | Ent: 12.92 | Mom: 0.14
 ..........[10/32] L:3.7938 TPS:850.6 ..........[20/32] L:6.5672 TPS:869.5 ..........[30/32] L:5.7556 TPS:879.6 ..
@@ -2207,20 +1896,6 @@ def in 8, 2,,, 5
 [PRIME] Step 619  | Loss: 244.7655 | Mig: 7.43% | Disp95: 854.7 | Ent: 12.92 | Mom: 0.14
 ..........[10/32] L:3.1490 TPS:845.8 ..........[20/32] L:5.5908 TPS:851.3 ..........[30/32] L:5.9222 TPS:857.4 ..
 [SYNC] Step 620 finalizing...
-[OUTPUT]
-def 2, 1
-
-defdef indefdef):
-    # indef and in 8,, 3, 7 b in 2._):
-        if in 4
-    return 3 7, 5, 5, 1,-___if__.
-
-defdef 5, 5,,, 6, for [_(((.2)
---------------------------------------------------
-
-[PROMPT] Write Python code for a fibonacci function:
-```python
-
 [PRIME] Step 620  | Loss: 244.6567 | Mig: 20.80% | Disp95: 854.9 | Ent: 12.92 | Mom: 0.29
 ..........[10/32] L:4.5072 TPS:848.7 ..........[20/32] L:7.0506 TPS:851.1 ..........[30/32] L:6.3047 TPS:859.4 ..
 [SYNC] Step 621 finalizing...
@@ -2237,25 +1912,7 @@ defdef 5, 5,,, 6, for [_(((.2)
 ..........[10/32] L:4.4811 TPS:857.5 ..........[20/32] L:8.4055 TPS:856.5 ..........[30/32] L:5.2203 TPS:859.2 ..
 [SYNC] Step 625 finalizing...
 [PRIME] Step 625  | Loss: 244.1566 | Mig: 7.04% | Disp95: 857.5 | Ent: 12.92 | Mom: 0.14
-..........[10/32] L:6.2608 TPS:843.9 ..[OUTPUT]
-defprint(_j)
-
-def):
-    defdef:
-    if a in__if in and n
-     = [ in l___returnreturn 1
-    
-    
-
-# in.(__):
-    for i in in in range(((, 9, 1,, 5, as i in indefprint( = 10
-    if of the.
-    if_
-    return the data,, 4, 6,
---------------------------------------------------
-
-[PROMPT] The capital of France is
-........[20/32] L:5.7097 TPS:840.9 ..........[30/32] L:5.8062 TPS:791.0 ..
+..........[10/32] L:6.2608 TPS:843.9 ..........[20/32] L:5.7097 TPS:840.9 ..........[30/32] L:5.8062 TPS:791.0 ..
 [SYNC] Step 626 finalizing...
 [PRIME] Step 626  | Loss: 244.0491 | Mig: 20.88% | Disp95: 858.1 | Ent: 12.92 | Mom: 0.29
 ..........[10/32] L:6.0935 TPS:877.1 ..........[20/32] L:5.1339 TPS:893.2 ..........[30/32] L:5.5074 TPS:877.0 ..
@@ -2267,38 +1924,11 @@ def):
 ..........[10/32] L:5.7441 TPS:718.1 ..........[20/32] L:5.7623 TPS:790.6 ..........[30/32] L:6.2985 TPS:809.1 ..
 [SYNC] Step 629 finalizing...
 [PRIME] Step 629  | Loss: 243.7477 | Mig: 7.05% | Disp95: 859.2 | Ent: 12.92 | Mom: 0.14
-..........[10/32] L:9.2355 TPS:882.9 .[OUTPUT]
-defdef = 'def):
-    return = = = = = '#.##### "
-    _
-        if = 6
-
-defdefdefi_print(for________return [___for i i in):
-    if 5
-    return.
-    return 1
-
-
---------------------------------------------------
-
-[PROMPT] Question: What is 2+2?
-Answer:
-.........[20/32] L:6.2549 TPS:843.2 ..........[30/32] L:5.7190 TPS:822.6 ..
+..........[10/32] L:9.2355 TPS:882.9 ..........[20/32] L:6.2549 TPS:843.2 ..........[30/32] L:5.7190 TPS:822.6 ..
 [SYNC] Step 630 finalizing...
 [PRIME] Step 630  | Loss: 243.6393 | Mig: 20.60% | Disp95: 859.9 | Ent: 12.92 | Mom: 0.28
 ..........[10/32] L:5.9959 TPS:837.0 ..........[20/32] L:6.1427 TPS:850.4 ..........[30/32] L:3.2005 TPS:822.7 ..
 [SYNC] Step 631 finalizing...
-[OUTPUT]
-print(j = 3
-    return the 7
-    return n
-    if b
-    for for the a1)
-    
-
---------------------------------------------------
-
-[PROMPT] Write a python function def quicksort(arr):
 [PRIME] Step 631  | Loss: 243.5214 | Mig: 6.41% | Disp95: 860.4 | Ent: 12.92 | Mom: 0.13
 ..........[10/32] L:4.8669 TPS:819.8 ..........[20/32] L:6.4837 TPS:912.5 ..........[30/32] L:4.6726 TPS:964.3 ..
 [SYNC] Step 632 finalizing...

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PRIME Training Dashboard — Mamba-130m</title>
+<title>PRIME Training Dashboard — Mamba3-300M Native</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
@@ -143,7 +143,7 @@
 
   .layer-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(8, 1fr);
     gap: 4px;
   }
   .layer-cell {
@@ -205,8 +205,8 @@
 <header>
   <div class="logo">P</div>
   <div>
-    <h1>PRIME Dashboard <span>Mamba-130m → Prime Harmonic</span></h1>
-    <div style="font-size:11px;color:var(--muted);margin-top:2px">RTX 3060 12GB · Trinity Prime Harmonic · 130M params</div>
+    <h1>PRIME Dashboard <span>Mamba3-300M → Native Harmonic</span></h1>
+    <div style="font-size:11px;color:var(--muted);margin-top:2px">RTX 3060 12GB · Trinity Prime Harmonic · 300M params</div>
   </div>
   <span id="status-label">Connecting…</span>
   <div class="status-dot idle" id="dot"></div>
@@ -248,7 +248,7 @@
     <canvas id="lossChart" height="160"></canvas>
   </div>
   <div class="layer-card">
-    <h2>Layer Peel Status (28 layers)</h2>
+    <h2>Layer Peel Status (48 layers)</h2>
     <div class="layer-grid" id="layer-grid"></div>
     <div style="margin-top:10px;font-size:11px;color:var(--muted)" id="layer-status">Waiting…</div>
   </div>
@@ -433,7 +433,7 @@ const migChart   = new Sparkline('migChart',   '#3de0a0');
 function buildLayerGrid() {
   const grid = document.getElementById('layer-grid');
   grid.innerHTML = '';
-  for (let i = 27; i >= 0; i--) {
+  for (let i = 47; i >= 0; i--) {
     const el = document.createElement('div');
     el.className = 'layer-cell';
     el.id = 'layer-' + i;
@@ -445,21 +445,21 @@ buildLayerGrid();
 
 function updateLayerPeel(step) {
   // Protocol v7.00: peel starts at step 200, one layer per 50 steps top-down
-  for (let i = 0; i <= 27; i++) {
+  for (let i = 0; i <= 47; i++) {
     const cell = document.getElementById('layer-' + i);
     if (!cell) continue;
-    const unlockStep = 200 + ((27 - i) * 50);
+    const unlockStep = 200 + ((47 - i) * 50);
     cell.className = 'layer-cell';
     if (step >= unlockStep) {
       const isRecent = step >= unlockStep && step < unlockStep + 50;
       cell.className = isRecent ? 'layer-cell recent' : 'layer-cell active';
     }
   }
-  const unlocked = step < 200 ? 0 : Math.min(28, Math.floor((step - 200) / 50) + 1);
+  const unlocked = step < 200 ? 0 : Math.min(48, Math.floor((step - 200) / 50) + 1);
   document.getElementById('layer-status').textContent =
     step < 200
       ? `Phase 1: Head-only stabilization (${200 - step} steps until peel)`
-      : `Layer Peel active — ${unlocked}/28 layers unlocked`;
+      : `Layer Peel active — ${unlocked}/48 layers unlocked`;
 }
 
 // ── Log helper ────────────────────────────────────────────────────────────────
@@ -487,7 +487,7 @@ let lastLogSize = 0;
 
 async function fetchLiveLog() {
   try {
-    const resp = await fetch('../training_b_selective.log?' + Date.now());
+    const resp = await fetch('../training_mamba3_native.log?' + Date.now());
     if (!resp.ok) return;
     const text = await resp.text();
 
@@ -495,8 +495,8 @@ async function fetchLiveLog() {
     if (text.length === lastLogSize) return;
     lastLogSize = text.length;
 
-    // Extract last batch line: "[30/64] L:15.6250 TPS:110.9"
-    const batchMatches = [...text.matchAll(/\[(\d+)\/(\d+)\] L:([\d.]+) TPS:([\d.]+)/g)];
+    // Extract last batch line: "[30/64] L:15.6250" or "[30/64] L:15.6250 TPS:110.9"
+    const batchMatches = [...text.matchAll(/\[(\d+)\/(\d+)\] L:([\d.]+)(?: TPS:([\d.]+))?/g)];
     if (batchMatches.length === 0) return;
 
     // Deduplicate (log has double lines from two process runs)
@@ -504,7 +504,7 @@ async function fetchLiveLog() {
     const batchNum = parseInt(last[1]);
     const batchTotal = parseInt(last[2]);
     const batchLoss = parseFloat(last[3]);
-    const batchTps = parseFloat(last[4]);
+    const batchTps = last[4] ? parseFloat(last[4]) : 0;
 
     // Update live batch card
     document.getElementById('m-tps').textContent = batchTps.toFixed(1);
@@ -546,7 +546,7 @@ async function fetchData() {
   await fetchLiveLog();
 
   try {
-    const statsResp = await fetch('../stats_prime_b.json?' + Date.now());
+    const statsResp = await fetch('../stats_mamba3_native.json?' + Date.now());
     if (!statsResp.ok) throw new Error('no stats');
     const allStats = await statsResp.json();
     if (!allStats || allStats.length === 0) return;
@@ -632,7 +632,7 @@ async function fetchData() {
     document.getElementById('last-update').textContent = 'Updated ' + new Date().toLocaleTimeString();
 
     try {
-      const saladResp = await fetch('../samples_mamba.json?' + Date.now());
+      const saladResp = await fetch('../samples_mamba3_native.json?' + Date.now());
       if (saladResp.ok) {
         const salads = await saladResp.json();
         if (salads && salads.length > 0) {

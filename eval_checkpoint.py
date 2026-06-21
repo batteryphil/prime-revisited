@@ -28,8 +28,8 @@ def evaluate():
     lut = build_prime_lut(device='cpu')
     replaced_count = replace_linear(model, lut)
     
-    ckpt_path = "prime_step_b_100.pt"
-    print(f"[LOAD] checkpoint step: 100")
+    ckpt_path = "prime_step_b_300.pt"
+    print(f"[LOAD] checkpoint step: 300")
     print(f"[LOAD] PRIME layers restored: {replaced_count}")
     print(f"[LOAD] LUT entries referenced: {len(lut)}")
     
@@ -57,7 +57,7 @@ def evaluate():
     ]
 
     print("\n" + "="*50)
-    print("      GENERATION TESTS (STEP 100 CHECKPOINT)")
+    print("      GENERATION TESTS (STEP 300 CHECKPOINT)")
     print("="*50)
 
     for p in raw_prompts:

@@ -24,6 +24,7 @@ CONFIG = {
     'total_steps':  5000,
     'device':       'cuda' if torch.cuda.is_available() else 'cpu',
     'stats_file':   'stats_mamba3_native.json',
+    'samples_file': 'samples_mamba3_native.json',
     'log_file':     'training_mamba3_native.log',
 }
 
@@ -72,18 +73,28 @@ class PrimeLinear(nn.Module):
     """
     Discrete weight matrix on the prime harmonic grid.
     No AdamW, no scale, no continuous descent.
-    Gradient signs accumulate into a CPU vote buffer.
+    Gradient signs accumulate into a GPU vote buffer.
     Supermajority gate → index steps (+1 or -1) across the LUT.
     Exactly the mechanism from prime-revisited, applied from scratch.
+
+    v2 changes (reviewer-directed):
+      SUPERMAJORITY 5  → 12  : forces stricter consensus, lowers migration rate
+      MAX_STRIDE    32 → 2   : clamps velocity, prevents overstepping basins
+      DECAY_RATE    0.95 → 0.90 : faster stale-vote clearing
+      vote_buffer/last_dir/momentum: CPU → GPU registered buffers
+        → eliminates all CPU↔GPU transfers in the optimization hot path
+        → GPU utilization: 10% → ~60%+
     """
-    SUPERMAJORITY = 5
+    SUPERMAJORITY = 12
     BLOCK_SIZE    = 32
+    MAX_STRIDE    = 2
+    DECAY_RATE    = 0.90
 
     def __init__(self, module: nn.Linear, lut: torch.Tensor):
         super().__init__()
         self.in_features  = module.in_features
         self.out_features = module.out_features
-        self.lut = lut  # shared CPU tensor
+        self.lut = lut  # shared CPU tensor — moved to device on first forward
 
         # Map random init weights onto the nearest LUT index
         with torch.no_grad():
@@ -94,14 +105,16 @@ class PrimeLinear(nn.Module):
             base = torch.div(combined, 256, rounding_mode='floor').to(torch.uint8)
             fine = (combined % 256).to(torch.uint8)
 
-        self.register_buffer('base_idx', base)              # GPU — fast forward
-        self.register_buffer('fine_idx', fine)              # GPU — fast forward
-        self.vote_buffer = torch.zeros(                     # CPU — no VRAM cost
-            self.out_features, self.in_features, dtype=torch.int16)
-        self.register_buffer('init_combined', combined.to(torch.int32))
         n_blocks = (self.out_features * self.in_features) // self.BLOCK_SIZE
-        self.last_dir = torch.zeros(n_blocks, 1, dtype=torch.int8)   # CPU
-        self.momentum  = torch.zeros(n_blocks, 1, dtype=torch.int8)  # CPU
+
+        # All buffers registered → move to GPU with model.to(device)
+        self.register_buffer('base_idx',     base)                                          # uint8 GPU
+        self.register_buffer('fine_idx',     fine)                                          # uint8 GPU
+        self.register_buffer('init_combined', combined.to(torch.int32))                    # int32 GPU
+        self.register_buffer('vote_buffer',  torch.zeros(                                  # int16 GPU
+            self.out_features, self.in_features, dtype=torch.int16))
+        self.register_buffer('last_dir',     torch.zeros(n_blocks, 1, dtype=torch.int8))  # int8  GPU
+        self.register_buffer('momentum',     torch.zeros(n_blocks, 1, dtype=torch.int8))  # int8  GPU
 
         self.bias = nn.Parameter(module.bias.data.clone()) if module.bias is not None else None
 
@@ -114,53 +127,79 @@ class PrimeLinear(nn.Module):
         return F.linear(x, w, self.bias)
 
     def _vote_hook(self, grad):
-        """Accumulate sign×10 pressure into CPU vote buffer."""
+        """Accumulate sign×10 pressure — fully on GPU, zero CPU transfer."""
         with torch.no_grad():
-            pressure = (torch.sign(grad).cpu() * 10).to(torch.int32)
+            pressure = (torch.sign(grad) * 10).to(torch.int32)
             self.vote_buffer = torch.clamp(
                 self.vote_buffer.to(torch.int32) + pressure, -32760, 32760
             ).to(torch.int16)
 
     @torch.no_grad()
     def apply_votes(self, lr=1e-4):
-        """Block supermajority gate → step indices. Returns telemetry dict."""
-        bs   = self.BLOCK_SIZE
-        flat = self.vote_buffer.view(-1)
-        n    = flat.numel()
+        """Block supermajority gate → step indices. Fully GPU-resident. Returns telemetry dict."""
+        bs      = self.BLOCK_SIZE
+        flat    = self.vote_buffer.view(-1)          # GPU int16
+        n       = flat.numel()
         aligned = n - (n % bs)
-        blocks  = flat[:aligned].float().view(-1, bs)
+        flat_a  = flat[:aligned]
 
+        # ── Capture vote distribution BEFORE any modification ─────────────────
+        vote_pos  = (flat_a > 0).float().mean().item()
+        vote_neg  = (flat_a < 0).float().mean().item()
+        vote_neut = max(0.0, 1.0 - vote_pos - vote_neg)
+
+        blocks    = flat_a.float().view(-1, bs)
         magnitude = blocks.abs().mean(dim=1, keepdim=True)
         authorized = (magnitude * (lr / 1e-4) >= self.SUPERMAJORITY)
 
-        base_cpu = self.base_idx.cpu()
-        fine_cpu = self.fine_idx.cpu()
-        combined = (base_cpu.view(-1)[:aligned].to(torch.int32) * 256
-                  + fine_cpu.view(-1)[:aligned].to(torch.int32))
+        # Current index state — already on GPU
+        combined = (self.base_idx.view(-1)[:aligned].to(torch.int32) * 256 +
+                    self.fine_idx.view(-1)[:aligned].to(torch.int32))
+
+        # ── Shared telemetry helper (operates on whichever combined is passed) ─
+        def _telemetry(c):
+            counts   = torch.bincount(c.long(), minlength=65536)
+            p        = counts[counts > 0].float() / c.numel()
+            entropy  = -(p * torch.log2(p + 1e-12)).sum().item()
+            occupancy = (counts > 0).float().mean().item()
+            init_f   = self.init_combined.to(c.device).view(-1)[:aligned]
+            diff     = (c - init_f).float().abs()
+            disp_95  = torch.quantile(diff[::max(1, len(diff)//100000)], 0.95).item()
+            mom_mean = self.momentum.float().mean().item()
+            return {
+                'entropy':      round(entropy, 4),
+                'disp_95':      round(disp_95, 2),
+                'occupancy':    round(occupancy, 4),
+                'momentum_mean': round(mom_mean, 4),
+                'vote_pos':     round(vote_pos, 4),
+                'vote_neg':     round(vote_neg, 4),
+                'vote_neut':    round(vote_neut, 4),
+            }
 
         if not authorized.any():
-            counts  = torch.bincount(combined.long(), minlength=65536)
-            p       = counts[counts > 0].float() / combined.numel()
-            entropy = -(p * torch.log2(p)).sum().item()
-            init_f  = self.init_combined.cpu().view(-1)[:aligned]
-            diff    = (combined - init_f).float().abs()
-            disp_95 = torch.quantile(diff[::max(1, len(diff)//100000)], 0.95).item()
-            return {'flips': 0, 'migration_rate': 0.0,
-                    'entropy': round(entropy, 4), 'disp_95': round(disp_95, 2)}
+            return {'flips': 0, 'migration_rate': 0.0, **_telemetry(combined)}
 
+        # ── Active branch ─────────────────────────────────────────────────────
         step_dir  = torch.sign(blocks)
         block_dir = step_dir.mean(dim=1, keepdim=True).sign().to(torch.int8)
-        auth_sq, ld_sq, bd_sq = authorized.squeeze(), self.last_dir.squeeze(), block_dir.squeeze()
+        auth_sq   = authorized.squeeze()
+        ld_sq     = self.last_dir.squeeze()
+        bd_sq     = block_dir.squeeze()
 
         reversed_blocks = auth_sq & (bd_sq != ld_sq) & (ld_sq != 0)
-        same_dir     = (bd_sq == ld_sq).to(torch.int8)
-        new_momentum = torch.clamp((self.momentum.squeeze() * same_dir + same_dir).to(torch.int8), 0, 8)
-        self.momentum = new_momentum.view(-1, 1)
+        same_dir        = (bd_sq == ld_sq).to(torch.int8)
+        new_momentum    = torch.clamp(
+            (self.momentum.squeeze() * same_dir + same_dir).to(torch.int8), 0, 8)
+        self.momentum   = new_momentum.view(-1, 1)
 
         cblocks      = combined.view(-1, bs)
         center_dist  = (cblocks - 32768).float().abs().mean(dim=1, keepdim=True)
-        base_stride  = torch.clamp((8.0 * (1.0 - center_dist / 32768.0)).long(), min=1)
-        dyn_stride   = base_stride * (1 + self.momentum.float() / 2.0).to(torch.long)
+        # MAX_STRIDE cap: stride scales from 1 → MAX_STRIDE based on center proximity
+        base_stride  = torch.clamp(
+            (self.MAX_STRIDE * (1.0 - center_dist / 32768.0)).long(), min=1)
+        dyn_stride   = torch.clamp(
+            base_stride * (1 + self.momentum.float() / 2.0).to(torch.long),
+            max=self.MAX_STRIDE)
         dyn_stride[reversed_blocks.view(-1, 1)] = 0
 
         update      = (authorized.float() * step_dir * dyn_stride).to(torch.int32)
@@ -168,27 +207,21 @@ class PrimeLinear(nn.Module):
         total_flips = int(moved.sum().item() * bs)
 
         new_combined = torch.clamp(combined - update.view(-1), 0, 65535)
-        self.base_idx.copy_(torch.div(new_combined, 256, rounding_mode='floor')
-                            .to(torch.uint8).view(self.base_idx.shape).to(self.base_idx.device))
-        self.fine_idx.copy_((new_combined % 256).to(torch.uint8)
-                            .view(self.fine_idx.shape).to(self.fine_idx.device))
+        self.base_idx.copy_(
+            torch.div(new_combined, 256, rounding_mode='floor')
+            .to(torch.uint8).view(self.base_idx.shape))
+        self.fine_idx.copy_(
+            (new_combined % 256).to(torch.uint8).view(self.fine_idx.shape))
         self.last_dir = block_dir.clone()
 
+        # Clear authorized blocks, decay remainder with class-level DECAY_RATE
         self.vote_buffer.view(-1)[:aligned].view(-1, bs).masked_fill_(authorized, 0)
-        self.vote_buffer = (self.vote_buffer.float() * 0.95).to(torch.int16)
-
-        counts  = torch.bincount(new_combined.long(), minlength=65536)
-        p       = counts[counts > 0].float() / new_combined.numel()
-        entropy = -(p * torch.log2(p)).sum().item()
-        init_f  = self.init_combined.cpu().view(-1)[:aligned]
-        diff    = (new_combined - init_f).float().abs()
-        disp_95 = torch.quantile(diff[::max(1, len(diff)//100000)], 0.95).item()
+        self.vote_buffer = (self.vote_buffer.float() * self.DECAY_RATE).to(torch.int16)
 
         return {
             'flips':          total_flips,
             'migration_rate': round(total_flips / max(1, n), 6),
-            'entropy':        round(entropy, 4),
-            'disp_95':        round(disp_95, 2),
+            **_telemetry(new_combined),   # post-update stats on GPU
         }
 
 # ── Pure-PyTorch Mamba Selective Scan ────────────────────────────────────────
@@ -351,13 +384,35 @@ if __name__ == '__main__':
     print(f"[INIT] Total params: {total_params/1e6:.1f}M")
     print(f"[INIT] VRAM: {torch.cuda.memory_allocated()/1e9:.2f} GB")
 
+    step       = 0
+    history    = []
+
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--resume', type=str, default=None, help='Path to checkpoint to resume from')
+    args, _ = parser.parse_known_args()
+
+    if args.resume and os.path.exists(args.resume):
+        print(f"[INIT] Resuming from checkpoint: {args.resume}")
+        ckpt = torch.load(args.resume, map_location=CONFIG['device'])
+        model.load_state_dict(ckpt['state_dict'])
+        step = ckpt.get('step', 0)
+        
+        # Load and trim history to match resumed step
+        if os.path.exists(CONFIG['stats_file']):
+            try:
+                with open(CONFIG['stats_file'], 'r') as f:
+                    full_history = json.load(f)
+                    history = [h for h in full_history if h.get('step', 0) <= step]
+            except Exception as e:
+                print(f"[WARN] Failed to load history: {e}")
+        print(f"[INIT] Successfully resumed at step {step}")
+
     data_gen = make_dataset(tokenizer)
 
-    step       = 0
     batch_idx  = 0
     total_loss = 0.0
     start_time = time.time()
-    history    = []
     accum      = CONFIG['grad_accum']
 
     print("[TRAIN] Starting pure-discrete PRIME training...")
@@ -389,7 +444,8 @@ if __name__ == '__main__':
             torch.cuda.empty_cache()
 
             # ── The discrete optimizer ────────────────────────────────────────
-            total_flips, migs, ents, disps = 0, [], [], []
+            total_flips = 0
+            migs, ents, disps, occs, vpos, vneg, vneut, moms = [], [], [], [], [], [], [], []
             for m in model.modules():
                 if isinstance(m, PrimeLinear):
                     r = m.apply_votes(lr=CONFIG['lr'])
@@ -397,6 +453,11 @@ if __name__ == '__main__':
                     migs.append(r['migration_rate'])
                     ents.append(r['entropy'])
                     disps.append(r['disp_95'])
+                    occs.append(r.get('occupancy', 0.0))
+                    vpos.append(r.get('vote_pos', 0.0))
+                    vneg.append(r.get('vote_neg', 0.0))
+                    vneut.append(r.get('vote_neut', 0.0))
+                    moms.append(r.get('momentum_mean', 0.0))
 
             # Zero all gradients manually — no optimizer.step()
             for p in model.parameters():
@@ -405,18 +466,33 @@ if __name__ == '__main__':
             mean_mig  = sum(migs)  / max(len(migs),  1)
             mean_ent  = sum(ents)  / max(len(ents),  1)
             mean_disp = sum(disps) / max(len(disps), 1)
+            mean_occ  = sum(occs)  / max(len(occs),  1)
+            mean_vpos = sum(vpos)  / max(len(vpos),  1)
+            mean_vneg = sum(vneg)  / max(len(vneg),  1)
+            mean_vneut= sum(vneut) / max(len(vneut), 1)
+            mean_mom  = sum(moms)  / max(len(moms),  1)
             tps       = (CONFIG['seq_len'] * accum) / max(time.time() - start_time, 1e-6)
             avg_loss  = total_loss / accum
 
             print(f"[PRIME] Step {step} | Loss: {avg_loss:.4f} | "
                   f"Mig: {mean_mig*100:.2f}% | Disp95: {mean_disp:.1f} | "
-                  f"Ent: {mean_ent:.2f} | TPS: {tps:.1f}")
+                  f"Ent: {mean_ent:.2f} | Occ: {mean_occ*100:.1f}% | "
+                  f"V+:{mean_vpos*100:.0f}%/V-:{mean_vneg*100:.0f}% | TPS: {tps:.1f}")
 
             stats = {
-                'step': step, 'loss': round(avg_loss, 4),
-                'tps': round(tps, 2), 'migration_rate': round(mean_mig * 100, 4),
-                'entropy': round(mean_ent, 4), 'disp_95': round(mean_disp, 2),
-                'flips': total_flips,
+                'step':           step,
+                'loss':           round(avg_loss, 4),
+                'tps':            round(tps, 2),
+                'migration_rate': round(mean_mig * 100, 4),
+                'entropy':        round(mean_ent, 4),
+                'disp_95':        round(mean_disp, 2),
+                'flips':          total_flips,
+                'occupancy':      round(mean_occ, 4),
+                'vote_pos':       round(mean_vpos, 4),
+                'vote_neg':       round(mean_vneg, 4),
+                'vote_neut':      round(mean_vneut, 4),
+                'momentum_mean':  round(mean_mom, 4),
+                'timestamp':      time.time(),
             }
             history.append(stats)
             with open(CONFIG['stats_file'], 'w') as f:
@@ -426,6 +502,58 @@ if __name__ == '__main__':
                 torch.save({'step': step, 'state_dict': model.state_dict(), 'stats': stats},
                            f"prime_mamba3_{step}.pt")
                 print(f"[CKPT] Saved prime_mamba3_{step}.pt")
+
+                # ── Word salad generation ─────────────────────────────────────
+                print(f"[SALAD] Generating at step {step}...")
+                model.eval()
+                salad_prompts = [
+                    "### Instruction:\nWrite a Python function to reverse a string.\n### Response:\n",
+                    "### Instruction:\nWhat is a neural network?\n### Response:\n",
+                    "### Instruction:\ndef fibonacci(n):\n### Response:\n",
+                ]
+                salad_texts = []
+                with torch.no_grad():
+                    for prompt in salad_prompts:
+                        try:
+                            p_ids = tokenizer(prompt, return_tensors='pt').input_ids.to(CONFIG['device'])
+                            gen = model.generate(
+                                p_ids, max_new_tokens=80,
+                                temperature=0.8, do_sample=True,
+                                pad_token_id=tokenizer.eos_token_id
+                            ) if hasattr(model, 'generate') else None
+                            if gen is not None:
+                                text = tokenizer.decode(gen[0][p_ids.shape[1]:], skip_special_tokens=True)
+                                salad_texts.append(text)
+                            else:
+                                # Manual greedy decode fallback
+                                inp = p_ids
+                                for _ in range(80):
+                                    logits, _ = model(inp)
+                                    next_tok = logits[:, -1, :].div(0.8).softmax(-1).multinomial(1)
+                                    inp = torch.cat([inp, next_tok], dim=1)
+                                    if next_tok.item() == tokenizer.eos_token_id:
+                                        break
+                                text = tokenizer.decode(inp[0][p_ids.shape[1]:], skip_special_tokens=True)
+                                salad_texts.append(text)
+                        except Exception as e:
+                            salad_texts.append(f'[gen error: {e}]')
+                model.train()
+                salad_entry = {
+                    'step': step,
+                    'text': ' | '.join(salad_texts),
+                    'prompts': salad_prompts,
+                    'samples': salad_texts,
+                }
+                # Load existing samples, append, save last 20
+                try:
+                    with open(CONFIG['samples_file']) as sf:
+                        all_salads = json.load(sf)
+                except Exception:
+                    all_salads = []
+                all_salads.append(salad_entry)
+                with open(CONFIG['samples_file'], 'w') as sf:
+                    json.dump(all_salads[-20:], sf)
+                print(f"[SALAD] Step {step}: {salad_texts[0][:120]}")
 
             batch_idx  = 0
             total_loss = 0.0
