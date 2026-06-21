@@ -7,6 +7,7 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.utils.checkpoint
 from transformers import AutoTokenizer
 from datasets import load_dataset
 from huggingface_hub import login
@@ -24,10 +25,11 @@ CONFIG = {
     'device':       'cuda' if torch.cuda.is_available() else 'cpu',
     'stats_file':   'stats_mamba3_native.json',
     'log_file':     'training_mamba3_native.log',
-    'hf_token':     os.environ.get('HF_TOKEN', ''),  # set HF_TOKEN env var or ~/.hf_token
 }
 
-login(token=CONFIG['hf_token'])
+_tok_path = os.path.expanduser('~/.hf_token')
+login(token=open(_tok_path).read().strip() if os.path.exists(_tok_path)
+      else os.environ.get('HF_TOKEN', ''))
 
 # ── Logger ────────────────────────────────────────────────────────────────────
 class LoggerTee:
@@ -286,8 +288,8 @@ class Mamba3LM(nn.Module):
 
 # ── Dataset ──────────────────────────────────────────────────────────────────
 def make_dataset(tokenizer):
-    hf = load_dataset('bigcode/the-stack-smol', data_dir='data/python',
-                      split='train', streaming=True, trust_remote_code=True)
+    ds = load_dataset('iamtarun/python_code_instructions_18k_alpaca',
+                      split='train', streaming=True)
     oo_path = '/home/phil/.gemini/antigravity/scratch/analysis_project/oo_dataset.jsonl'
     oo_chunks = []
     try:
@@ -300,14 +302,17 @@ def make_dataset(tokenizer):
     except Exception:
         pass
     import random
-    hf_iter = iter(hf)
+    ds_iter = iter(ds)
     def gen():
         while True:
             if oo_chunks and random.random() < 0.25:
                 text = random.choice(oo_chunks)
             else:
                 try:
-                    text = next(hf_iter).get('content', '')
+                    ex = next(ds_iter)
+                    inst = ex.get('instruction', '')
+                    out  = ex.get('output', ex.get('response', ''))
+                    text = f"### Instruction:\n{inst}\n### Response:\n{out}{tokenizer.eos_token}"
                 except StopIteration:
                     return
             tok = tokenizer(text, truncation=True, max_length=CONFIG['seq_len'],
