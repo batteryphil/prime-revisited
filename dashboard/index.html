@@ -487,7 +487,7 @@ let lastLogSize = 0;
 
 async function fetchLiveLog() {
   try {
-    const resp = await fetch('../training_mamba.log?' + Date.now());
+    const resp = await fetch('../training_b_selective.log?' + Date.now());
     if (!resp.ok) return;
     const text = await resp.text();
 
@@ -546,7 +546,7 @@ async function fetchData() {
   await fetchLiveLog();
 
   try {
-    const statsResp = await fetch('../stats_mamba.json?' + Date.now());
+    const statsResp = await fetch('../stats_prime_b.json?' + Date.now());
     if (!statsResp.ok) throw new Error('no stats');
     const allStats = await statsResp.json();
     if (!allStats || allStats.length === 0) return;

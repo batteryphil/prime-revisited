@@ -33,13 +33,13 @@ CONFIG = {
     'seq_len': 512,
     'grad_accum': 32,
     'lr': 1e-4,
-    'total_steps': 30,
+    'total_steps': 1000,
     'noise_every': 50,
     'device': 'cuda' if torch.cuda.is_available() else 'cpu',
-    'stats_file': 'stats_prime.json',
-    'samples_file': 'samples_prime.json',
-    'checkpoint_prefix': 'prime_step',
-    'log_file': 'training_prime.log',
+    'stats_file': 'stats_prime_b.json',
+    'samples_file': 'samples_prime_b.json',
+    'checkpoint_prefix': 'prime_step_b',
+    'log_file': 'training_b_selective.log',
     # [DIAGNOSTIC] Freeze scale for first N steps to test gradient-sink hypothesis.
     # If vote entropy / migration rate jump when scale is frozen, scale is the sink.
     'freeze_scale_steps': 0,
@@ -347,16 +347,17 @@ def load_and_wrap_model(lut):
         torch_dtype=torch.float32,
     )
 
-    # Swap all nn.Linear layers with PrimeLinear (Trinity pattern)
+    # Swap selected nn.Linear layers with PrimeLinear (Test B: Protect Mamba dynamics)
     replaced = 0
     for name, module in list(model.named_modules()):
         if isinstance(module, nn.Linear):
             parts = name.rsplit('.', 1)
             parent = model.get_submodule(parts[0]) if len(parts) > 1 else model
             attr = parts[-1]
-            prime = PrimeLinear(module, lut)
-            setattr(parent, attr, prime)
-            replaced += 1
+            if attr in ('in_proj', 'lm_head'):
+                prime = PrimeLinear(module, lut)
+                setattr(parent, attr, prime)
+                replaced += 1
 
     print(f"[PRIME] Wrapped {replaced} linear layers with PrimeLinear.")
     model = model.to(CONFIG['device'])
@@ -596,7 +597,7 @@ def train():
                   f"Mom: {momentum_mean:.2f}")
 
             # ── Word salad generation ──
-            if False: # step % 5 == 0:
+            if False: # step % 10 == 0:
                 model.eval()
                 with torch.no_grad():
                     prompt = "### Instruction:\ndef fibonacci(n):\n### Response:\n"
