@@ -29,7 +29,7 @@ int main() {
 
     // Typical LLM sizes (e.g. 1024 d_model)
     int batch_size = 1; // Single token generation latency test
-    int in_features = 4096;
+    int in_features = 1024;
     int out_features = 4096;
     
     printf("Config: [%d, %d] x [%d, %d] -> [%d, %d]\n", 
@@ -48,18 +48,21 @@ int main() {
         return 1;
     }
 
-    // Initialize dummy LUT
-    for (int i = 0; i < 65536; ++i) {
-        lut[i] = (float)(i % 13) * 0.1f - 0.6f; // Dummy prime distribution
-    }
+    // Read real LUT
+    FILE* f_lut = fopen("lut.bin", "rb");
+    if (!f_lut) { printf("Failed to open lut.bin\n"); return 1; }
+    fread(lut, sizeof(float), 65536, f_lut);
+    fclose(f_lut);
 
-    // Initialize dummy inputs and weights
+    // Read real weights
+    FILE* f_weights = fopen("weights.bin", "rb");
+    if (!f_weights) { printf("Failed to open weights.bin\n"); return 1; }
+    fread(weight_indices, sizeof(uint16_t), out_features * in_features, f_weights);
+    fclose(f_weights);
+
+    // Initialize dummy inputs (x = 1.0)
     for (int i = 0; i < batch_size * in_features; ++i) {
-        x[i] = 1.0f; // Easy to verify mathematically
-    }
-    
-    for (int i = 0; i < out_features * in_features; ++i) {
-        weight_indices[i] = (uint16_t)(i % 65536);
+        x[i] = 1.0f;
     }
 
     // Warmup run
