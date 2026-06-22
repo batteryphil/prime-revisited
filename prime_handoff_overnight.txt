@@ -1,0 +1,152 @@
+=============================================================================
+PRIME MAMBA-3  |  AI HANDOFF REPORT  |  Updated: 2026-06-22 17:38 local
+=============================================================================
+
+1. CURRENT DIRECTIVE & TECHNICAL ARCHITECTURE
+=============================================================================
+Goal: Train a 300M-class Mamba-3 model using the PRIME discrete optimizer
+(vote-gated integer accumulation — no AdamW, no continuous gradients) to serve
+as the logic cortex for the `Operating-Organism` (OO) baremetal ecosystem.
+
+Architecture (mamba3_prime_native.py):
+  - Class:       Mamba3LM (native PyTorch, NOT a HuggingFace model)
+  - d_model:     1024
+  - n_layers:    28
+  - d_state:     16 (SSM state dimension)
+  - d_inner:     2048 (expand=2)
+  - seq_len:     256
+  - grad_accum:  4
+  - Vocab:       50,277 (EleutherAI Pythia tokenizer)
+
+PRIME Optimizer:
+  - LUT:          65,536 float32 points on a prime harmonic grid
+                  (13 base primes 2..41 normalized by 1/41, × 13 fine states)
+  - SUPERMAJORITY: 12  — weight only steps after >12 same-sign votes
+  - MAX_STRIDE:    2   — max index jump per step (prevents overshoot)
+  - DECAY_RATE:    0.90 — vote buffer decay for stale signals
+  - All vote buffers are GPU-resident (int16), zero CPU↔GPU transfer
+
+2. TRAINING STATUS  (as of 2026-06-22 17:38)
+=============================================================================
+  PID:            2272312 (nohup, background)
+  Resume file:    prime_mamba3_19800.pt  (19850 was corrupt — disk was full)
+  Current step:   ~19,806
+  Target:         25,000
+  Remaining:      ~5,194 steps  (~3h 37min at 410 TPS)
+  ETA:            ~21:10 local tonight
+
+Live telemetry at Step 19,806:
+  Loss:    2.83 – 3.49 (oscillating; floor trend downward)
+  Mig:     44–46%  (stable — healthy vote migration)
+  Disp95:  411.1   (steadily expanding — LUT usage widening)
+  Entropy: 10.08   (rising from 7.86 at Step 50 — model is more expressive)
+  Occ:     4.4%    (up from 2.1% at Step 2200 — more LUT slots activated)
+  V+/V-:   33%/33% (balanced — no mode collapse, vanishing grad impossible)
+  TPS:     ~410
+
+3. CONVERGENCE HISTORY (4 Phases)
+=============================================================================
+Phase 1 — Cold Start (Steps 0 → 2200)  |  Dataset: Alpaca Python instruct
+  The model launched from random weights on generic Python/English data.
+  Loss noisy: 6.37 → 4.21. Entropy rose 7.86 → 9.09. Voting was establishing
+  rough coarse structure — no C++ alignment yet.
+
+Phase 2 — Domain Pivot Shock (Steps 2200 → 5000)  |  Dataset: OO C-first
+  Dataset swapped entirely:
+    60% oo_c_instruct.jsonl  (2,309 C/C++/Rust instruction pairs)
+    40% oo_corpus.jsonl      (853 chunks of actual OO repo: C, Rust, headers, .md)
+  Initial shock: loss spiked as English vote buffers contradicted C signals.
+  SUPERMAJORITY=12 prevented chaotic flip-flopping. Entropy 9.09 → 9.42.
+  First appearance of `#include <iostream>` in salad output.
+
+Phase 3 — Structural Lock-In (Steps 5000 → 12500)  |  C++ syntax emerges
+  Loss trended down: 4.49 → 3.58. Disp95 grew 182 → 328. The model began
+  consistently opening every response with valid C++ headers regardless of
+  prompt language. `int main() {`, `std::cin >>`, Markdown ` ```cpp ` fences
+  all appearing correctly. Python prompts suppressed.
+
+Phase 4 — Semantic Deepening (Steps 12500 → 19850)  |  OO logic absorption
+  Loss record low: 2.73 at Step 17,500. Entropy hit 10.08. Disp95 reached 411.
+  Occ grew 3.7% → 4.4% — the discrete manifold is using progressively more of
+  the LUT's expressive capacity. The model has passed the "structural" phase and
+  is entering genuine semantic patterning of C++ logic constructs.
+
+4. COHERENCE TEST RESULTS  (Step 13,250 — native Mamba3LM inference)
+=============================================================================
+NOTE: DO NOT use HuggingFace AutoModelForCausalLM to load this model.
+      The native class is Mamba3LM in mamba3_prime_native.py.
+      Use oo_inference.py which loads the correct class.
+
+Results at Step 13,250 (inference script: oo_inference.py):
+  PASS (Structural):   All C++ syntax prompts → valid `#include`, `int main()`
+  PASS (Domain Lock):  Python/English prompts → forced C++ output
+  PASS (Template):     "Here is a C++ program that..." template learned
+  PARTIAL (Semantic):  Struct/function prompts → correct skeleton, hallucinated body
+  FAIL (Conceptual):   Abstract OO prompts (homeostasis, cortex role) → English prose
+  Avg TPS on CPU:      2.88 (pure baremetal, zero GPU)
+
+Expected at Step 25,000: semantic body should tighten significantly as the
+remaining 5,000 steps deepen OO corpus patterns into the discrete lattice.
+
+5. AVX-512 BAREMETAL C INFERENCE KERNEL
+=============================================================================
+Files:
+  prime_kernel.c      — Core PRIME linear forward (AVX-512 intrinsics)
+  prime_inference.c   — Full token loop: in_proj + SiLU + out_proj + residual
+  prime_benchmark     — Compiled 1000-pass speed test
+  prime_inference     — Compiled token gen engine
+  export_prime_weights.py — Dumps lut.bin + weights.bin from any checkpoint
+  oo_inference.py     — Full 10-prompt OO/C++ battery (correct native loader)
+  show_coherence.py   — Prints latest salad from samples_mamba3_native.json
+
+Key intrinsics: _mm512_cvtepu16_epi32, _mm512_i32gather_ps, _mm512_fmadd_ps
+Compiler flags: gcc -O3 -march=native -mavx512f -mavx512bw -mavx512dq -fopenmp -ffast-math
+Hardware: Intel(R) Xeon(R) Gold 6136 CPU @ 3.00GHz
+
+Benchmark vs real Step 12,600 weights [1,1024]×[4096,1024]:
+  Synthetic indices: 0.903 ms/pass  → ~15.5 TPS projected
+  Real weights:      7.688 ms/pass  → ~1.8 TPS measured
+  Gap cause: random LUT access pattern in real weights stresses L1 cache.
+  Fix path: implement __builtin_prefetch() for the gather index pattern.
+
+6. DISK MANAGEMENT — CRITICAL NOTE
+=============================================================================
+The 916 GB root drive (/dev/sda2) filled to 100% during the overnight run
+because checkpoints were saved every 50 steps at ~1.87 GB each (397 total).
+
+Recovery: purged all but the 3 most recent checkpoints. Root drive now at 21%.
+IMPORTANT: Add auto-pruning to the training loop to keep only the last 3
+checkpoints. Current config saves every 50 steps — at 1.87 GB each, you have
+~180 steps of safety margin before hitting 100% again.
+
+Add to mamba3_prime_native.py after checkpoint save:
+  old_ckpts = sorted(glob.glob('prime_mamba3_*.pt'),
+                     key=lambda f: int(f.split('_')[-1].replace('.pt','')))
+  for f in old_ckpts[:-3]:
+      os.remove(f)
+
+7. NEXT STEPS FOR AI
+=============================================================================
+A) CHECK TRAINING:
+   tail -n 10 training_mamba3_native.log
+   ps aux | grep mamba3
+
+B) IF TRAINING COMPLETED (Step 25,000):
+   1. python3 show_coherence.py              → evaluate final output
+   2. python3 oo_inference.py               → run full OO/C++ battery
+   3. python3 export_prime_weights.py       → export lut.bin + weights.bin
+   4. ./prime_benchmark                     → measure final baremetal TPS
+   5. git add -A && git commit && git push  → save everything to repo
+
+C) IF DISK IS FULL AGAIN:
+   cd mamba-prime && ls -t prime_mamba3_*.pt | tail -n +4 | xargs rm -f
+
+D) NEXT OPTIMIZATION TARGETS:
+   1. Add __builtin_prefetch() to prime_kernel.c to close the 8x gap between
+      synthetic (0.9ms) and real-weight (7.7ms) layer latency.
+   2. Integrate prime_linear_forward() into Operating-Organism vital-baremetal
+      module as the LLM cortex entry point.
+   3. Consider extending training to 35,000+ steps if Step 25,000 coherence
+      test shows semantic body still hallucinating on abstract OO prompts.
+
+=============================================================================
