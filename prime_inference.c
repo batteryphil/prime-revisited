@@ -1,13 +1,6 @@
 /*
  * prime_inference.c
- * Full token-generation inference loop using the AVX-512 PRIME C kernel.
- *
- * Architecture: simulates N token autoregressive generation steps
- * using real PRIME weights (exported from the live checkpoint).
- * Each "token step" runs through:
- *   - in_proj forward  (1024 -> 4096)  [SSM input projection]
- *   - out_proj forward (4096 -> 1024)  [SSM output projection]
- * ...which are the two PRIME layers that dominate inference time.
+ * Loads the monolithic PRIME Mamba-3 .bin file and executes inference.
  *
  * Compile: gcc -O3 -march=native -mavx512f -mavx512bw -mavx512dq
  *               -fopenmp -ffast-math prime_kernel.c prime_inference.c
@@ -21,6 +14,16 @@
 #include <time.h>
 #include <math.h>
 
+#define MAGIC_NUM 0x5052494D
+
+typedef struct {
+    int magic;
+    int d_model;
+    int n_layers;
+    int vocab_size;
+    int lut_size;
+} Config;
+
 /* ── kernel declaration ──────────────────────────────────────────── */
 void prime_linear_forward(
     const float*    restrict x,
@@ -29,133 +32,97 @@ void prime_linear_forward(
     float*          restrict y,
     int batch_size, int in_features, int out_features);
 
-/* ── helpers ─────────────────────────────────────────────────────── */
 static double now_sec(void) {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return ts.tv_sec + ts.tv_nsec * 1e-9;
 }
 
-static float* load_f32(const char* path, size_t n) {
-    FILE* f = fopen(path, "rb");
-    if (!f) { fprintf(stderr, "Cannot open %s\n", path); exit(1); }
-    float* buf = (float*)malloc(n * sizeof(float));
-    if (fread(buf, sizeof(float), n, f) != n) {
-        fprintf(stderr, "Short read: %s\n", path); exit(1); }
-    fclose(f);
-    return buf;
-}
-
-static uint16_t* load_u16(const char* path, size_t n) {
-    FILE* f = fopen(path, "rb");
-    if (!f) { fprintf(stderr, "Cannot open %s\n", path); exit(1); }
-    uint16_t* buf = (uint16_t*)malloc(n * sizeof(uint16_t));
-    if (fread(buf, sizeof(uint16_t), n, f) != n) {
-        fprintf(stderr, "Short read: %s\n", path); exit(1); }
-    fclose(f);
-    return buf;
-}
-
-/* Minimal layer-norm: zero-mean, unit-variance, no affine transform */
-static void layer_norm(float* x, int n) {
-    float mean = 0.f, var = 0.f;
-    for (int i = 0; i < n; i++) mean += x[i];
-    mean /= n;
-    for (int i = 0; i < n; i++) { float d = x[i] - mean; var += d*d; }
-    var  /= n;
-    float inv = 1.f / sqrtf(var + 1e-5f);
-    for (int i = 0; i < n; i++) x[i] = (x[i] - mean) * inv;
-}
-
-/* SiLU activation (used inside Mamba SSM expand) */
-static void silu_inplace(float* x, int n) {
-    for (int i = 0; i < n; i++) {
-        float sig = 1.f / (1.f + expf(-x[i]));
-        x[i] *= sig;
+int main(int argc, char** argv) {
+    if (argc < 2) {
+        printf("Usage: %s <model.bin>\n", argv[0]);
+        return 1;
     }
-}
+    const char* path = argv[1];
 
-/* ── main inference loop ──────────────────────────────────────────── */
-int main(void) {
     printf("==========================================================\n");
-    printf("  PRIME AVX-512 CPU Inference Engine — Step 12500 weights\n");
+    printf("  PRIME AVX-512 CPU Inference Engine (Baremetal Loader)\n");
     printf("==========================================================\n");
 
-    /* Dimensions matching the live training config */
-    const int D_MODEL    = 1024;    /* d_model */
-    const int D_INNER    = 4096;    /* expand × d_model  (expand=4) */
-    const int N_TOKENS   = 512;     /* tokens to generate */
-    const int BATCH      = 1;       /* autoregressive single-token */
-    const size_t LUT_SZ  = 65536;
+    FILE* f = fopen(path, "rb");
+    if (!f) { fprintf(stderr, "Cannot open %s\n", path); return 1; }
 
-    /* Load LUT and in_proj weights from the checkpoint export */
-    printf("[LOAD] Reading lut.bin ...\n");
-    float*    lut     = load_f32("lut.bin",  LUT_SZ);
+    /* Read Header */
+    char header[256];
+    if (fread(header, 1, 256, f) != 256) {
+        fprintf(stderr, "Short read on header\n"); return 1;
+    }
 
-    printf("[LOAD] Reading weights.bin (in_proj: %d→%d) ...\n",
-           D_MODEL, D_INNER);
-    uint16_t* in_w    = load_u16("weights.bin", (size_t)D_INNER * D_MODEL);
+    Config* cfg = (Config*)header;
+    if (cfg->magic != MAGIC_NUM) {
+        fprintf(stderr, "Invalid magic number: 0x%X\n", cfg->magic); return 1;
+    }
 
-    /* For out_proj we reverse-project back; in a real engine this would be
-       a separate exported layer.  Here we reuse in_w transposed as a stand-
-       in so we exercise exactly the same memory-access pattern.             */
-    uint16_t* out_w   = (uint16_t*)malloc((size_t)D_MODEL * D_INNER * sizeof(uint16_t));
-    /* Transpose in_w [D_INNER, D_MODEL] -> out_w [D_MODEL, D_INNER] */
-    for (int r = 0; r < D_INNER; r++)
-        for (int c = 0; c < D_MODEL; c++)
-            out_w[(size_t)c * D_INNER + r] = in_w[(size_t)r * D_MODEL + c];
+    printf("[LOAD] Model Config:\n");
+    printf("       d_model:    %d\n", cfg->d_model);
+    printf("       n_layers:   %d\n", cfg->n_layers);
+    printf("       vocab_size: %d\n", cfg->vocab_size);
+    printf("       lut_size:   %d\n", cfg->lut_size);
+
+    /* Allocate buffers for layer 0 benchmark */
+    float* lut = (float*)malloc(cfg->lut_size * sizeof(float));
+    if (fread(lut, sizeof(float), cfg->lut_size, f) != cfg->lut_size) {
+        fprintf(stderr, "Short read on LUT\n"); return 1;
+    }
+
+    /* Skip embeddings */
+    fseek(f, cfg->vocab_size * cfg->d_model * sizeof(float), SEEK_CUR);
+
+    /* Read Layer 0 */
+    /* skip norm (2 * d_model * floats) */
+    fseek(f, 2 * cfg->d_model * sizeof(float), SEEK_CUR);
+    
+    /* skip ssm.A_log, ssm.D */
+    int d_inner = cfg->d_model * 2; /* from python export: 2048 */
+    fseek(f, d_inner * 16 * sizeof(float) + d_inner * sizeof(float), SEEK_CUR);
+
+    /* Read in_proj_idx */
+    uint16_t* in_w = (uint16_t*)malloc(d_inner * 2 * cfg->d_model * sizeof(uint16_t));
+    if (fread(in_w, sizeof(uint16_t), d_inner * 2 * cfg->d_model, f) != d_inner * 2 * cfg->d_model) {
+        fprintf(stderr, "Short read on in_proj\n"); return 1;
+    }
+
+    printf("[LOAD] Successfully loaded Layer 0 weights.\n");
 
     /* Allocate activation buffers */
-    float* hidden  = (float*)calloc(BATCH * D_MODEL,  sizeof(float));
-    float* expand  = (float*)calloc(BATCH * D_INNER,  sizeof(float));
-    float* output  = (float*)calloc(BATCH * D_MODEL,  sizeof(float));
+    float* hidden  = (float*)calloc(cfg->d_model,  sizeof(float));
+    float* expand  = (float*)calloc(d_inner * 2,  sizeof(float));
 
-    /* Seed hidden state with a trivial token embedding (all 1s = BOS) */
-    for (int i = 0; i < BATCH * D_MODEL; i++) hidden[i] = 1.0f / D_MODEL;
+    /* Seed hidden state */
+    for (int i = 0; i < cfg->d_model; i++) hidden[i] = 1.0f / cfg->d_model;
 
-    printf("[INFER] Generating %d tokens ...\n\n", N_TOKENS);
+    int N_PASSES = 500;
+    printf("[INFER] Running baremetal kernel benchmark (%d passes) ...\n", N_PASSES);
     double t0 = now_sec();
 
-    for (int step = 0; step < N_TOKENS; step++) {
-        /* 1. LayerNorm */
-        layer_norm(hidden, D_MODEL);
-
-        /* 2. in_proj: [1, D_MODEL] × [D_INNER, D_MODEL]ᵀ → [1, D_INNER] */
-        prime_linear_forward(hidden, in_w, lut, expand, BATCH, D_MODEL, D_INNER);
-
-        /* 3. SiLU nonlinearity (approximates the SSM gate) */
-        silu_inplace(expand, D_INNER);
-
-        /* 4. out_proj: [1, D_INNER] × [D_MODEL, D_INNER]ᵀ → [1, D_MODEL] */
-        prime_linear_forward(expand, out_w, lut, output, BATCH, D_INNER, D_MODEL);
-
-        /* 5. Residual connection */
-        for (int i = 0; i < D_MODEL; i++) hidden[i] += output[i];
-
-        /* 6. Argmax "token sampling" (greedy) */
-        int    best_idx = 0;
-        float  best_val = hidden[0];
-        for (int i = 1; i < D_MODEL; i++)
-            if (hidden[i] > best_val) { best_val = hidden[i]; best_idx = i; }
-
-        if (step < 5 || step == N_TOKENS-1)
-            printf("  step %4d → token_id %-5d  (logit %.4f)\n",
-                   step, best_idx, best_val);
-        else if (step == 5)
-            printf("  ...\n");
+    for (int step = 0; step < N_PASSES; step++) {
+        prime_linear_forward(hidden, in_w, lut, expand, 1, cfg->d_model, d_inner * 2);
+        /* dummy residual to prevent optimization */
+        hidden[0] += expand[0] * 0.001f;
     }
 
     double elapsed = now_sec() - t0;
-    double tps     = N_TOKENS / elapsed;
+    double tps     = N_PASSES / elapsed;
 
     printf("\n----------------------------------------------------------\n");
-    printf("  Tokens generated  : %d\n", N_TOKENS);
+    printf("  Passes            : %d\n", N_PASSES);
     printf("  Total time        : %.3f s\n",   elapsed);
-    printf("  Throughput (TPS)  : %.2f tokens/sec\n", tps);
-    printf("  ms / token        : %.3f ms\n",  1000.0 * elapsed / N_TOKENS);
+    printf("  Throughput (TPS)  : %.2f passes/sec\n", tps);
+    printf("  ms / pass         : %.3f ms\n",  1000.0 * elapsed / N_PASSES);
     printf("==========================================================\n");
 
-    free(lut); free(in_w); free(out_w);
-    free(hidden); free(expand); free(output);
+    free(lut); free(in_w); free(hidden); free(expand);
+    fclose(f);
     return 0;
 }
+
