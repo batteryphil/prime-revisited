@@ -31,6 +31,17 @@ def load_model(ckpt_path):
     print(f"[LOAD] Instantiating native Mamba3LM (vocab={vocab_size})...")
     model = Mamba3LM(vocab_size)
 
+    # CRITICAL FIX: Wrap the layers in PrimeLinear BEFORE loading state_dict
+    # Otherwise, strict=False ignores the prime indices and leaves the weights random!
+    from mamba3_prime_native import build_prime_lut
+    lut = build_prime_lut()
+    wrapped = 0
+    for layer in model.layers:
+        layer.ssm.in_proj  = PrimeLinear(layer.ssm.in_proj, lut)
+        layer.ssm.out_proj = PrimeLinear(layer.ssm.out_proj, lut)
+        wrapped += 2
+    print(f"[LOAD] Wrapped {wrapped} layers with PrimeLinear grid.")
+
     missing, unexpected = model.load_state_dict(ckpt_peek['state_dict'], strict=False)
     print(f"[LOAD] {ckpt_path} — step {ckpt_peek['step']}, missing: {len(missing)}, unexpected: {len(unexpected)}")
 
