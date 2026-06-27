@@ -67,12 +67,11 @@ def build_prime_lut(n_points=65536):
 
 # ── PrimeLinear (Discrete Optimizer) ──────────────────────────────────────────
 class PrimeLinear(nn.Module):
-    SUPERMAJORITY = 12
     BLOCK_SIZE    = 32
     MAX_STRIDE    = 2
     DECAY_RATE    = 0.90
 
-    def __init__(self, module: nn.Linear, lut: torch.Tensor, name="unnamed"):
+    def __init__(self, module: nn.Linear, lut: torch.Tensor, name="unnamed", **kwargs):
         super().__init__()
         self.name = name
         self.in_features  = module.in_features
@@ -97,6 +96,20 @@ class PrimeLinear(nn.Module):
         self.register_buffer('rolling_flips', torch.zeros(200, dtype=torch.long))
         self.register_buffer('rolling_idx',  torch.zeros(1, dtype=torch.long))
         self.register_buffer('current_interval_flips', torch.zeros(1, dtype=torch.long))
+        
+        import math
+        self.target_flip_rate = kwargs.get('target_flip_rate', 0.15)
+        
+        # PI Controller Buffers (V2)
+        self.register_buffer('log_threshold', torch.tensor([math.log(12.0)], dtype=torch.float32))
+        self.register_buffer('pi_integral', torch.tensor([0.0], dtype=torch.float32))
+        self.register_buffer('ema_flip_rate', torch.tensor([0.0], dtype=torch.float32))
+        
+        # Telemetry Buffers
+        self.register_buffer('last_grad_sign', torch.zeros(self.out_features, self.in_features, dtype=torch.int8))
+        self.register_buffer('sign_agreement_ema', torch.tensor([0.0], dtype=torch.float32))
+        self.register_buffer('delta_log_thresh', torch.tensor([0.0], dtype=torch.float32))
+        self.register_buffer('step_counter', torch.tensor([0], dtype=torch.long))
 
         self.bias = nn.Parameter(module.bias.data.clone()) if module.bias is not None else None
 
@@ -115,8 +128,16 @@ class PrimeLinear(nn.Module):
 
     def _vote_hook(self, grad):
         with torch.no_grad():
-            # In-place operations to prevent intermediate tensor allocations and massive kernel overhead
-            pressure = grad.sign().mul_(10).to(torch.int16)
+            sign_t = grad.sign().to(torch.int8)
+            
+            # Compute sign agreement sample every 50 steps
+            if self.step_counter[0] % 50 == 0:
+                agreement = (sign_t == self.last_grad_sign).float().mean()
+                self.sign_agreement_ema[0] = self.sign_agreement_ema[0] * 0.95 + agreement * 0.05
+                
+            self.last_grad_sign.copy_(sign_t)
+            
+            pressure = sign_t.mul_(10).to(torch.int16)
             self.vote_buffer.add_(pressure).clamp_(-32760, 32760)
 
     @torch.no_grad()
@@ -127,9 +148,13 @@ class PrimeLinear(nn.Module):
         aligned = n - (n % bs)
         flat_a  = flat[:aligned]
 
+        import math
         blocks    = flat_a.float().view(-1, bs)
         magnitude = blocks.abs().mean(dim=1, keepdim=True)
-        authorized = (magnitude * (lr / 1e-4) >= self.SUPERMAJORITY)
+        
+        self.step_counter[0] += 1
+        threshold = torch.exp(self.log_threshold[0])
+        authorized = (magnitude * (lr / 1e-4) >= threshold)
 
         combined = (self.base_idx.view(-1)[:aligned].to(torch.int32) * 256 +
                     self.fine_idx.view(-1)[:aligned].to(torch.int32))
@@ -149,7 +174,7 @@ class PrimeLinear(nn.Module):
             }
 
         # Calculate VPU (Vote Pressure Utilization)
-        vpu = (self.vote_buffer.float().abs().mean() / self.SUPERMAJORITY).item()
+        vpu = (self.vote_buffer.float().abs().mean() / threshold).item()
 
         if step is not None:
             if step % 50 == 0:
@@ -211,6 +236,33 @@ class PrimeLinear(nn.Module):
         reversals = reversed_blocks.sum().item() * bs
         flips = total_flips.item()
         
+        # V2 Log-Space PI Controller
+        with torch.no_grad():
+            import math
+            current_flip_rate = flips / max(n, 1)
+            self.ema_flip_rate[0] = self.ema_flip_rate[0] * 0.999 + current_flip_rate * 0.001
+            
+            # Run controller every 50 steps, with a 1000 step warmup freeze
+            if self.step_counter[0] > 1000 and self.step_counter[0] % 50 == 0:
+                target = self.target_flip_rate
+                error = (self.ema_flip_rate[0] - target) / max(target, 1e-3)
+                
+                kp = 0.5
+                ki = 0.01
+                
+                self.pi_integral[0] += error
+                adjustment = (kp * error) + (ki * self.pi_integral[0])
+                
+                new_log_thresh = self.log_threshold[0] + adjustment
+                clamped_log = torch.clamp(new_log_thresh, math.log(2.0), math.log(128.0))
+                
+                self.delta_log_thresh[0] = clamped_log - self.log_threshold[0]
+                self.log_threshold[0] = clamped_log
+                
+                # Anti-windup
+                if self.log_threshold[0] >= math.log(128.0) or self.log_threshold[0] <= math.log(2.0):
+                    self.pi_integral[0] = 0.0
+        
         if step is not None:
             self.current_interval_flips[0] += flips
 
@@ -219,7 +271,11 @@ class PrimeLinear(nn.Module):
             'vote_pos': vote_pos.item(), 'vote_neg': vote_neg.item(),
             'name': self.name, 'entropy': entropy,
             'vpu': vpu, 'reversals': reversals, 'numel': n,
-            'retention_pressure': retention_pressure
+            'retention_pressure': retention_pressure,
+            'ema_flip': self.ema_flip_rate[0].item(),
+            'sign_agreement': self.sign_agreement_ema[0].item(),
+            'threshold': torch.exp(self.log_threshold[0]).item(),
+            'delta_thresh': self.delta_log_thresh[0].item()
         }
 
 class ContinuousVoteOptimizer(torch.optim.Optimizer):
@@ -235,7 +291,14 @@ class ContinuousVoteOptimizer(torch.optim.Optimizer):
         for group in self.param_groups:
             for p in group['params']:
                 state = self.state[p]
+                import math
                 state['vote_buffer'] = torch.zeros_like(p, dtype=torch.int16)
+                state['log_threshold'] = torch.tensor(math.log(12.0), dtype=torch.float32, device=p.device)
+                state['pi_integral'] = torch.tensor(0.0, dtype=torch.float32, device=p.device)
+                state['ema_flip_rate'] = torch.tensor(0.0, dtype=torch.float32, device=p.device)
+                state['delta_log_thresh'] = torch.tensor(0.0, dtype=torch.float32, device=p.device)
+                state['step_counter'] = torch.tensor(0, dtype=torch.long, device=p.device)
+                state['target_flip_rate'] = 0.25  # LM head target
                 
                 # Must capture p in default arg to avoid late binding in loop
                 def make_hook(p_ref):
@@ -256,18 +319,22 @@ class ContinuousVoteOptimizer(torch.optim.Optimizer):
             decay = group['decay']
             
             for p in group['params']:
+                import math
                 state = self.state[p]
                 votes = state['vote_buffer']
+                state['step_counter'] += 1
                 
-                authorized = votes.abs() >= superm
+                thresh = torch.exp(state['log_threshold'])
+                authorized = votes.abs() >= thresh
                 
+                f = 0
                 if authorized.any():
                     # Apply continuous FP32 step scaled by actual gradient
                     if p.grad is not None:
                         update = -p.grad[authorized] * lr
                         p[authorized] += update
                         
-                        f = authorized.sum()
+                        f = authorized.sum().item()
                         if total_flips is None:
                             total_flips = f
                         else:
@@ -276,6 +343,27 @@ class ContinuousVoteOptimizer(torch.optim.Optimizer):
                     votes[authorized] = 0
                 
                 state['vote_buffer'] = (votes.float() * decay).to(torch.int16)
+                
+                # V2 Log-Space PI Controller
+                current_flip_rate = f / p.numel()
+                state['ema_flip_rate'].mul_(0.999).add_(current_flip_rate * 0.001)
+                
+                if state['step_counter'].item() > 1000 and state['step_counter'].item() % 50 == 0:
+                    target = state['target_flip_rate']
+                    error = (state['ema_flip_rate'] - target) / max(target, 1e-3)
+                    
+                    kp, ki = 0.5, 0.01
+                    state['pi_integral'].add_(error)
+                    adjustment = (kp * error) + (ki * state['pi_integral'])
+                    
+                    new_log = state['log_threshold'] + adjustment
+                    clamped_log = torch.clamp(new_log, math.log(2.0), math.log(128.0))
+                    
+                    state['delta_log_thresh'].copy_(clamped_log - state['log_threshold'])
+                    state['log_threshold'].copy_(clamped_log)
+                    
+                    if clamped_log.item() >= math.log(128.0) or clamped_log.item() <= math.log(2.0):
+                        state['pi_integral'].fill_(0.0)
         
         if total_flips is None:
             return torch.tensor(0, device=self.param_groups[0]['params'][0].device)
@@ -430,15 +518,20 @@ if __name__ == '__main__':
 
     wrapped = 0
     for idx, layer in enumerate(model.layers):
-        layer.ssm.in_proj  = PrimeLinear(layer.ssm.in_proj,  lut, name=f"backbone_L{idx}_in_proj")
-        layer.ssm.out_proj = PrimeLinear(layer.ssm.out_proj, lut, name=f"backbone_L{idx}_out_proj")
+        # Specific target flip rates for hierarchy
+        if idx < 7: target = 0.10
+        elif idx < 21: target = 0.13
+        else: target = 0.16
+        
+        layer.ssm.in_proj  = PrimeLinear(layer.ssm.in_proj,  lut, name=f"backbone_L{idx}_in_proj", target_flip_rate=target)
+        layer.ssm.out_proj = PrimeLinear(layer.ssm.out_proj, lut, name=f"backbone_L{idx}_out_proj", target_flip_rate=target)
         wrapped += 2
         
     arm_names = ['chat', 'math', 'code', 'tool']
     for idx, arm in enumerate(model.mimo_arms):
         aname = arm_names[idx] if idx < len(arm_names) else str(idx)
-        arm.ssm.in_proj  = PrimeLinear(arm.ssm.in_proj,  lut, name=f"mimo_arm_{aname}_in_proj")
-        arm.ssm.out_proj = PrimeLinear(arm.ssm.out_proj, lut, name=f"mimo_arm_{aname}_out_proj")
+        arm.ssm.in_proj  = PrimeLinear(arm.ssm.in_proj,  lut, name=f"mimo_arm_{aname}_in_proj", target_flip_rate=0.13)
+        arm.ssm.out_proj = PrimeLinear(arm.ssm.out_proj, lut, name=f"mimo_arm_{aname}_out_proj", target_flip_rate=0.13)
         wrapped += 2
     print(f"[INIT] Wrapped {wrapped} linear layers with PrimeDiscrete Optimizer.")
 
@@ -568,23 +661,39 @@ if __name__ == '__main__':
             else:
                 total_flips = continuous_flips
                 
-            if step % 50 == 0 and len(layer_stats) > 0:
+            if step % 100 == 0:
                 print("\n" + "="*70)
-                print("[DIAGNOSTICS] Advanced Learning Allocation")
-                total_params = sum(total_entropy.values()) + 1e-8
-                print(f"  Vote Entropy | Zeros: {total_entropy['zeros']/total_params*100:.1f}% | Low: {total_entropy['low']/total_params*100:.1f}% | Med: {total_entropy['med']/total_params*100:.1f}% | High: {total_entropy['high']/total_params*100:.1f}%")
+                import math
+                print("[DIAGNOSTICS] Homeostatic Controller State:")
                 
-                t_flips = int(total_flips.item()) if hasattr(total_flips, 'item') else total_flips
-                print(f"  Global Flips: {t_flips} (Continuous: {c_flips_int}) | Unique Params Flipped: {int(total_unique)} | Total Reversals: {total_reversals}")
-                
-                sorted_layers = sorted(layer_stats, key=lambda x: x['rate'], reverse=True)
-                print("\n  Top 5 Hyperactive Layers (by %):")
-                for s in sorted_layers[:5]:
-                    print(f"    {s['name']:>25} | Rate: {s['rate']:>5.2f}% | VPU: {s['vpu']:>4.2f} | Flips: {s['flips']:>8} | Reversals: {s['reversals']}")
-                print("\n  Bottom 5 Frozen Layers (by %):")
-                for s in sorted_layers[-5:]:
-                    print(f"    {s['name']:>25} | Rate: {s['rate']:>5.2f}% | VPU: {s['vpu']:>4.2f} | Flips: {s['flips']:>8} | Reversals: {s['reversals']}")
+                # Discrete Layers
+                for name, module in model.named_modules():
+                    if hasattr(module, 'apply_votes'):
+                        thresh = math.exp(module.log_threshold[0].item())
+                        rate = module.ema_flip_rate[0].item() * 100
+                        target = module.target_flip_rate * 100
+                        agmt = module.sign_agreement_ema[0].item() * 100
+                        print(f"  {name.rjust(30)} | thresh: {thresh:5.1f} | EMA_flip: {rate:4.1f}% (T:{target:.0f}%) | Sign_Agmt: {agmt:4.1f}%")
+                        
+                # Continuous Layers
+                print("\n[DIAGNOSTICS] Continuous Layers (Optimizer):")
+                for i, p in enumerate(optimizer.param_groups[0]['params']):
+                    state = optimizer.state[p]
+                    thresh = math.exp(state['log_threshold'].item())
+                    rate = state['ema_flip_rate'].item() * 100
+                    target = state['target_flip_rate'] * 100
+                    name = f"continuous_param_{i}"
+                    for n, param in model.named_parameters():
+                        if param is p:
+                            name = n
+                            break
+                    print(f"  {name.rjust(30)} | thresh: {thresh:5.1f} | EMA_flip: {rate:4.1f}% (T:{target:.0f}%)")
+                    
                 print("="*70 + "\n")
+                
+                # Setup sorted layers for telemetry export
+                sorted_layers = sorted(layer_stats, key=lambda x: x['rate'], reverse=True)
+                total_params = sum(total_entropy.values()) + 1e-8
                 
                 # Export to JSON for the dashboard
                 telemetry_data = {
