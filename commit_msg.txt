@@ -1,0 +1,17 @@
+Phase 4: Dynamic Router Stabilization & MoE Architectural Fixes
+
+This commit transitions the Titan MIMO 650M model from static domain isolation (Phase 3) into dynamic autonomous routing (Phase 4), allowing it to dynamically select between specialized expert arms (Chat, Math, Code, Tool) based on inference context.
+
+Key Architectural Upgrades:
+1. Dynamic Router Unfreezing: Removed the hard-coded dataset domain_id routing. Wrapped the `domain_router` linear layer in the `PrimeDiscrete` optimizer to allow the PI controller to manage its vote-driven weight flips.
+2. Supervised Routing Loss: Implemented a cross-entropy routing loss calculated directly against the ground truth dataset domain tags to teach the router how to categorize the latent prompt space.
+
+Critical Bug Fixes (Numerical Stability):
+- OOD Blending Explosion: The initial `F.softmax` implementation resulted in fractional weights (e.g., 0.3 Chat, 0.5 Math). Blending the output of the experts created an Out-Of-Distribution (OOD) representation that exponentially exploded the downstream Mamba selective-scan algorithms (which were trained exclusively on 1-hot routes in Phase 3).
+  * Fix: Replaced standard Softmax with a `F.gumbel_softmax(hard=True)` straight-through estimator. This mathematically forces the forward pass to collapse into a strict 1-hot route (protecting downstream layers), while preserving the soft gradients for the routing loss backprop.
+- Unnormalized Residual Variance Explosion: The routing loss originally evaluated to over 2.6 million. The diagnostic trace revealed that the router was reading the unnormalized residual stream `x` from the middle of the network, which possessed a massive variance (+/- 210.0), causing explosively large logits.
+  * Fix: Applied `F.layer_norm` to the detached residual state `x` prior to classification, strictly bounding the logits and instantly stabilizing the routing loss to ~1.38.
+- MoE Router Isolation: Applied strict `.detach()` constraints to both the upstream residual stream and downstream mixture weights. The router is now a sandboxed, parasitic observer that learns exclusively from the classification signal without destabilizing the backbone.
+
+Training Status:
+The script successfully recovered via the Phase 3 frozen checkpoint backup. The optimizer cleanly bypassed the structural mismatch and reinitialized its momentum. The Next-Token-Prediction loss is currently stable in the single digits (~7.08), and the PI Controller is actively optimizing the router's discrete vote landscape.

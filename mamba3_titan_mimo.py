@@ -26,7 +26,7 @@ CONFIG = {
     'batch_size':   4,
     'grad_accum':   2,
     'lr':           1e-4,
-    'total_steps':  100000,
+    'total_steps':  10000000,
     'device':       'cuda' if torch.cuda.is_available() else 'cpu',
     'stats_file':   'stats_titan_mimo.json',
     'samples_file': 'samples_titan_mimo.json',
@@ -412,28 +412,25 @@ class TitanMIMO(nn.Module):
         for layer in self.layers[:self._mid]:
             x = checkpoint.checkpoint(layer, x, use_reentrant=False)
 
-        # ── STATIC ROUTING ───────────────────────────────────────────────────
-        # Domain IDs: 0=Chat, 1=Math, 2=Code, 3=Tool
-        # We build a hard one-hot route weight so gradients strictly target 
-        # only the assigned MIMO arm.
+        # ── DYNAMIC ROUTING ───────────────────────────────────────────────────
         B, L, _ = x.shape
-        if domain_id is not None:
-            if not isinstance(domain_id, torch.Tensor):
-                domain_id = torch.tensor([domain_id]*B, device=x.device)
-            elif domain_id.dim() == 0:
-                domain_id = domain_id.unsqueeze(0).expand(B)
-            one_hot = F.one_hot(domain_id.long(), num_classes=CONFIG['mimo_paths']).float()
-            route_weights = one_hot.unsqueeze(1).expand(-1, L, -1)
-        else:
-            # Fallback uniform routing if no domain provided (e.g. general eval)
-            route_weights = torch.ones(B, L, CONFIG['mimo_paths'], device=x.device) / CONFIG['mimo_paths']
+        # Detach x so routing loss gradients don't destabilize the highly optimized backbone.
+        # MUST apply LayerNorm because the mid-network residual variance is huge!
+        router_x = F.layer_norm(x.detach(), (x.size(-1),))
+        router_logits = self.domain_router(router_x)
+        
+        # Use Gumbel-Softmax with hard=True to generate 1-hot routes.
+        route_weights = F.gumbel_softmax(router_logits, tau=1.0, hard=True, dim=-1)
+        
+        # Detach route_weights so massive downstream residual gradients don't explode the router
+        route_weights_detached = route_weights.detach()
 
         raw_arm_outs = []
         for arm in self.mimo_arms:
             raw_arm_outs.append(arm(x))
         
         stacked = torch.stack(raw_arm_outs, dim=-1)
-        collapsed = torch.einsum('b l d m, b l m -> b l d', stacked, route_weights.to(stacked.dtype))
+        collapsed = torch.einsum('b l d m, b l m -> b l d', stacked, route_weights_detached.to(stacked.dtype))
         x = x + collapsed
 
         for layer in self.layers[self._mid:]:
@@ -446,10 +443,22 @@ class TitanMIMO(nn.Module):
         if labels is not None:
             loss = F.cross_entropy(
                 logits[..., :-1, :].contiguous().view(-1, logits.size(-1)),
-                labels[..., 1:].contiguous().view(-1)
+                labels[..., 1:].contiguous().view(-1),
+                ignore_index=0
             )
-            # Diversity routing loss removed since we are using static routing.
-            # We don't need to load-balance because the dataset loader balances the domains.
+            
+            if domain_id is not None:
+                if not isinstance(domain_id, torch.Tensor):
+                    domain_id = torch.tensor([domain_id]*B, device=x.device)
+                elif domain_id.dim() == 0:
+                    domain_id = domain_id.unsqueeze(0).expand(B)
+                    
+                target = domain_id.unsqueeze(1).expand(-1, L).long()
+                routing_loss = F.cross_entropy(
+                    router_logits.view(-1, CONFIG['mimo_paths']),
+                    target.reshape(-1)
+                )
+                loss = loss + (0.5 * routing_loss)
         
         return logits, loss
 
@@ -482,6 +491,68 @@ def make_dataset(tokenizer):
             b_ids = torch.stack(batch_ids)
             yield b_ids, b_ids.clone(), torch.tensor(batch_domains)
     return gen
+
+# ── Validation Loop ──────────────────────────────────────────────────────────
+def run_validation(model, tokenizer, step, interval_flips):
+    import math
+    print(f"\n[VALIDATION] Running held-out validation at Step {step}...")
+    model.eval()
+    domain_map = {'chat': 0, 'math': 1, 'code': 2, 'tool': 3}
+    domain_losses = {'chat': [], 'math': [], 'code': [], 'tool': []}
+    
+    try:
+        with open("/data/titan_val_suite.jsonl") as f:
+            for line in f:
+                obj = json.loads(line)
+                domain = obj.get('domain')
+                text = obj.get('text')
+                if not text.endswith(tokenizer.eos_token):
+                    text += tokenizer.eos_token
+                tok = tokenizer(text, truncation=True, max_length=CONFIG['seq_len'],
+                                padding='max_length', return_tensors='pt')
+                input_ids = tok['input_ids'].to(CONFIG['device'])
+                domain_id = torch.tensor([domain_map.get(domain, 0)]).to(CONFIG['device'])
+                
+                with torch.no_grad():
+                    _, loss = model(input_ids, input_ids.clone(), domain_id)
+                    domain_losses[domain].append(loss.item())
+                    
+        metrics = {"step": step}
+        avg_loss_total = 0.0
+        count_total = 0
+        for d, losses in domain_losses.items():
+            if losses:
+                avg = sum(losses) / len(losses)
+                metrics[f"{d}_loss"] = avg
+                metrics[f"{d}_ppl"] = math.exp(avg) if avg < 20 else float('inf')
+                avg_loss_total += avg
+                count_total += 1
+        
+        # Calculate plasticity efficiency
+        metrics["interval_flips"] = interval_flips
+        if count_total > 0:
+            metrics["avg_val_loss"] = avg_loss_total / count_total
+            # We would compute improvement against the previous val_loss, but we just save it here.
+        
+        # Compute PI Controller health
+        thresholds = []
+        for m in model.modules():
+            if isinstance(m, PrimeLinear):
+                thresholds.append(math.exp(m.log_threshold[0].item()))
+        
+        if thresholds:
+            metrics["avg_threshold"] = sum(thresholds) / len(thresholds)
+            metrics["layers_at_ceiling"] = sum(1 for t in thresholds if t >= 127.0)
+            metrics["layers_at_floor"] = sum(1 for t in thresholds if t <= 2.1)
+        
+        with open("val_metrics.jsonl", "a") as vf:
+            vf.write(json.dumps(metrics) + "\n")
+            
+        print(f"[VALIDATION] Metrics saved. Avg Thresh: {metrics.get('avg_threshold', 0):.1f}")
+    except Exception as e:
+        print(f"[VALIDATION ERROR] {e}")
+    finally:
+        model.train()
 
 # ── Thermal Monitor ──────────────────────────────────────────────────────────
 def check_thermal_throttle():
@@ -533,6 +604,10 @@ if __name__ == '__main__':
         arm.ssm.in_proj  = PrimeLinear(arm.ssm.in_proj,  lut, name=f"mimo_arm_{aname}_in_proj", target_flip_rate=0.13)
         arm.ssm.out_proj = PrimeLinear(arm.ssm.out_proj, lut, name=f"mimo_arm_{aname}_out_proj", target_flip_rate=0.13)
         wrapped += 2
+        
+    model.domain_router = PrimeLinear(model.domain_router, lut, name="domain_router", target_flip_rate=0.16)
+    wrapped += 1
+    
     print(f"[INIT] Wrapped {wrapped} linear layers with PrimeDiscrete Optimizer.")
 
     model = model.to(CONFIG['device'])
@@ -548,6 +623,7 @@ if __name__ == '__main__':
 
     step = 0
     history = []
+    interval_flips = 0
     
     # Auto-Resume Logic
     import glob
@@ -563,6 +639,12 @@ if __name__ == '__main__':
         
         # We must reconstruct the optimizer after moving to device so the state dict hooks align
         optimizer = ContinuousVoteOptimizer(continuous_params, lr=1e-4)
+        if 'optimizer' in ckpt_data:
+            try:
+                optimizer.load_state_dict(ckpt_data['optimizer'])
+                print("[INIT] Loaded optimizer state successfully.")
+            except Exception as e:
+                print(f"[INIT] Optimizer state mismatch (likely due to architectural shift). Reinitializing continuous optimizer momentum.")
         total_continuous_params = sum(p.numel() for p in continuous_params)
     data_gen = make_dataset(tokenizer)
 
@@ -727,6 +809,7 @@ if __name__ == '__main__':
             
             # EXACTLY ONE CPU SYNC!
             t_flips = int(total_flips.item()) if hasattr(total_flips, 'item') else (int(total_flips) if total_flips is not None else 0)
+            interval_flips += t_flips
             mean_vpos = (vpos_sum.item() / max(count, 1)) if hasattr(vpos_sum, 'item') else ((vpos_sum / max(count, 1)) if vpos_sum is not None else 0.0)
             mean_vneg = (vneg_sum.item() / max(count, 1)) if hasattr(vneg_sum, 'item') else ((vneg_sum / max(count, 1)) if vneg_sum is not None else 0.0)
             
@@ -740,12 +823,14 @@ if __name__ == '__main__':
                     'state_dict': model.state_dict(),
                     'optimizer': optimizer.state_dict()
                 }, live_path)
-                import sys
-                subprocess.Popen([sys.executable, 'async_salad.py', live_path, str(step)],
-                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                # Note: async_salad.py disabled to prevent VRAM competition with the main loop.
+                # Use offline_evaluator.py to evaluate capabilities natively on the GPU instead.
             
             # Low-Frequency Archival Checkpointing
             if step % 5000 == 0:
+                run_validation(model, tokenizer, step, interval_flips)
+                interval_flips = 0  # Reset for next interval
+                
                 ckpt_path = f"/data/titan_checkpoints/titan_mimo_pilot_{step}.pt"
                 print(f"[SAVE] Archiving Step {step} -> {ckpt_path}")
                 torch.save({
