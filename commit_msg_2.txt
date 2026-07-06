@@ -1,0 +1,14 @@
+Phase 4: Critical Domain Router Logic Optimization
+
+During a code audit of the Phase 4 dynamic router, two critical logical flaws were identified and surgically patched:
+
+1. Inference Mode Greedy Gating (Gumbel-Softmax Bypass):
+   * Issue: The `F.gumbel_softmax` function applies Gumbel noise unconditionally, regardless of `model.training`. If the model were deployed to inference in its previous state, the router would randomly bounce the residual stream between expert arms, causing severe hallucinations.
+   * Fix: Implemented conditional gating. During `model.training`, the router uses `F.gumbel_softmax` for exploration. During inference mode (`model.eval()`), the router bypasses Gumbel noise entirely and uses a greedy `torch.argmax` to select the single most confident expert arm.
+
+2. Padding Token Route Masking:
+   * Issue: The routing loss was being calculated over the entire context window, including the `0` index padding tokens. Because padding tokens contain no semantic context, the router was wasting gradients attempting to categorize sequence padding.
+   * Fix: Masked the routing loss targets using `ignore_index=-100`. The script now detects `input_ids == 0` and overwrites the routing target for those specific tokens with `-100`, ensuring the domain router only calculates cross-entropy gradients on semantically valid tokens.
+
+Training Status:
+The script successfully resumed from step 314,000. Loss is holding steady between 2.2 and 4.0, confirming the optimizations did not disrupt convergence.

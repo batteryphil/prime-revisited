@@ -398,7 +398,6 @@ class TitanMIMO(nn.Module):
 
         self.mimo_arms = nn.ModuleList([MambaLayer(d) for _ in range(m)])
         self.domain_router = nn.Linear(d, m, bias=True)
-        self.router_temp = nn.Parameter(torch.ones(1) * 1.0)
         nn.init.normal_(self.domain_router.weight, std=0.02)
         nn.init.zeros_(self.domain_router.bias)
 
@@ -419,9 +418,14 @@ class TitanMIMO(nn.Module):
         router_x = F.layer_norm(x.detach(), (x.size(-1),))
         router_logits = self.domain_router(router_x)
         
-        # Use Gumbel-Softmax with hard=True to generate 1-hot routes.
-        route_weights = F.gumbel_softmax(router_logits, tau=1.0, hard=True, dim=-1)
-        
+        if self.training:
+            # Use Gumbel-Softmax with hard=True to generate 1-hot routes during training.
+            route_weights = F.gumbel_softmax(router_logits, tau=1.0, hard=True, dim=-1)
+        else:
+            # Inference mode: greedy routing (no Gumbel noise)
+            idx = torch.argmax(router_logits, dim=-1)
+            route_weights = F.one_hot(idx, num_classes=CONFIG['mimo_paths']).float()
+            
         # Detach route_weights so massive downstream residual gradients don't explode the router
         route_weights_detached = route_weights.detach()
 
@@ -453,10 +457,15 @@ class TitanMIMO(nn.Module):
                 elif domain_id.dim() == 0:
                     domain_id = domain_id.unsqueeze(0).expand(B)
                     
-                target = domain_id.unsqueeze(1).expand(-1, L).long()
+                target = domain_id.unsqueeze(1).expand(-1, L).clone().long()
+                
+                # Mask out padding tokens (index 0) so the router doesn't learn noise
+                target[input_ids == 0] = -100
+                
                 routing_loss = F.cross_entropy(
                     router_logits.view(-1, CONFIG['mimo_paths']),
-                    target.reshape(-1)
+                    target.reshape(-1),
+                    ignore_index=-100
                 )
                 loss = loss + (0.5 * routing_loss)
         
