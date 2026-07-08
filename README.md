@@ -132,10 +132,15 @@ To prevent "catastrophic forgetting" across widely different domains, the model 
 *   **Parameters:** ~650M
 *   **Hardware:** RTX 3060 (12GB VRAM)
 *   **Throughput:** ~670 Tokens/sec
-*   **Routing Accuracy:** ~98% (Router flip rate stable at 2.08%)
-*   **Training Status:** Active (Currently at Step ~345,000 / 510,000)
+*   **Routing Accuracy:** 100% (Autonomous Phase 4 Router matches Phase 3 Static Ground Truth)
+*   **Training Status:** Active (Currently at Step ~365,000 / 510,000)
 
-*(Final Validation and Perplexity benchmarks will be posted upon training completion).*
+### Phase 4 Generative Evaluation (July 8th)
+Tested using a held-out evaluation dataset under fully autonomous routing (`domain_id` hidden).
+*   **Chat Coherence:** 100.0%
+*   **Math Exact Match:** 40.0%
+*   **Code Syntax Val:** 0.0% *(Currently unlearning heuristics in the valley of confusion)*
+*   **Tool JSON Valid:** 0.0% *(Currently unlearning heuristics in the valley of confusion)*
 
 ---
 

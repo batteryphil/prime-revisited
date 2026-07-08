@@ -626,8 +626,17 @@ if __name__ == '__main__':
     arm_names = ['chat', 'math', 'code', 'tool']
     for idx, arm in enumerate(model.mimo_arms):
         aname = arm_names[idx] if idx < len(arm_names) else str(idx)
-        arm.ssm.in_proj  = PrimeLinear(arm.ssm.in_proj,  lut, name=f"mimo_arm_{aname}_in_proj", target_flip_rate=0.13)
-        arm.ssm.out_proj = PrimeLinear(arm.ssm.out_proj, lut, name=f"mimo_arm_{aname}_out_proj", target_flip_rate=0.13)
+        
+        # TARGETED PLASTICITY INTERVENTION
+        if aname == 'chat':
+            arm_target = 0.05  # Freeze this arm, protect the 100% coherence
+        elif aname == 'math':
+            arm_target = 0.08  # Semi-freeze, protect the 40% accuracy
+        else:
+            arm_target = 0.25  # Massively increase plasticity for Code and Tool to escape valley of confusion
+            
+        arm.ssm.in_proj  = PrimeLinear(arm.ssm.in_proj,  lut, name=f"mimo_arm_{aname}_in_proj", target_flip_rate=arm_target)
+        arm.ssm.out_proj = PrimeLinear(arm.ssm.out_proj, lut, name=f"mimo_arm_{aname}_out_proj", target_flip_rate=arm_target)
         wrapped += 2
         
     model.domain_router = PrimeLinear(model.domain_router, lut, name="domain_router", target_flip_rate=0.16)
