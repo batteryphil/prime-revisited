@@ -31,6 +31,9 @@ CONFIG = {
     'stats_file':   'stats_titan_mimo.json',
     'samples_file': 'samples_titan_mimo.json',
     'log_file':     'training_titan_mimo.log',
+    'corpus_path':  './data/titan_mega_corpus.jsonl',
+    'val_path':     './data/titan_val_suite.jsonl',
+    'ckpt_dir':     './checkpoints',
 }
 
 # ── Logger ────────────────────────────────────────────────────────────────────
@@ -474,7 +477,7 @@ class TitanMIMO(nn.Module):
 # ── Dataset ──────────────────────────────────────────────────────────────────
 def make_dataset(tokenizer):
     import random
-    corpus_path = '/data/titan_mega_corpus.jsonl'
+    corpus_path = CONFIG.get('corpus_path', './data/titan_mega_corpus.jsonl')
     data = []
     domain_map = {'chat': 0, 'math': 1, 'code': 2, 'tool': 3}
     print("[DATA] Loading Mega-Corpus into RAM...")
@@ -509,8 +512,9 @@ def run_validation(model, tokenizer, step, interval_flips):
     domain_map = {'chat': 0, 'math': 1, 'code': 2, 'tool': 3}
     domain_losses = {'chat': [], 'math': [], 'code': [], 'tool': []}
     
+    val_path = CONFIG.get('val_path', './data/titan_val_suite.jsonl')
     try:
-        with open("/data/titan_val_suite.jsonl") as f:
+        with open(val_path) as f:
             for line in f:
                 obj = json.loads(line)
                 domain = obj.get('domain')
@@ -580,6 +584,18 @@ def check_thermal_throttle():
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description="Titan MIMO 650M Training Script")
+    parser.add_argument('--corpus_path', type=str, default=CONFIG['corpus_path'], help='Path to training mega corpus jsonl')
+    parser.add_argument('--val_path', type=str, default=CONFIG['val_path'], help='Path to validation suite jsonl')
+    parser.add_argument('--ckpt_dir', type=str, default=CONFIG['ckpt_dir'], help='Directory to load and save checkpoints')
+    args = parser.parse_args()
+    
+    # Update CONFIG with CLI overrides
+    CONFIG['corpus_path'] = args.corpus_path
+    CONFIG['val_path'] = args.val_path
+    CONFIG['ckpt_dir'] = args.ckpt_dir
+
     sys.stdout = LoggerTee(CONFIG['log_file'])
     sys.stderr = sys.stdout
 
@@ -636,7 +652,8 @@ if __name__ == '__main__':
     
     # Auto-Resume Logic
     import glob
-    checkpoints = glob.glob("/data/titan_checkpoints/*.pt")
+    os.makedirs(CONFIG['ckpt_dir'], exist_ok=True)
+    checkpoints = glob.glob(os.path.join(CONFIG['ckpt_dir'], "*.pt"))
     if checkpoints:
         latest_ckpt = max(checkpoints, key=os.path.getmtime)
         print(f"[INIT] Resuming from {latest_ckpt}...")
@@ -826,7 +843,8 @@ if __name__ == '__main__':
 
             # High-Frequency Live Evaluation (Rolling Checkpoint)
             if step % 100 == 0:
-                live_path = "/data/titan_checkpoints/titan_mimo_live.pt"
+                os.makedirs(CONFIG['ckpt_dir'], exist_ok=True)
+                live_path = os.path.join(CONFIG['ckpt_dir'], "titan_mimo_live.pt")
                 torch.save({
                     'step': step,
                     'state_dict': model.state_dict(),
@@ -840,7 +858,8 @@ if __name__ == '__main__':
                 run_validation(model, tokenizer, step, interval_flips)
                 interval_flips = 0  # Reset for next interval
                 
-                ckpt_path = f"/data/titan_checkpoints/titan_mimo_pilot_{step}.pt"
+                os.makedirs(CONFIG['ckpt_dir'], exist_ok=True)
+                ckpt_path = os.path.join(CONFIG['ckpt_dir'], f"titan_mimo_pilot_{step}.pt")
                 print(f"[SAVE] Archiving Step {step} -> {ckpt_path}")
                 torch.save({
                     'step': step,
@@ -850,7 +869,7 @@ if __name__ == '__main__':
                 
                 try:
                     import glob, os
-                    ckpt_files = sorted(glob.glob('/data/titan_checkpoints/titan_mimo_pilot_*.pt'), key=os.path.getmtime)
+                    ckpt_files = sorted(glob.glob(os.path.join(CONFIG['ckpt_dir'], 'titan_mimo_pilot_*.pt')), key=os.path.getmtime)
                     if len(ckpt_files) > 5:
                         for old_ckpt in ckpt_files[:-5]:
                             os.remove(old_ckpt)
