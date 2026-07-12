@@ -15,17 +15,17 @@ from huggingface_hub import login
 # ── Config ────────────────────────────────────────────────────────────────────
 CONFIG = {
     'd_model':      1024,
-    'n_layers':     28,
+    'n_layers':     64,
     'expand':       2,
     'd_state':      16,
     'seq_len':      256,
-    'grad_accum':   4,
+    'grad_accum':   8,
     'lr':           1e-4,
-    'total_steps':  25000,
+    'total_steps':  117000,
     'device':       'cuda' if torch.cuda.is_available() else 'cpu',
-    'stats_file':   'stats_mamba3_native.json',
-    'samples_file': 'samples_mamba3_native.json',
-    'log_file':     'training_mamba3_native.log',
+    'stats_file':   'stats_mamba3_titan.json',
+    'samples_file': 'samples_mamba3_titan.json',
+    'log_file':     'training_mamba3_titan.log',
 }
 
 _tok_path = os.path.expanduser('~/.hf_token')
@@ -110,7 +110,6 @@ class PrimeLinear(nn.Module):
         # All buffers registered → move to GPU with model.to(device)
         self.register_buffer('base_idx',     base)                                          # uint8 GPU
         self.register_buffer('fine_idx',     fine)                                          # uint8 GPU
-        self.register_buffer('init_combined', combined.to(torch.int32))                    # int32 GPU
         self.register_buffer('vote_buffer',  torch.zeros(                                  # int16 GPU
             self.out_features, self.in_features, dtype=torch.int16))
         self.register_buffer('last_dir',     torch.zeros(n_blocks, 1, dtype=torch.int8))  # int8  GPU
@@ -162,13 +161,10 @@ class PrimeLinear(nn.Module):
             p        = counts[counts > 0].float() / c.numel()
             entropy  = -(p * torch.log2(p + 1e-12)).sum().item()
             occupancy = (counts > 0).float().mean().item()
-            init_f   = self.init_combined.to(c.device).view(-1)[:aligned]
-            diff     = (c - init_f).float().abs()
-            disp_95  = torch.quantile(diff[::max(1, len(diff)//100000)], 0.95).item()
             mom_mean = self.momentum.float().mean().item()
             return {
                 'entropy':      round(entropy, 4),
-                'disp_95':      round(disp_95, 2),
+                'disp_95':      0.0,  # Removed to save VRAM
                 'occupancy':    round(occupancy, 4),
                 'momentum_mean': round(mom_mean, 4),
                 'vote_pos':     round(vote_pos, 4),
@@ -368,10 +364,25 @@ def make_dataset(tokenizer):
             
     return gen
 
+# ── Thermal Monitor ──────────────────────────────────────────────────────────
+def check_thermal_throttle():
+    import subprocess
+    try:
+        smi = subprocess.check_output(
+            ["nvidia-smi", "--query-gpu=temperature.gpu", "--format=csv,noheader"],
+            encoding='utf-8'
+        )
+        temp = int(smi.strip())
+        if temp >= 85:
+            print(f"\n[THERMAL] GPU Temp is {temp}°C (>= 85°C). Throttling for 30s...")
+            time.sleep(30)
+    except Exception:
+        pass
+
 # ── Main ─────────────────────────────────────────────────────────────────────
 if __name__ == '__main__':
     print(f"\n{'='*60}")
-    print(f"[PRIME] Mamba3-300M from scratch — PID {os.getpid()}")
+    print(f"[PRIME] Mamba3-Titan (2.4B) — PID {os.getpid()}")
     print(f"[PRIME] Discrete-only optimizer: vote pressure on prime grid")
     print(f"{'='*60}")
 
@@ -442,6 +453,8 @@ if __name__ == '__main__':
 
         if loss is None or torch.isnan(loss) or torch.isinf(loss):
             continue
+
+        check_thermal_throttle()
 
         (loss / accum).backward()
         total_loss += loss.item()

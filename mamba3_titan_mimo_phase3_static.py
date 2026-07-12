@@ -31,9 +31,6 @@ CONFIG = {
     'stats_file':   'stats_titan_mimo.json',
     'samples_file': 'samples_titan_mimo.json',
     'log_file':     'training_titan_mimo.log',
-    'corpus_path':  './data/titan_mega_corpus.jsonl',
-    'val_path':     './data/titan_val_suite.jsonl',
-    'ckpt_dir':     './checkpoints',
 }
 
 # ── Logger ────────────────────────────────────────────────────────────────────
@@ -401,6 +398,7 @@ class TitanMIMO(nn.Module):
 
         self.mimo_arms = nn.ModuleList([MambaLayer(d) for _ in range(m)])
         self.domain_router = nn.Linear(d, m, bias=True)
+        self.router_temp = nn.Parameter(torch.ones(1) * 1.0)
         nn.init.normal_(self.domain_router.weight, std=0.02)
         nn.init.zeros_(self.domain_router.bias)
 
@@ -414,27 +412,28 @@ class TitanMIMO(nn.Module):
         for layer in self.layers[:self._mid]:
             x = checkpoint.checkpoint(layer, x, use_reentrant=False)
 
-        # ── DYNAMIC ROUTING ───────────────────────────────────────────────────
+        # ── STATIC ROUTING ───────────────────────────────────────────────────
+        # Domain IDs: 0=Chat, 1=Math, 2=Code, 3=Tool
+        # We build a hard one-hot route weight so gradients strictly target 
+        # only the assigned MIMO arm.
         B, L, _ = x.shape
-        # Detach x so routing loss gradients don't destabilize the highly optimized backbone.
-        # MUST apply LayerNorm because the mid-network residual variance is huge!
-        router_x = F.layer_norm(x.detach(), (x.size(-1),))
-        router_logits = self.domain_router(router_x)
-        
-        # Soft Mixture of Experts (Continuous Blending)
-        # Use a slightly lower temperature during inference for sharper (but still continuous) routing
-        temperature = 1.0 if self.training else 0.8
-        route_weights = F.softmax(router_logits / temperature, dim=-1)
-            
-        # Detach route_weights so massive downstream residual gradients don't explode the router
-        route_weights_detached = route_weights.detach()
+        if domain_id is not None:
+            if not isinstance(domain_id, torch.Tensor):
+                domain_id = torch.tensor([domain_id]*B, device=x.device)
+            elif domain_id.dim() == 0:
+                domain_id = domain_id.unsqueeze(0).expand(B)
+            one_hot = F.one_hot(domain_id.long(), num_classes=CONFIG['mimo_paths']).float()
+            route_weights = one_hot.unsqueeze(1).expand(-1, L, -1)
+        else:
+            # Fallback uniform routing if no domain provided (e.g. general eval)
+            route_weights = torch.ones(B, L, CONFIG['mimo_paths'], device=x.device) / CONFIG['mimo_paths']
 
         raw_arm_outs = []
         for arm in self.mimo_arms:
             raw_arm_outs.append(arm(x))
         
         stacked = torch.stack(raw_arm_outs, dim=-1)
-        collapsed = torch.einsum('b l d m, b l m -> b l d', stacked, route_weights_detached.to(stacked.dtype))
+        collapsed = torch.einsum('b l d m, b l m -> b l d', stacked, route_weights.to(stacked.dtype))
         x = x + collapsed
 
         for layer in self.layers[self._mid:]:
@@ -450,31 +449,15 @@ class TitanMIMO(nn.Module):
                 labels[..., 1:].contiguous().view(-1),
                 ignore_index=0
             )
-            
-            if domain_id is not None:
-                if not isinstance(domain_id, torch.Tensor):
-                    domain_id = torch.tensor([domain_id]*B, device=x.device)
-                elif domain_id.dim() == 0:
-                    domain_id = domain_id.unsqueeze(0).expand(B)
-                    
-                target = domain_id.unsqueeze(1).expand(-1, L).clone().long()
-                
-                # Mask out padding tokens (index 0) so the router doesn't learn noise
-                target[input_ids == 0] = -100
-                
-                routing_loss = F.cross_entropy(
-                    router_logits.view(-1, CONFIG['mimo_paths']),
-                    target.reshape(-1),
-                    ignore_index=-100
-                )
-                loss = loss + (0.5 * routing_loss)
+            # Diversity routing loss removed since we are using static routing.
+            # We don't need to load-balance because the dataset loader balances the domains.
         
         return logits, loss
 
 # ── Dataset ──────────────────────────────────────────────────────────────────
 def make_dataset(tokenizer):
     import random
-    corpus_path = CONFIG.get('corpus_path', './data/titan_mega_corpus.jsonl')
+    corpus_path = '/data/titan_mega_corpus.jsonl'
     data = []
     domain_map = {'chat': 0, 'math': 1, 'code': 2, 'tool': 3}
     print("[DATA] Loading Mega-Corpus into RAM...")
@@ -509,9 +492,8 @@ def run_validation(model, tokenizer, step, interval_flips):
     domain_map = {'chat': 0, 'math': 1, 'code': 2, 'tool': 3}
     domain_losses = {'chat': [], 'math': [], 'code': [], 'tool': []}
     
-    val_path = CONFIG.get('val_path', './data/titan_val_suite.jsonl')
     try:
-        with open(val_path) as f:
+        with open("/data/titan_val_suite.jsonl") as f:
             for line in f:
                 obj = json.loads(line)
                 domain = obj.get('domain')
@@ -581,18 +563,6 @@ def check_thermal_throttle():
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser(description="Titan MIMO 650M Training Script")
-    parser.add_argument('--corpus_path', type=str, default=CONFIG['corpus_path'], help='Path to training mega corpus jsonl')
-    parser.add_argument('--val_path', type=str, default=CONFIG['val_path'], help='Path to validation suite jsonl')
-    parser.add_argument('--ckpt_dir', type=str, default=CONFIG['ckpt_dir'], help='Directory to load and save checkpoints')
-    args = parser.parse_args()
-    
-    # Update CONFIG with CLI overrides
-    CONFIG['corpus_path'] = args.corpus_path
-    CONFIG['val_path'] = args.val_path
-    CONFIG['ckpt_dir'] = args.ckpt_dir
-
     sys.stdout = LoggerTee(CONFIG['log_file'])
     sys.stderr = sys.stdout
 
@@ -611,8 +581,10 @@ if __name__ == '__main__':
 
     wrapped = 0
     for idx, layer in enumerate(model.layers):
-        # Cool down phase: Set plasticity to 0 to crystallize weights
-        target = 0.0
+        # Specific target flip rates for hierarchy
+        if idx < 7: target = 0.10
+        elif idx < 21: target = 0.13
+        else: target = 0.16
         
         layer.ssm.in_proj  = PrimeLinear(layer.ssm.in_proj,  lut, name=f"backbone_L{idx}_in_proj", target_flip_rate=target)
         layer.ssm.out_proj = PrimeLinear(layer.ssm.out_proj, lut, name=f"backbone_L{idx}_out_proj", target_flip_rate=target)
@@ -621,17 +593,9 @@ if __name__ == '__main__':
     arm_names = ['chat', 'math', 'code', 'tool']
     for idx, arm in enumerate(model.mimo_arms):
         aname = arm_names[idx] if idx < len(arm_names) else str(idx)
-        
-        # FINAL PHASE COOL DOWN
-        arm_target = 0.0
-            
-        arm.ssm.in_proj  = PrimeLinear(arm.ssm.in_proj,  lut, name=f"mimo_arm_{aname}_in_proj", target_flip_rate=arm_target)
-        arm.ssm.out_proj = PrimeLinear(arm.ssm.out_proj, lut, name=f"mimo_arm_{aname}_out_proj", target_flip_rate=arm_target)
+        arm.ssm.in_proj  = PrimeLinear(arm.ssm.in_proj,  lut, name=f"mimo_arm_{aname}_in_proj", target_flip_rate=0.13)
+        arm.ssm.out_proj = PrimeLinear(arm.ssm.out_proj, lut, name=f"mimo_arm_{aname}_out_proj", target_flip_rate=0.13)
         wrapped += 2
-        
-    model.domain_router = PrimeLinear(model.domain_router, lut, name="domain_router", target_flip_rate=0.0)
-    wrapped += 1
-    
     print(f"[INIT] Wrapped {wrapped} linear layers with PrimeDiscrete Optimizer.")
 
     model = model.to(CONFIG['device'])
@@ -651,8 +615,7 @@ if __name__ == '__main__':
     
     # Auto-Resume Logic
     import glob
-    os.makedirs(CONFIG['ckpt_dir'], exist_ok=True)
-    checkpoints = glob.glob(os.path.join(CONFIG['ckpt_dir'], "*.pt"))
+    checkpoints = glob.glob("/data/titan_checkpoints/*.pt")
     if checkpoints:
         latest_ckpt = max(checkpoints, key=os.path.getmtime)
         print(f"[INIT] Resuming from {latest_ckpt}...")
@@ -665,11 +628,7 @@ if __name__ == '__main__':
         # We must reconstruct the optimizer after moving to device so the state dict hooks align
         optimizer = ContinuousVoteOptimizer(continuous_params, lr=1e-4)
         if 'optimizer' in ckpt_data:
-            try:
-                optimizer.load_state_dict(ckpt_data['optimizer'])
-                print("[INIT] Loaded optimizer state successfully.")
-            except Exception as e:
-                print(f"[INIT] Optimizer state mismatch (likely due to architectural shift). Reinitializing continuous optimizer momentum.")
+            optimizer.load_state_dict(ckpt_data['optimizer'])
         total_continuous_params = sum(p.numel() for p in continuous_params)
     data_gen = make_dataset(tokenizer)
 
@@ -842,8 +801,7 @@ if __name__ == '__main__':
 
             # High-Frequency Live Evaluation (Rolling Checkpoint)
             if step % 100 == 0:
-                os.makedirs(CONFIG['ckpt_dir'], exist_ok=True)
-                live_path = os.path.join(CONFIG['ckpt_dir'], "titan_mimo_live.pt")
+                live_path = "/data/titan_checkpoints/titan_mimo_live.pt"
                 torch.save({
                     'step': step,
                     'state_dict': model.state_dict(),
@@ -857,8 +815,7 @@ if __name__ == '__main__':
                 run_validation(model, tokenizer, step, interval_flips)
                 interval_flips = 0  # Reset for next interval
                 
-                os.makedirs(CONFIG['ckpt_dir'], exist_ok=True)
-                ckpt_path = os.path.join(CONFIG['ckpt_dir'], f"titan_mimo_pilot_{step}.pt")
+                ckpt_path = f"/data/titan_checkpoints/titan_mimo_pilot_{step}.pt"
                 print(f"[SAVE] Archiving Step {step} -> {ckpt_path}")
                 torch.save({
                     'step': step,
@@ -868,7 +825,7 @@ if __name__ == '__main__':
                 
                 try:
                     import glob, os
-                    ckpt_files = sorted(glob.glob(os.path.join(CONFIG['ckpt_dir'], 'titan_mimo_pilot_*.pt')), key=os.path.getmtime)
+                    ckpt_files = sorted(glob.glob('/data/titan_checkpoints/titan_mimo_pilot_*.pt'), key=os.path.getmtime)
                     if len(ckpt_files) > 5:
                         for old_ckpt in ckpt_files[:-5]:
                             os.remove(old_ckpt)

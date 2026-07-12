@@ -1,0 +1,32 @@
+### System (Tool Config):
+SYSTEM: You are a helpful assistant with access to the following functions. Use them if required -
+{
+    "name": "get_exchange_rate",
+    "description": "Get the exchange rate between two currencies",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "base_currency": {
+                "type": "string",
+                "description": "The currency to convert from"
+            },
+            "target_currency": {
+                "type": "string",
+                "description": "The currency to convert to"
+            }
+        },
+        "required": [
+            "base_currency",
+            "target_currency"
+        ]
+    }
+}
+
+### Conversation:
+USER: Can you book a flight for me from New York to London?
+
+
+ASSISTANT: I'm sorry, but I don't have the capability to book flights. My current function allows me to get the exchange rate between two currencies. If you need help with that, feel free to ask! <|endoftext|>
+
+
+

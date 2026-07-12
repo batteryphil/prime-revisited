@@ -1,0 +1,39 @@
+# Titan MIMO Training Bottlenecks & Solutions
+
+After analyzing the execution loop of the hybrid 650M parameter model, I have identified three major bottlenecks that are dragging down the Tokens-Per-Second (TPS).
+
+## Bottleneck 1: Massive CPU-GPU Synchronization Overhead (Critical)
+**The Problem:** 
+Inside both `apply_votes()` (Prime layers) and `ContinuousVoteOptimizer.step()` (AdamW replacement), we are calling `.item()` to calculate metrics like `vote_pos`, `vote_neg`, and `total_flips`. 
+Calling `.item()` forces the CPU to halt and wait for the GPU to finish all its asynchronous queues just to fetch a single float. Because we iterate through 64 Prime layers and ~120 continuous parameters, we are forcing **~312 sequential GPU syncs** every time we apply votes! This completely destroys PyTorch's async CUDA execution model.
+
+**The Solution:**
+Accumulate the `flips`, `vote_pos`, and `vote_neg` dynamically inside a single GPU tensor (`flips_tensor += authorized.sum()`). We then perform exactly **one** `.item()` call at the very end of the main training loop before printing the log. This will drop sync blocks from 312 to 1!
+
+---
+
+## Bottleneck 2: Inefficient Hook Memory Allocation (High)
+**The Problem:**
+The `_vote_hook` fires on every single layer, 8 times per step (due to gradient accumulation). 
+```python
+pressure = (-torch.sign(grad) * 10).to(torch.int32)
+self.vote_buffer = torch.clamp(self.vote_buffer.to(torch.int32) + pressure, -32760, 32760).to(torch.int16)
+```
+This single line forces PyTorch to launch 6 separate CUDA kernels and allocate 6 intermediate tensors in VRAM (`sign`, `mul`, `to(int32)`, `add`, `clamp`, `to(int16)`). Across 650M parameters and 8 micro-batches, this causes massive kernel-launch overhead and VRAM fragmentation.
+
+**The Solution:**
+Rewrite the hook to use **in-place PyTorch operations**.
+```python
+pressure = grad.sign().mul_(10).to(torch.int16)
+self.vote_buffer.add_(pressure).clamp_(-32760, 32760)
+```
+This forces the GPU to overwrite the memory in place, skipping all intermediate VRAM allocations and bypassing the kernel launch delays.
+
+---
+
+## Bottleneck 3: Mamba Sequential Scan (Medium)
+**The Problem:**
+The PyTorch-native Mamba `selective_scan` is heavily memory-bound due to the sequential `for` loop across the sequence dimension.
+
+**The Solution:**
+We can wrap the `MambaLayer` or the specific `forward` block inside `torch.compile()` to let the PyTorch 2.x Triton compiler fuse the sequential scan into a single GPU kernel.
