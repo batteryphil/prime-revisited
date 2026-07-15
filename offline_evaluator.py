@@ -72,14 +72,14 @@ def load_validation_samples(val_path):
                 prompt = f"### Instruction:\n{text[:100]}...\n### Response:\n"
                 expected = "" # Qualitative
             elif domain == 'math':
-                parts = text.split("Answer:")
+                parts = text.split("### Response:")
                 if len(parts) == 2:
-                    prompt = f"### Instruction:\n{parts[0].strip()}\n### Response:\n"
+                    prompt = f"{parts[0].strip()}\n### Response:\n"
                     expected = parts[1].strip()
             elif domain == 'code':
-                parts = text.split("Output:")
+                parts = text.split("### Response:")
                 if len(parts) == 2:
-                    prompt = f"### Instruction:\n{parts[0].strip()}\n### Response:\n"
+                    prompt = f"{parts[0].strip()}\n### Response:\n"
                     expected = parts[1].strip()
             elif domain == 'tool':
                 parts = text.split("### Conversation:")
@@ -176,14 +176,14 @@ def main():
     model.cuda().eval()
     samples, domain_map = load_validation_samples(args.val_path)
     
-    results = {'chat': [], 'math': [], 'code': [], 'tool': []}
+    results = {'chat': 0.0, 'math': 0.0, 'code': 0.0, 'tool': 0.0}
     
     print("\n============================================================")
     print(" STARTING TIER 2 OFFLINE GENERATIVE BENCHMARK ")
     print("============================================================\n")
     
     for domain, pairs in samples.items():
-        if not pairs:
+        if not pairs or domain not in results:
             continue
             
         print(f"--- Evaluating Domain: {domain.upper()} ---")
@@ -199,6 +199,7 @@ def main():
             # Use 200 tokens for structured domains so functions aren't truncated mid-bracket
             max_tokens = 200 if domain in ('code', 'tool') else 64
             generated, tps = generate_text(model, tokenizer, prompt, domain_id, max_new=max_tokens, domain=domain)
+            print(f"\nRAW OUTPUT: {generated}\n")
             
             if domain == 'math':
                 hit = evaluate_math_exact_match(generated, expected)
